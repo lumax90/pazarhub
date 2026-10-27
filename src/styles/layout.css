@@ -1491,6 +1491,104 @@ svg {
   color: var(--muted);
   font-size: var(--text-xs);
 }
+/* Live connection card: each sync on its own row, so cards need more width. */
+.connection-grid.connection-grid--live {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--spacing) * 92)), 1fr));
+}
+.connection-card-top {
+  gap: var(--app-space-3);
+}
+.connection-card-title {
+  flex: 1;
+  min-width: 0;
+}
+.connection-card .connection-card-title h2 {
+  margin-top: 0;
+  font-size: var(--text-base);
+  letter-spacing: var(--app-tracking-snug);
+  overflow-wrap: anywhere;
+}
+.connection-card-title .connection-name {
+  margin-top: var(--app-space-1);
+}
+.connection-setup {
+  align-items: center;
+  margin: var(--app-space-4) 0 0;
+}
+.connection-setup > p {
+  flex: 1;
+}
+.connection-setup > svg {
+  flex: none;
+  margin-top: 0;
+}
+.connection-facts {
+  margin-top: var(--app-space-3);
+}
+.connection-facts > div {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: var(--app-space-3);
+  padding: var(--app-space-2) 0;
+  border-top: 1px solid var(--separator);
+  font-size: var(--text-xs);
+  line-height: var(--app-leading-normal);
+}
+.connection-facts > div:first-child {
+  border-top: 0;
+}
+.connection-facts dt {
+  color: var(--muted);
+}
+.connection-facts dd {
+  font-weight: var(--app-weight-medium);
+  overflow-wrap: anywhere;
+}
+.connection-facts dd small {
+  display: block;
+  margin-top: calc(var(--spacing) * 0.5);
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: var(--app-weight-regular);
+}
+.connection-facts dd small.is-failed {
+  color: var(--danger-soft-foreground);
+}
+.connection-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-4);
+  margin-top: var(--app-space-3);
+  font-size: var(--text-xs);
+}
+.connection-links > a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-1);
+  color: var(--accent);
+}
+.connection-links > :last-child {
+  margin-inline-start: auto;
+}
+.connection-enable {
+  display: grid;
+  gap: var(--app-space-5);
+}
+.connection-enable > section {
+  display: grid;
+  gap: var(--app-space-1);
+}
+.connection-enable h3 {
+  font-size: var(--text-sm);
+  font-weight: var(--app-weight-semibold);
+}
+.connection-enable .subtle {
+  font-size: var(--text-xs);
+}
+.connection-enable .inline-notice {
+  margin: var(--app-space-2) 0;
+}
 .add-connection-card > span {
   width: 47px;
   height: 47px;

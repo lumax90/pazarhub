@@ -7,8 +7,6 @@ import {
   FileText,
   Link2,
   Plus,
-  RefreshCw,
-  Settings2,
   ShieldCheck,
   Workflow,
 } from 'lucide-react'
@@ -27,7 +25,6 @@ import type {
 } from '../domain/integrations'
 import { apiRequest } from '../lib/api'
 import { useResource } from '../lib/useResource'
-import { dateLabel } from '../lib/format'
 import { AsyncState } from '../components/ui/AsyncState'
 import {
   ChannelIcon,
@@ -40,17 +37,10 @@ import {
   SelectButton,
 } from '../components/ui/shared'
 import { ConnectionsPage } from './ConnectionsPage'
+import { ConnectionCard } from '../components/integrations/ConnectionCard'
 import { ProviderLogo } from '../components/ui/ProviderLogo'
 
 import { operationLabels } from '../domain/integration-labels'
-const statuses: Record<PublicIntegration['status'], string> = {
-  configured: 'Test bekliyor',
-  testing: 'Test sürüyor',
-  verified: 'Test başarılı',
-  degraded: 'Kontrol gerekiyor',
-  failed: 'Test başarısız',
-  paused: 'Duraklatıldı',
-}
 
 export function IntegrationsPage() {
   const { mode } = useApp()
@@ -74,7 +64,7 @@ function ProviderIcon({ definition }: { definition: ProviderDefinition }) {
 }
 
 function LiveIntegrations() {
-  const { state, notify, refresh, can } = useApp()
+  const { notify, refresh, can } = useApp()
   const { kind: routeKind } = useParams()
   const [kind, setKind] = useState<IntegrationKind>(
     routeKind === 'cargo' ? 'cargo' : routeKind === 'invoice' ? 'invoice' : 'marketplace',
@@ -147,106 +137,27 @@ function LiveIntegrations() {
         error={resource.error || catalog.error}
         retry={() => void resource.reload()}
       />
-      <div className="connection-grid">
+      <div className="connection-grid connection-grid--live">
         {connections
           .filter((connection) => connection.kind === kind)
           .map((connection) => {
             const definition = providers.find((item) => item.id === connection.provider)!
             return (
-              <Panel key={connection.id} className="connection-card">
-                <div className="connection-card-top">
-                  <ProviderIcon definition={definition} />
-                  <Chip
-                    size="sm"
-                    color={
-                      connection.status === 'verified'
-                        ? 'success'
-                        : connection.status === 'failed'
-                          ? 'danger'
-                          : 'warning'
-                    }
-                    variant="soft"
-                  >
-                    <span className="status-dot" />
-                    {statuses[connection.status]}
-                  </Chip>
-                </div>
-                <h2>{definition.name}</h2>
-                {connection.isDefault && (
-                  <Chip size="sm" variant="soft" color="accent">
-                    Varsayılan fatura hesabı
-                  </Chip>
-                )}
-                <p className="connection-name">{connection.name}</p>
-                <div className="connection-stats">
-                  <div>
-                    <strong>{connection.enabled ? 'Açık' : 'Kapalı'}</strong>
-                    <span>otomasyon</span>
-                  </div>
-                  <div>
-                    <strong>
-                      {connection.settings.environment === 'production' ? 'Canlı' : 'Test'}
-                    </strong>
-                    <span>sağlayıcı ortamı</span>
-                  </div>
-                  {kind === 'marketplace' && (
-                    <div>
-                      <strong>
-                        {state.listings.filter((item) => item.storeId === connection.id).length}
-                      </strong>
-                      <span>eşlenmiş ilan</span>
-                    </div>
-                  )}
-                </div>
-                <p className="connection-last-test">
-                  {connection.lastTestAt
-                    ? `Son test: ${dateLabel(connection.lastTestAt, true)}`
-                    : 'Henüz API testi yapılmadı.'}
-                </p>
-                {connection.lastError && <p className="connection-error">{connection.lastError}</p>}
-                <div className="connection-card-actions">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    isDisabled={!!working || connection.status === 'testing'}
-                    onPress={() => void perform(connection, 'test')}
-                  >
-                    <RefreshCw size={14} />
-                    Test et
-                  </Button>
-                  {connection.enabled &&
-                    connection.status === 'verified' &&
-                    connection.capabilities.includes('orders.pull') && (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        isDisabled={!!working}
-                        onPress={() => void perform(connection, 'orders.pull')}
-                      >
-                        Sipariş al
-                      </Button>
-                    )}
-                  {connection.enabled &&
-                    connection.status === 'verified' &&
-                    connection.capabilities.includes('catalog.pull') && (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        isDisabled={!!working}
-                        onPress={() => void perform(connection, 'catalog.pull')}
-                      >
-                        Katalog al
-                      </Button>
-                    )}
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onPress={() => setEditor({ provider: definition, connection })}
-                  >
-                    <Settings2 size={14} />
-                    Ayarlar
-                  </Button>
-                  {connection.kind === 'invoice' && !connection.isDefault && (
+              <ConnectionCard
+                key={connection.id}
+                connection={connection}
+                definition={definition}
+                icon={<ProviderIcon definition={definition} />}
+                working={working}
+                onPerform={(operation) => void perform(connection, operation)}
+                onSettings={() => setEditor({ provider: definition, connection })}
+                onEnabled={async () => {
+                  await resource.reload()
+                  await refresh()
+                }}
+                extraActions={
+                  connection.kind === 'invoice' &&
+                  !connection.isDefault && (
                     <Button
                       size="sm"
                       variant="secondary"
@@ -274,9 +185,9 @@ function LiveIntegrations() {
                     >
                       Varsayılan yap
                     </Button>
-                  )}
-                </div>
-              </Panel>
+                  )
+                }
+              />
             )
           })}
       </div>

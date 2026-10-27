@@ -8,7 +8,7 @@ import type { Database } from '../server/db'
 import type { ServerConfig } from '../server/config'
 import type { IntegrationWorker } from '../server/worker'
 import type { AppState, Command } from '../src/domain/types'
-import type { RemoteOrder, RemoteProduct } from '../src/domain/integrations'
+import type { PublicIntegration, RemoteOrder, RemoteProduct } from '../src/domain/integrations'
 import { defaultIntegrationSettings } from '../src/domain/integrations'
 import { inventoryValues } from '../server/integrations/contracts'
 import { availableStock, customerBalance, orderTotal } from '../src/domain/selectors'
@@ -159,6 +159,9 @@ it('rehearses grouped catalogue, two store links, cutover open orders and openin
   }
   const state = async () =>
     (await app.inject({ url: '/api/workspace', headers })).json().state as AppState
+  const listed = async () =>
+    (await app.inject({ url: '/api/integrations', headers })).json()
+      .connections as PublicIntegration[]
   const contents = await readFile(
       new URL('../docs/gecis-ornek-urunler.csv', import.meta.url),
       'utf8',
@@ -234,13 +237,23 @@ it('rehearses grouped catalogue, two store links, cutover open orders and openin
     stores.push(storeId)
     await post(`/api/integrations/${storeId}/jobs`, { operation: 'test' })
     await worker.processOne()
+    // Enable the way the connection card does: listed identity only, secrets left as stored.
+    const tested = (await listed()).find((item) => item.id === storeId)!
+    expect(tested.status).toBe('verified')
     const enabled = await app.inject({
       method: 'PATCH',
       url: `/api/integrations/${storeId}`,
       headers: { ...headers, 'idempotency-key': randomUUID() },
-      payload: { ...input, enabled: true },
+      payload: {
+        provider,
+        name: tested.name,
+        credentials: tested.identity,
+        settings: tested.settings,
+        enabled: true,
+      },
     })
     expect(enabled.statusCode, enabled.body).toBe(200)
+    expect(enabled.json()).toMatchObject({ enabled: true, status: 'verified' })
     await post(`/api/integrations/${storeId}/jobs`, { operation: 'catalog.pull' })
     await worker.processOne()
     const remote = (
@@ -258,6 +271,9 @@ it('rehearses grouped catalogue, two store links, cutover open orders and openin
     await worker.processOne()
     await post(`/api/integrations/${storeId}/jobs`, { operation: 'orders.pull' })
     await worker.processOne()
+    const { activity } = (await listed()).find((item) => item.id === storeId)!
+    expect(Object.keys(activity ?? {}).sort()).toEqual(['catalog.pull', 'orders.pull'])
+    expect(activity?.['orders.pull']).toMatchObject({ status: 'completed', error: null })
   }
   let current = await state()
   expect(current.listings).toHaveLength(6)

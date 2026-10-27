@@ -1,12 +1,14 @@
 import { randomUUID } from 'node:crypto'
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { defaultIntegrationSettings, providers } from '../src/domain/integrations'
+import { defaultIntegrationSettings, providers, syncOperations } from '../src/domain/integrations'
 import type {
   IntegrationOperation,
   IntegrationSettings,
   ProviderId,
   PublicIntegration,
+  SyncOperation,
+  SyncRun,
 } from '../src/domain/integrations'
 import type { AppState } from '../src/domain/types'
 import { listingPrice, listingListPrice, listingQuantity } from '../src/domain/selectors'
@@ -300,7 +302,37 @@ export function registerIntegrationRoutes(app: FastifyInstance, service: Integra
       'SELECT * FROM integration_connections WHERE workspace_id=$1 AND deleted_at IS NULL ORDER BY created_at',
       [auth.workspaceId],
     )
-    return { connections: rows.rows.map((row) => service.public(row)) }
+    // The latest run of each sync per connection, so cards can say what happened last.
+    const runs = await database.query<{
+      connection_id: string
+      kind: SyncOperation
+      status: SyncRun['status']
+      created_at: Date | string
+      finished_at: Date | string | null
+      last_error: string | null
+    }>(
+      `SELECT DISTINCT ON (connection_id,kind) connection_id,kind,status,created_at,finished_at,last_error
+      FROM integration_jobs WHERE workspace_id=$1 AND kind = ANY($2::text[])
+      ORDER BY connection_id,kind,created_at DESC`,
+      [auth.workspaceId, [...syncOperations]],
+    )
+    return {
+      connections: rows.rows.map((row) => ({
+        ...service.public(row),
+        activity: Object.fromEntries(
+          runs.rows
+            .filter((run) => run.connection_id === row.id)
+            .map((run) => [
+              run.kind,
+              {
+                status: run.status,
+                at: new Date(run.finished_at ?? run.created_at).toISOString(),
+                error: run.last_error,
+              },
+            ]),
+        ),
+      })),
+    }
   })
   app.post('/api/integrations', async (request, reply) =>
     reply

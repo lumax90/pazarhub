@@ -46,11 +46,16 @@ export function ListingsPage() {
   const { state, run, mode, can } = useApp()
   const [params, setParams] = useSearchParams()
   const productId = params.get('product')
-  const [store, setStore] = useState(productId ? 'all' : (state.connections[0]?.id ?? 'all'))
+  // `?store=` and `?view=` let a connection card open its own mapping directly.
+  const [store, setStore] = useState(
+    params.get('store') ?? (productId ? 'all' : (state.connections[0]?.id ?? 'all')),
+  )
   const [status, setStatus] = useState('all')
   const [query, setQuery] = useState('')
   const [editing, setEditing] = useState<Listing | null>(null)
-  const [view, setView] = useState('listings')
+  const [view, setView] = useState(
+    ['mapping', 'categories'].includes(params.get('view') ?? '') ? params.get('view')! : 'listings',
+  )
   const forStore = state.listings.filter(
     (listing) =>
       (store === 'all' || listing.storeId === store) &&

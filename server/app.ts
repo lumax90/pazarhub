@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import Fastify from 'fastify'
+import Fastify, { LogController } from 'fastify'
 import cookie from '@fastify/cookie'
 import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
@@ -64,7 +64,7 @@ export async function createApp(
     requestTimeout: 30000,
     genReqId: () => randomUUID(),
     // Per-request lines come from the onResponse hook below, which keeps only the useful ones.
-    disableRequestLogging: true,
+    logController: new LogController({ disableRequestLogging: true }),
     logger:
       options.logger === false
         ? false

@@ -255,6 +255,23 @@ export interface PublicIntegration {
   lastTestAt: string | null
   lastError: string | null
   createdAt: string
+  /** Latest run of each sync the connection card reports on (listing endpoint only). */
+  activity?: Partial<Record<SyncOperation, SyncRun>>
+}
+
+export const syncOperations = [
+  'orders.pull',
+  'catalog.pull',
+  'questions.pull',
+  'claims.pull',
+  'settlements.pull',
+] as const
+export type SyncOperation = (typeof syncOperations)[number]
+export interface SyncRun {
+  status: IntegrationJob['status']
+  /** When it finished, or when it was queued if still open. */
+  at: string
+  error: string | null
 }
 
 export interface IntegrationJob {

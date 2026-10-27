@@ -620,6 +620,15 @@ textarea {
   margin-left: auto;
   flex-shrink: 0;
 }
+/* Side-by-side connection cards keep their action rows on one line. */
+.connection-grid--live .connection-card .panel-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.connection-grid--live .connection-facts {
+  flex: 1;
+}
 .text-button {
   text-align: left;
 }
