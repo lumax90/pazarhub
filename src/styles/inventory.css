@@ -15,7 +15,7 @@
 .category-drag-hint {
   color: var(--muted);
   font-size: var(--text-xs);
-  line-height: 1.6;
+  line-height: var(--app-leading-relaxed);
   padding: 0 22px 16px;
 }
 .category-drop-target {
@@ -30,19 +30,6 @@
 }
 .category-drop-target.is-drop-before {
   box-shadow: 0 -2px var(--accent);
-}
-.nav-group-toggle > span {
-  flex: 1;
-}
-.nav-group-toggle .is-rotated {
-  transform: rotate(-90deg);
-}
-.nav-group-children {
-  overflow: hidden;
-  padding-block: calc(var(--spacing) * 0.5);
-  margin: 3px 0 6px 18px;
-  border-left: 1px solid var(--border);
-  padding-left: 8px;
 }
 .inventory-metrics {
   display: grid;
@@ -81,7 +68,7 @@
   flex-shrink: 0;
 }
 .definition-name strong {
-  font-weight: 550;
+  font-weight: var(--app-weight-medium);
 }
 .definition-name small {
   display: block;
@@ -90,7 +77,7 @@
   max-width: 390px;
   white-space: normal;
   overflow-wrap: anywhere;
-  line-height: 1.5;
+  line-height: var(--app-leading-normal);
 }
 .definition-color-swatch {
   height: 26px;
@@ -125,7 +112,7 @@
 .definition-card-heading strong {
   display: block;
   font-size: var(--text-sm);
-  font-weight: 580;
+  font-weight: var(--app-weight-semibold);
   overflow-wrap: anywhere;
 }
 .definition-card-heading > div:first-child > span {
@@ -196,7 +183,7 @@
 }
 .definition-delete-copy {
   font-size: var(--text-sm);
-  line-height: 1.8;
+  line-height: var(--app-leading-relaxed);
   color: var(--muted);
 }
 .technical-definition-name {
@@ -205,7 +192,7 @@
 .technical-definition-name strong {
   display: block;
   font-size: var(--text-sm);
-  font-weight: 550;
+  font-weight: var(--app-weight-medium);
 }
 .technical-definition-name small {
   display: block;
@@ -241,7 +228,7 @@
   display: block;
   color: var(--foreground);
   font-size: var(--text-base);
-  font-weight: 570;
+  font-weight: var(--app-weight-semibold);
   margin-top: 7px;
   font-variant-numeric: tabular-nums;
 }
@@ -256,13 +243,13 @@
 .bundle-final-price > span,
 .bundle-final-price > small {
   font-size: var(--text-xs);
-  line-height: 1.6;
+  line-height: var(--app-leading-relaxed);
   color: var(--muted);
 }
 .bundle-final-price > strong {
   font-size: var(--text-2xl);
-  font-weight: 550;
-  letter-spacing: -0.6px;
+  font-weight: var(--app-weight-medium);
+  letter-spacing: var(--app-tracking-tight);
   margin: 6px 0;
 }
 .bundle-code-fields {
@@ -287,12 +274,12 @@
 }
 .bundle-stock-summary strong {
   font-size: var(--text-sm);
-  font-weight: 550;
+  font-weight: var(--app-weight-medium);
 }
 .bundle-stock-summary p {
   color: var(--muted);
   font-size: var(--text-xs);
-  line-height: 1.7;
+  line-height: var(--app-leading-relaxed);
   margin-top: 6px;
 }
 .sale-bundle-contents {
@@ -303,7 +290,7 @@
   min-width: 220px;
   max-width: 470px;
   font-size: var(--text-xs);
-  font-weight: 400;
+  font-weight: var(--app-weight-regular);
   white-space: normal;
 }
 .sale-bundle-contents > summary {
@@ -333,7 +320,7 @@
 .sale-bundle-contents strong {
   display: block;
   font-size: var(--text-xs);
-  font-weight: 500;
+  font-weight: var(--app-weight-medium);
 }
 .sale-bundle-contents small {
   display: block;

@@ -1,0 +1,62 @@
+/* Application design tokens. Pages name a role (title, label, caption…);
+ * values come from the Tailwind/HeroUI scales so a theme change follows.
+ * Font weight, letter-spacing and line-height accept only these tokens —
+ * scripts/theme-contract.mjs rejects anything else. See docs/tasarim-kurallari.md.
+ */
+:root {
+  /* Type roles */
+  --app-type-display: var(--text-3xl);
+  --app-type-title: var(--text-2xl);
+  --app-type-heading: var(--text-lg);
+  --app-type-subheading: var(--text-base);
+  --app-type-body: var(--text-sm);
+  --app-type-caption: var(--text-xs);
+
+  /* The only four weights */
+  --app-weight-regular: 400;
+  --app-weight-medium: 500;
+  --app-weight-semibold: 600;
+  --app-weight-bold: 700;
+
+  /* Tracking */
+  --app-tracking-display: -0.04em;
+  --app-tracking-tight: -0.02em;
+  --app-tracking-snug: -0.01em;
+  --app-tracking-caps: 0.08em;
+
+  /* Leading */
+  --app-leading-display: 1.1;
+  --app-leading-tight: 1.25;
+  --app-leading-normal: 1.5;
+  --app-leading-relaxed: 1.6;
+
+  /* Spacing rhythm: multiples of --spacing (0.25rem) */
+  --app-space-1: calc(var(--spacing) * 1);
+  --app-space-2: calc(var(--spacing) * 2);
+  --app-space-3: calc(var(--spacing) * 3);
+  --app-space-4: calc(var(--spacing) * 4);
+  --app-space-5: calc(var(--spacing) * 5);
+  --app-space-6: calc(var(--spacing) * 6);
+  --app-space-8: calc(var(--spacing) * 8);
+  --app-space-10: calc(var(--spacing) * 10);
+  --app-space-12: calc(var(--spacing) * 12);
+
+  /* Layout rhythm: one value per relationship, shared by every page */
+  --app-page-gutter: var(--app-space-8);
+  --app-page-top: var(--app-space-6);
+  --app-header-gap: var(--app-space-6);
+  --app-section-gap: var(--app-space-4);
+  --app-panel-inset: var(--app-space-5);
+  --app-cell-inset: var(--app-space-3);
+  --app-sidebar-inset: var(--app-space-3);
+  /* Floating chrome: the sidebar card and header card keep this gap to the window */
+  --app-shell-inset: var(--app-space-3);
+  /* Header card height */
+  --app-chrome-height: calc(var(--spacing) * 14);
+  /* Sidebar group pages start here; the branch from the group icon fills the gap */
+  --app-branch-indent: calc(var(--spacing) * 7);
+
+  /* Motion: the CSS side of motionTransitions in src/lib/motion.ts */
+  --app-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --app-duration-draw: 400ms;
+}

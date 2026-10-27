@@ -124,6 +124,8 @@ function QuickSearchField() {
       <Search size={16} className="quick-search-icon text-muted" aria-hidden="true" />
       <Input
         ref={inputRef}
+        // Same pill as the workspace switch and icon buttons beside it in the header card.
+        className="rounded-3xl"
         placeholder="Ara…"
         autoComplete="off"
         aria-keyshortcuts="Control+k Meta+k"

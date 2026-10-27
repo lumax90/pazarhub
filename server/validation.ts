@@ -271,6 +271,19 @@ const preferences = z.strictObject({
   theme: z.enum(['light', 'dark', 'system']),
   density: z.enum(['comfortable', 'compact']),
   orderColumns: z.array(z.enum(orderColumnIds)).max(orderColumnIds.length).optional(),
+  notifications: z
+    .strictObject({ orders: z.boolean(), listings: z.boolean(), stock: z.boolean() })
+    .optional(),
+})
+const business = z.strictObject({
+  legalName: text(200).optional(),
+  taxOffice: text(120).optional(),
+  taxId: text(11).optional(),
+  phone: text(40).optional(),
+  email: text(254).optional(),
+  city: text(100).optional(),
+  district: text(100).optional(),
+  address: text(1000).optional(),
 })
 const items = z
   .array(
@@ -626,6 +639,7 @@ export const commandSchema = z.discriminatedUnion('type', [
     }),
   }),
   z.strictObject({ type: z.literal('preferences.update'), preferences }),
+  z.strictObject({ type: z.literal('business.update'), business }),
   z.strictObject({
     type: z.literal('warehouse.save'),
     warehouse: z.strictObject({

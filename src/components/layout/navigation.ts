@@ -141,6 +141,22 @@ export const retailSections: NavigationSection[] = [
   },
 ]
 
+export const isCurrentPath = (pathname: string, to: string) => {
+  const path = to.split('?')[0]
+  return pathname === path || pathname.startsWith(`${path}/`)
+}
+
+/** Index of the item the page belongs to; the longest match wins (/retail vs /retail/sale). */
+export function currentItemIndex(items: NavigationItem[], pathname: string) {
+  return items.reduce(
+    (best, item, index) =>
+      isCurrentPath(pathname, item.to) && (best < 0 || item.to.length > items[best].to.length)
+        ? index
+        : best,
+    -1,
+  )
+}
+
 export const allLinks = [...sections, ...retailSections]
   .flatMap((section) => section.items.flatMap((item) => item.children ?? [item]))
   .filter((item, index, items) => items.findIndex((other) => other.to === item.to) === index)

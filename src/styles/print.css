@@ -24,7 +24,7 @@
   background: #fff;
   border-radius: 12px;
   font-size: 12px;
-  line-height: 1.7;
+  line-height: var(--app-leading-relaxed);
   page: order-summary;
 }
 .order-print-document > header {
@@ -34,14 +34,20 @@
   padding-bottom: 22px;
   border-bottom: 1px solid #e1e5ea;
 }
+.order-print-sender {
+  margin-top: var(--app-space-1);
+  font-size: var(--text-xs);
+  line-height: var(--app-leading-normal);
+  color: #66748a;
+}
 .order-print-document h1 {
   font-size: 23px;
-  font-weight: 600;
+  font-weight: var(--app-weight-semibold);
   margin: 8px 0;
 }
 .order-print-document h2 {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--app-weight-semibold);
   margin-bottom: 8px;
 }
 .order-print-addresses {
@@ -71,7 +77,7 @@
   text-align: left;
 }
 .order-print-document th {
-  font-weight: 500;
+  font-weight: var(--app-weight-medium);
   font-size: 11px;
   background: #f5f7fa;
 }

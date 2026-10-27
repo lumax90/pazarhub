@@ -1,0 +1,22 @@
+/* Grafit — yalnız önizleme ekleri; uygulamaya alınmaz.
+ * 1) Yazı ailesini Google Fonts'tan yükler (kalıcı kurulumda @fontsource kullanılır).
+ * 2) Sol menü sayfa zeminiyle birleşir; kartlar beyaz kalır. Yalnız HeroUI
+ *    değişkenleri .app-sidebar kapsamında yeniden tanımlanır.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300..800&display=swap');
+
+.app-sidebar {
+  --surface: var(--background);
+  --surface-secondary: oklch(94.5% 0.002 265);
+  --default: oklch(93% 0.002 265);
+
+  --surface-hover: color-mix(in oklab, var(--surface) 94%, var(--foreground) 6%);
+  --default-hover: color-mix(in oklab, var(--default) 94%, var(--foreground) 6%);
+  --default-soft: color-mix(in oklab, var(--default) 60%, transparent);
+  --default-soft-hover: color-mix(in oklab, var(--default) 80%, transparent);
+}
+
+[data-theme='dark'] .app-sidebar {
+  --surface-secondary: oklch(22% 0.004 265);
+  --default: oklch(24% 0.004 265);
+}

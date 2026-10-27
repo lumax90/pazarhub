@@ -1,0 +1,45 @@
+/* Petrol — yalnız önizleme ekleri; uygulamaya alınmaz.
+ * 1) Yazı ailesini Google Fonts'tan yükler (kalıcı kurulumda @fontsource kullanılır).
+ * 2) Sol menüye koyu petrol yüzeyi verir. Bu bir bileşen ezmesi değildir:
+ *    yalnız HeroUI değişkenleri .app-sidebar kapsamında yeniden tanımlanır.
+ *    Kalıcı karşılığı, planlanan uygulama token katmanındaki sol menü token'larıdır.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@300..800&display=swap');
+
+.app-sidebar {
+  color-scheme: dark;
+  --surface: oklch(23% 0.03 228);
+  --foreground: oklch(96% 0.006 215);
+  --muted: oklch(73% 0.02 215);
+  --default: oklch(29.5% 0.032 226);
+  --surface-secondary: oklch(28% 0.03 226);
+  --border: oklch(31% 0.028 226);
+  --separator: oklch(29% 0.026 226);
+  --accent: oklch(74% 0.11 204);
+  --accent-foreground: oklch(19% 0.03 228);
+
+  --surface-foreground: var(--foreground);
+  --default-foreground: var(--foreground);
+  --surface-secondary-foreground: var(--foreground);
+  --surface-hover: color-mix(in oklab, var(--surface) 92%, var(--foreground) 8%);
+  --default-hover: color-mix(in oklab, var(--default) 92%, var(--foreground) 8%);
+  --default-soft: color-mix(in oklab, var(--default) 50%, transparent);
+  --default-soft-hover: color-mix(in oklab, var(--default) 70%, transparent);
+  --default-soft-foreground: var(--foreground);
+  --accent-soft: color-mix(in oklab, var(--accent) 16%, transparent);
+  --accent-soft-hover: color-mix(in oklab, var(--accent) 22%, transparent);
+  --accent-soft-foreground: color-mix(in oklab, var(--accent) 85%, var(--foreground) 15%);
+  --separator-secondary: color-mix(in oklab, var(--surface) 85%, var(--foreground) 15%);
+  --border-secondary: color-mix(in oklab, var(--surface) 78%, var(--foreground) 22%);
+  --scrollbar-thumb: color-mix(in oklch, var(--foreground) 18%, transparent);
+  --scrollbar-color: var(--scrollbar-thumb) transparent;
+  --surface-shadow: none;
+}
+
+[data-theme='dark'] .app-sidebar {
+  --surface: oklch(13.5% 0.014 228);
+  --default: oklch(23% 0.02 228);
+  --surface-secondary: oklch(21% 0.02 228);
+  --border: oklch(24% 0.018 228);
+  --separator: oklch(22% 0.016 228);
+}

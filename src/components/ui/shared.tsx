@@ -14,8 +14,9 @@ import {
   TextField,
   Tooltip,
 } from '@heroui/react'
-import { ArrowDownLeft, ArrowUpRight, Check, ChevronDown, Inbox, X } from 'lucide-react'
+import { ArrowDownLeft, ArrowLeft, ArrowUpRight, Check, ChevronDown, Inbox, X } from 'lucide-react'
 import { motion } from 'motion/react'
+import { Link } from 'react-router'
 import type { Channel, OrderStatus } from '../../domain/types'
 import { statusLabels } from '../../domain/operations'
 import { channelNames } from '../../domain/channels'
@@ -29,11 +30,14 @@ const MotionCard = motion.create(Card)
 
 export function PageHeader({
   eyebrow,
+  back,
   title,
   description,
   actions,
 }: {
   eyebrow?: string
+  /** Detail pages: link back to the list, with an optional record reference. */
+  back?: { to: string; label: string; context?: string }
   title: string
   description?: string
   actions?: ReactNode
@@ -41,6 +45,20 @@ export function PageHeader({
   return (
     <div className="page-heading">
       <div>
+        {back && (
+          <nav className="page-back" aria-label="Üst sayfa">
+            <Link to={back.to}>
+              <ArrowLeft size={14} aria-hidden="true" />
+              {back.label}
+            </Link>
+            {back.context && (
+              <>
+                <span aria-hidden="true">/</span>
+                <span>{back.context}</span>
+              </>
+            )}
+          </nav>
+        )}
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h1>{title}</h1>
         {description && <p className="page-description">{description}</p>}

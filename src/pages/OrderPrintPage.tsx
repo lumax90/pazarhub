@@ -30,6 +30,19 @@ export function OrderPrintPage() {
   )
   const [busy, setBusy] = useState(false),
     [error, setError] = useState('')
+  // Sender block from Ayarlar → İşletme bilgileri; empty lines are skipped.
+  const business = state.business ?? {}
+  const sender = [
+    business.legalName,
+    [business.address, [business.district, business.city].filter(Boolean).join(' / ')]
+      .filter(Boolean)
+      .join(', '),
+    [business.phone, business.email].filter(Boolean).join(' · '),
+    business.taxId &&
+      [business.taxOffice && `${business.taxOffice} V.D.`, business.taxId]
+        .filter(Boolean)
+        .join(' · '),
+  ].filter(Boolean)
   const marked =
     orders.length > 0 &&
     orders.every((order) => {
@@ -84,6 +97,7 @@ export function OrderPrintPage() {
           <header>
             <div>
               <strong>{state.preferences.businessName}</strong>
+              {sender.length > 0 && <p className="order-print-sender">{sender.join('\n')}</p>}
               <h1>Sipariş {order.number}</h1>
               <p>
                 {dateLabel(order.createdAt, true)} · {channelNames[order.channel]} ·{' '}

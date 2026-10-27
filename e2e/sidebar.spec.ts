@@ -38,8 +38,9 @@ for (const theme of ['light', 'dark'] as const) {
     await page.keyboard.press('Enter')
     await expect(shell).toHaveAttribute('data-sidebar', 'compact')
     await expect.poll(() => sidebar.evaluate((e) => e.getBoundingClientRect().width)).toBe(72)
+    // The rail floats 12px from the window; content starts right after the card.
     expect(await page.locator('.main-shell').evaluate((e) => e.getBoundingClientRect().left)).toBe(
-      72,
+      84,
     )
     await expect(page.getByRole('button', { name: 'Menüyü genişlet', exact: true })).toBeFocused()
     await expect(help.locator('svg')).toHaveCount(1)
@@ -125,7 +126,7 @@ for (const theme of ['light', 'dark'] as const) {
 
     await page.getByRole('button', { name: 'Menüyü genişlet', exact: true }).click()
     await expect(shell).toHaveAttribute('data-sidebar', 'expanded')
-    await expect.poll(() => sidebar.evaluate((e) => e.getBoundingClientRect().width)).toBe(228)
+    await expect.poll(() => sidebar.evaluate((e) => e.getBoundingClientRect().width)).toBe(240)
     await expect(
       page.getByRole('button', { name: 'MUHASEBE YÖNETİMİ', exact: true }),
     ).toHaveAttribute('aria-expanded', 'false')
@@ -173,7 +174,7 @@ test('desktop rail preference keeps the full mobile drawer and compact header us
   await page.getByRole('button', { name: 'Menüyü genişlet', exact: true }).click()
   await expect
     .poll(() => page.locator('.app-sidebar').evaluate((e) => e.getBoundingClientRect().width))
-    .toBe(211)
+    .toBe(224)
   await expect
     .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
     .toBe(true)
@@ -195,14 +196,17 @@ test('sidebar and content resize together with a short transition', async ({ pag
   await page.goto('/dashboard')
   await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible()
   await page.evaluate(() => {
-    const samples: { width: number; left: number }[] = []
+    const samples: { width: number; right: number; left: number }[] = []
     Object.assign(window, { sidebarMotionSamples: samples })
     const sample = () => {
-      if (document.querySelector('.app-shell')?.getAttribute('data-sidebar') === 'compact')
+      if (document.querySelector('.app-shell')?.getAttribute('data-sidebar') === 'compact') {
+        const sidebar = document.querySelector('.app-sidebar')!.getBoundingClientRect()
         samples.push({
-          width: document.querySelector('.app-sidebar')!.getBoundingClientRect().width,
+          width: sidebar.width,
+          right: sidebar.right,
           left: document.querySelector('.main-shell')!.getBoundingClientRect().left,
         })
+      }
       if (samples.length < 30) requestAnimationFrame(sample)
     }
     requestAnimationFrame(sample)
@@ -214,10 +218,13 @@ test('sidebar and content resize together with a short transition', async ({ pag
   )
   const samples = await page.evaluate(
     () =>
-      (window as unknown as { sidebarMotionSamples: { width: number; left: number }[] })
-        .sidebarMotionSamples,
+      (
+        window as unknown as {
+          sidebarMotionSamples: { width: number; right: number; left: number }[]
+        }
+      ).sidebarMotionSamples,
   )
-  expect(samples.some((sample) => sample.width > 72 && sample.width < 228)).toBe(true)
+  expect(samples.some((sample) => sample.width > 72 && sample.width < 240)).toBe(true)
   expect(samples.at(-1)!.width).toBe(72)
-  for (const sample of samples) expect(Math.abs(sample.width - sample.left)).toBeLessThan(1)
+  for (const sample of samples) expect(Math.abs(sample.right - sample.left)).toBeLessThan(1)
 })

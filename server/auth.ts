@@ -84,13 +84,14 @@ export function registerAuth(app: FastifyInstance, database: Database, config: S
       workspace_id: string
       email: string
       name: string
+      avatar_seed: string | null
       workspace_name: string
       role: Role
       csrf_token: string
       preferences: AuthContext['preferences']
     }>(
       `
-      SELECT u.id AS user_id,w.id AS workspace_id,u.email,u.name,w.name AS workspace_name,m.role,s.csrf_token,m.preferences
+      SELECT u.id AS user_id,w.id AS workspace_id,u.email,u.name,u.avatar_seed,w.name AS workspace_name,m.role,s.csrf_token,m.preferences
       FROM sessions s JOIN users u ON u.id=s.user_id JOIN workspaces w ON w.id=COALESCE($2::uuid,s.workspace_id)
       JOIN memberships m ON m.user_id=s.user_id AND m.workspace_id=w.id
       WHERE s.token_hash=$1 AND s.expires_at>now() AND u.active=true`,
@@ -103,6 +104,7 @@ export function registerAuth(app: FastifyInstance, database: Database, config: S
         workspaceId: row.workspace_id,
         email: row.email,
         name: row.name,
+        avatarSeed: row.avatar_seed,
         workspaceName: row.workspace_name,
         role: row.role,
         permissions: rolePermissions[row.role],
@@ -132,6 +134,7 @@ export function registerAuth(app: FastifyInstance, database: Database, config: S
         id: auth.userId,
         name: auth.name,
         email: auth.email,
+        avatarSeed: auth.avatarSeed,
         role: auth.role,
         permissions: auth.permissions,
       },
@@ -349,6 +352,25 @@ export function registerAuth(app: FastifyInstance, database: Database, config: S
         auth.sessionHash,
       ])
       await audit(tx, auth.workspaceId, auth.userId, 'auth.password_changed')
+    })
+    return { ok: true }
+  })
+
+  app.patch('/api/auth/profile', async (request) => {
+    const auth = requireAuth(request)
+    const input = z
+      .strictObject({
+        name: z.string().trim().min(2).max(160),
+        avatarSeed: z.string().trim().min(1).max(80).nullable(),
+      })
+      .parse(request.body)
+    await database.transaction(async (tx) => {
+      await tx.query('UPDATE users SET name=$1,avatar_seed=$2 WHERE id=$3', [
+        input.name,
+        input.avatarSeed,
+        auth.userId,
+      ])
+      await audit(tx, auth.workspaceId, auth.userId, 'auth.profile_updated')
     })
     return { ok: true }
   })

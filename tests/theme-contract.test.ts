@@ -3,6 +3,8 @@ import {
   auditTheme,
   componentInventory,
   normalizeTheme,
+  spacingDebt,
+  spacingRatchet,
   stylesheetViolations,
 } from '../scripts/theme-contract.mjs'
 
@@ -68,6 +70,38 @@ describe('native theme ownership', () => {
       '.tile { border-radius: 11px; }',
     ])
       expect(stylesheetViolations(css, 'src/styles/layout.css', inventory)).not.toEqual([])
+  })
+  it('binds weight, tracking and leading to the --app-* type scale', () => {
+    for (const css of [
+      '.report-heading { font-weight: 550; }',
+      '.report-heading { font-weight: var(--font-weight-semibold); }',
+      '.report-heading { letter-spacing: -0.4px; }',
+      '.report-heading { line-height: 1.7; }',
+      '.report-heading { line-height: 16px; }',
+      '.company-badge { font: 600 var(--text-sm)/1 var(--font-sans); }',
+    ])
+      expect(stylesheetViolations(css, 'src/styles/layout.css', inventory)).not.toEqual([])
+    expect(
+      stylesheetViolations(
+        '.report-heading { font-weight: var(--app-weight-semibold); letter-spacing: var(--app-tracking-tight); line-height: var(--app-leading-tight); } .company-badge { line-height: 1; letter-spacing: 0; }',
+        'src/styles/layout.css',
+        inventory,
+      ),
+    ).toEqual([])
+  })
+  it('lets pixel spacing only shrink, and starts new files at zero', () => {
+    expect(
+      spacingDebt(
+        '.a { padding: 12px 0; gap: 6px; margin: 0px; width: 40px; } .b { gap: var(--app-space-2); }',
+      ),
+    ).toBe(2)
+    const baseline = { 'src/styles/layout.css': 10 }
+    expect(spacingRatchet({ 'src/styles/layout.css': 10 }, baseline).errors).toEqual([])
+    expect(spacingRatchet({ 'src/styles/layout.css': 11 }, baseline).errors).toHaveLength(1)
+    expect(spacingRatchet({ 'src/styles/layout.css': 7 }, baseline).improved).toEqual([
+      'src/styles/layout.css: 10 → 7',
+    ])
+    expect(spacingRatchet({ 'src/styles/new.css': 1 }, baseline).errors).toHaveLength(1)
   })
   it('accepts a named HeroUI export and maps its modes once, without component edits', () => {
     const exportCss =

@@ -5,6 +5,8 @@ export interface AuthContext {
   workspaceId: string
   email: string
   name: string
+  /** Picks the user's generated avatar; null means "derive it from the user id". */
+  avatarSeed: string | null
   workspaceName: string
   role: Role
   permissions: readonly Permission[]
@@ -14,6 +16,7 @@ export interface AuthContext {
     theme?: 'light' | 'dark' | 'system'
     density?: 'comfortable' | 'compact'
     orderColumns?: string[]
+    notifications?: { orders: boolean; listings: boolean; stock: boolean }
   }
 }
 

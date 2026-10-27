@@ -1,0 +1,84 @@
+/* Marka yönü A — Petrol
+ * Sakin, hassas, finans güveni veren. Derin petrol mavisi vurgu, hafif
+ * petrole çalan soğuk nötrler, Onest yazı ailesi.
+ * Biçim HeroUI tema dosyasıyla aynıdır: `npm run theme:apply -- design/marka-yonleri/petrol.theme.css --check`
+ * Yazı ailesi uygulamaya alınırken @fontsource-variable/onest eklenmelidir.
+ */
+@layer base {
+  :root {
+    --font-sans: 'Onest Variable', 'Onest', ui-sans-serif, system-ui, sans-serif;
+    --radius: 0.5rem;
+    --field-radius: calc(var(--radius) * 1.5);
+  }
+
+  :root,
+  .light,
+  [data-theme='light'] {
+    color-scheme: light;
+    --background: oklch(97.2% 0.0045 215);
+    --foreground: oklch(24% 0.018 232);
+    --accent: oklch(52.5% 0.105 212);
+    --accent-foreground: oklch(99% 0.002 215);
+    --focus: var(--accent);
+    --muted: oklch(53.5% 0.014 225);
+    --default: oklch(93.6% 0.006 215);
+    --default-foreground: var(--foreground);
+    --surface: oklch(99.6% 0.0015 215);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(95.4% 0.0055 215);
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: oklch(93.6% 0.006 215);
+    --surface-tertiary-foreground: var(--foreground);
+    --overlay: oklch(99.6% 0.0015 215);
+    --overlay-foreground: var(--foreground);
+    --segment: oklch(99.6% 0.0015 215);
+    --segment-foreground: var(--foreground);
+    --border: oklch(90.2% 0.007 218);
+    --separator: oklch(92.4% 0.006 218);
+    --field-background: var(--surface);
+    --field-border: transparent;
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --success: oklch(70.5% 0.17 152);
+    --success-foreground: oklch(21% 0.02 152);
+    --warning: oklch(78.5% 0.155 74);
+    --warning-foreground: oklch(22% 0.03 74);
+    --danger: oklch(60.5% 0.215 24);
+    --danger-foreground: oklch(99% 0 0);
+    --surface-shadow:
+      0 0 0 1px oklch(30% 0.03 225 / 0.05), 0 1px 2px 0 oklch(30% 0.03 225 / 0.05),
+      0 4px 12px -4px oklch(30% 0.03 225 / 0.08);
+    --overlay-shadow:
+      0 0 0 1px oklch(30% 0.03 225 / 0.06), 0 12px 32px -8px oklch(30% 0.03 225 / 0.2);
+    --field-shadow: 0 0 0 1px oklch(30% 0.03 225 / 0.07), 0 1px 2px 0 oklch(30% 0.03 225 / 0.04);
+  }
+
+  .dark,
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --background: oklch(16.5% 0.012 228);
+    --foreground: oklch(96.8% 0.004 215);
+    --accent: oklch(72% 0.11 206);
+    --accent-foreground: oklch(19% 0.03 228);
+    --muted: oklch(71% 0.014 218);
+    --default: oklch(28.5% 0.015 226);
+    --default-foreground: var(--foreground);
+    --surface: oklch(21.2% 0.015 228);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(25.2% 0.016 228);
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: oklch(27.4% 0.016 228);
+    --surface-tertiary-foreground: var(--foreground);
+    --overlay: oklch(23.5% 0.016 228);
+    --overlay-foreground: var(--foreground);
+    --segment: oklch(36% 0.018 226);
+    --segment-foreground: var(--foreground);
+    --border: oklch(30% 0.015 228);
+    --separator: oklch(26.5% 0.014 228);
+    --field-background: var(--surface);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --warning: oklch(81% 0.14 76);
+    --danger: oklch(62% 0.19 24);
+  }
+}

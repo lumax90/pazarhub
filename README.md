@@ -93,4 +93,4 @@ HeroUI Theme Builder'dan dışa aktarılan CSS tek komutla uygulanır:
 npm run theme:apply -- "tema.css"
 ```
 
-Tema girişi `src/styles/heroui-theme.css` dosyasıdır. `npm run check:theme`, eski görünüm kurallarının native bileşenlere sızmasını denetler; `build` ve `lint` sırasında da çalışır. Ayrıntılar: [HeroUI tema değiştirme](docs/heroui-tema-degistirme.md).
+Tema girişi `src/styles/heroui-theme.css` dosyasıdır. Yazı ölçeği ve boşluk token'ları `src/styles/tokens.css` içindedir; kurallar: [Tasarım kuralları](docs/tasarim-kurallari.md). `npm run check:theme`, eski görünüm kurallarının native bileşenlere sızmasını denetler; `build` ve `lint` sırasında da çalışır. Ayrıntılar: [HeroUI tema değiştirme](docs/heroui-tema-degistirme.md).

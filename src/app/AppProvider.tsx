@@ -16,13 +16,38 @@ import { createEmptyState } from '../domain/empty-state'
 import { hydrateDefinitionReferences, initializeDefinitions } from '../domain/definitions'
 import { executeCommand } from '../domain/operations'
 import type { AppState, Command, CommandResult } from '../domain/types'
-import type { Permission } from '../domain/permissions'
+import type { Permission, Role } from '../domain/permissions'
 import { api, ApiError, apiRequest } from '../lib/api'
 import type { SessionResponse, WorkspaceResponse } from '../lib/api'
 import { motionTransitions } from '../lib/motion'
 
 const STORAGE_KEY = 'pazarhub.workspace.v1'
+const DEMO_PROFILE_KEY = 'pazarhub.demo.profile.v1'
 type Mode = 'demo' | 'live'
+/** The person behind the header avatar. `seed` is what the avatar is drawn from. */
+export interface Profile {
+  name: string
+  email?: string
+  role?: Role
+  /** The chosen avatar; null keeps the one derived from `baseSeed`. */
+  avatarSeed: string | null
+  baseSeed: string
+  seed: string
+}
+// The demo workspace has no account; it shows one example person, kept in this browser.
+function loadDemoProfile(): { name: string; avatarSeed: string | null } {
+  try {
+    const saved = JSON.parse(localStorage.getItem(DEMO_PROFILE_KEY) ?? 'null')
+    if (typeof saved?.name === 'string' && saved.name.trim())
+      return {
+        name: saved.name,
+        avatarSeed: typeof saved.avatarSeed === 'string' ? saved.avatarSeed : null,
+      }
+  } catch {
+    /* Falls back to the example person. */
+  }
+  return { name: 'Emre Yılmaz', avatarSeed: null }
+}
 type ToastKind = 'success' | 'error' | 'info'
 interface Toast {
   id: string
@@ -53,6 +78,8 @@ interface ContextValue {
   logout: () => Promise<void>
   switchWorkspace: (id: string) => Promise<void>
   can: (permission: Permission) => boolean
+  profile: Profile
+  updateProfile: (input: { name: string; avatarSeed: string | null }) => Promise<void>
 }
 const AppContext = createContext<ContextValue | null>(null)
 function subscribeSystemTheme(callback: () => void) {
@@ -354,6 +381,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
       mode === 'demo' || !!session?.user?.permissions.includes(permission),
     [mode, session],
   )
+  const [demoProfile, setDemoProfile] = useState(loadDemoProfile)
+  const user = mode === 'live' ? session?.user : null
+  const profileBase = user
+    ? { name: user.name, email: user.email, role: user.role, avatarSeed: user.avatarSeed ?? null }
+    : demoProfile
+  const baseSeed = user?.id ?? 'demo'
+  const profile: Profile = {
+    ...profileBase,
+    baseSeed,
+    seed: profileBase.avatarSeed ?? baseSeed,
+  }
+  const updateProfile = useCallback(
+    async (input: { name: string; avatarSeed: string | null }) => {
+      const next = { name: input.name.trim(), avatarSeed: input.avatarSeed }
+      if (modeRef.current === 'live') {
+        const epoch = generation.current
+        const updated = await api.updateProfile(next)
+        if (epoch === generation.current) setSession(updated)
+      } else {
+        setDemoProfile(next)
+        try {
+          localStorage.setItem(DEMO_PROFILE_KEY, JSON.stringify(next))
+        } catch {
+          /* Kept for this session. */
+        }
+      }
+      notify('Profiliniz kaydedildi.')
+    },
+    [notify],
+  )
 
   useEffect(() => {
     document.documentElement.dataset.theme = resolvedTheme
@@ -387,6 +444,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         logout,
         switchWorkspace,
         can,
+        profile,
+        updateProfile,
       }}
     >
       <MotionConfig reducedMotion="user" transition={motionTransitions.standard}>

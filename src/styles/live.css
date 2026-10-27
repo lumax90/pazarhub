@@ -60,7 +60,7 @@
 }
 .import-preview-summary strong {
   font-size: var(--text-xl);
-  font-weight: 550;
+  font-weight: var(--app-weight-medium);
   color: var(--foreground);
   margin-right: 4px;
 }
@@ -71,7 +71,7 @@
   margin-bottom: 17px;
   color: var(--danger-soft-foreground);
   font-size: var(--text-sm);
-  line-height: 1.8;
+  line-height: var(--app-leading-relaxed);
 }
 .import-errors ul {
   list-style: disc;
@@ -102,7 +102,7 @@
   margin: 0 20px 18px;
   font-size: var(--text-sm);
   color: var(--muted);
-  line-height: 1.7;
+  line-height: var(--app-leading-relaxed);
 }
 .marketplace-connection-hint a {
   color: var(--accent);
@@ -119,7 +119,7 @@
 }
 .marketplace-question-cell strong {
   font-size: var(--text-sm);
-  font-weight: 550;
+  font-weight: var(--app-weight-medium);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -170,8 +170,8 @@
 }
 .marketplace-product-context strong {
   font-size: var(--text-sm);
-  line-height: 1.7;
-  font-weight: 600;
+  line-height: var(--app-leading-relaxed);
+  font-weight: var(--app-weight-semibold);
 }
 .marketplace-product-context small {
   display: block;
@@ -193,7 +193,7 @@
   border: 1px solid var(--separator);
   border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm);
   font-size: var(--text-sm);
-  line-height: 1.85;
+  line-height: var(--app-leading-relaxed);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -214,7 +214,7 @@
 .marketplace-answer-bubble p,
 .marketplace-rejected-answer p {
   font-size: var(--text-sm);
-  line-height: 1.8;
+  line-height: var(--app-leading-relaxed);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -238,7 +238,7 @@
 }
 .marketplace-workflow p {
   font-size: var(--text-xs);
-  line-height: 1.7;
+  line-height: var(--app-leading-relaxed);
   color: var(--muted);
   margin-top: 8px;
 }
@@ -274,7 +274,7 @@
 }
 .marketplace-claim-copy p {
   font-size: var(--text-sm);
-  line-height: 1.7;
+  line-height: var(--app-leading-relaxed);
 }
 .marketplace-claim-copy blockquote {
   padding: 12px;
@@ -282,7 +282,7 @@
   background: var(--surface-secondary);
   border-radius: var(--radius-xl);
   font-size: var(--text-sm);
-  line-height: 1.7;
+  line-height: var(--app-leading-relaxed);
 }
 .marketplace-claim-copy > div {
   display: flex;
@@ -308,8 +308,8 @@
 }
 .payout-total > strong {
   font-size: var(--text-3xl);
-  font-weight: 600;
-  letter-spacing: -1px;
+  font-weight: var(--app-weight-semibold);
+  letter-spacing: var(--app-tracking-tight);
   margin-right: auto;
   font-variant-numeric: tabular-nums;
 }
@@ -396,7 +396,7 @@
 .publication-status p {
   font-size: var(--text-xs);
   color: var(--muted);
-  line-height: 1.65;
+  line-height: var(--app-leading-relaxed);
   margin-top: 6px;
 }
 .publication-dot {
@@ -431,7 +431,7 @@
 }
 .publication-product h2 {
   font-size: var(--text-sm);
-  line-height: 1.55;
+  line-height: var(--app-leading-normal);
 }
 .publication-product p {
   font-size: var(--text-xs);
@@ -500,7 +500,7 @@
 }
 .publication-preview-header p {
   font-size: var(--text-xs);
-  line-height: 1.6;
+  line-height: var(--app-leading-relaxed);
   color: var(--muted);
   margin-top: 7px;
 }
@@ -522,13 +522,13 @@
   overflow: auto;
   margin: 12px 0 0;
   font-size: var(--text-xs);
-  line-height: 1.75;
+  line-height: var(--app-leading-relaxed);
 }
 .publication-errors {
   padding: 15px 30px;
   font-size: var(--text-sm);
   color: var(--danger-soft-foreground);
-  line-height: 1.8;
+  line-height: var(--app-leading-relaxed);
   list-style: disc;
 }
 .catalog-picker > span {
@@ -536,7 +536,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
-  line-height: 1.65;
+  line-height: var(--app-leading-relaxed);
 }
 .catalog-options {
   display: flex;
@@ -551,11 +551,11 @@
   flex-direction: column;
   gap: 5px;
   flex: 1;
-  line-height: 1.55;
+  line-height: var(--app-leading-normal);
 }
 .catalog-option strong {
   font-size: var(--text-sm);
-  font-weight: 560;
+  font-weight: var(--app-weight-semibold);
 }
 .catalog-option small {
   font-size: var(--text-xs);
@@ -596,7 +596,7 @@
   font-size: var(--text-xs);
 }
 .catalog-attribute-label strong {
-  font-weight: 550;
+  font-weight: var(--app-weight-medium);
 }
 .catalog-attribute-label b {
   color: var(--danger-soft-foreground);
@@ -739,8 +739,8 @@
   align-items: center;
   gap: 9px;
   font-size: var(--text-2xl);
-  font-weight: 680;
-  letter-spacing: -1.4px;
+  font-weight: var(--app-weight-bold);
+  letter-spacing: var(--app-tracking-display);
 }
 .auth-brand > span:first-child {
   display: grid;
@@ -759,20 +759,20 @@
 }
 .auth-eyebrow {
   font-size: var(--text-xs);
-  letter-spacing: 2.5px;
+  letter-spacing: var(--app-tracking-caps);
   color: var(--accent);
-  font-weight: 650;
+  font-weight: var(--app-weight-bold);
 }
 .auth-story h1 {
   font-size: clamp(var(--text-4xl), 4.1vw, var(--text-5xl));
-  line-height: 1.08;
-  letter-spacing: -2.9px;
-  font-weight: 640;
+  line-height: var(--app-leading-display);
+  letter-spacing: var(--app-tracking-display);
+  font-weight: var(--app-weight-semibold);
   margin: 25px 0 22px;
 }
 .auth-story p {
   font-size: var(--text-sm);
-  line-height: 1.9;
+  line-height: var(--app-leading-relaxed);
   color: var(--muted);
 }
 .auth-flow {
@@ -820,12 +820,12 @@
 .auth-form-heading h2 {
   margin: 17px 0 10px;
   font-size: var(--text-2xl);
-  font-weight: 620;
-  letter-spacing: -1px;
+  font-weight: var(--app-weight-semibold);
+  letter-spacing: var(--app-tracking-tight);
 }
 .auth-form-heading p {
   font-size: var(--text-sm);
-  line-height: 1.7;
+  line-height: var(--app-leading-relaxed);
   color: var(--muted);
 }
 .auth-form-icon {
@@ -944,7 +944,7 @@
 .connection-error {
   color: var(--danger-soft-foreground);
   font-size: var(--text-xs);
-  line-height: 1.65;
+  line-height: var(--app-leading-relaxed);
   padding-top: 10px;
   overflow-wrap: anywhere;
 }
@@ -956,12 +956,12 @@
 }
 .provider-card h3 {
   font-size: var(--text-sm);
-  font-weight: 620;
+  font-weight: var(--app-weight-semibold);
 }
 .provider-card p {
   font-size: var(--text-xs);
   color: var(--muted);
-  line-height: 1.6;
+  line-height: var(--app-leading-relaxed);
   margin-top: 5px;
 }
 .section-heading-inline {
@@ -972,8 +972,8 @@
 }
 .section-heading-inline h2 {
   font-size: var(--text-base);
-  font-weight: 620;
-  letter-spacing: -0.35px;
+  font-weight: var(--app-weight-semibold);
+  letter-spacing: var(--app-tracking-snug);
 }
 .section-heading-inline p {
   font-size: var(--text-xs);
@@ -986,7 +986,7 @@
 .setting-toggle p {
   font-size: var(--text-xs);
   color: var(--muted);
-  line-height: 1.65;
+  line-height: var(--app-leading-relaxed);
   padding: 6px 0 0 27px;
 }
 .settings-toggle-grid {
@@ -1003,7 +1003,7 @@
   border-radius: var(--radius-xl);
   padding: 13px;
   font-size: var(--text-xs);
-  line-height: 1.8;
+  line-height: var(--app-leading-relaxed);
 }
 .capability-list svg {
   margin-top: 2px;
@@ -1021,7 +1021,7 @@
   display: block;
   max-width: 360px;
   font-size: var(--text-xs);
-  line-height: 1.65;
+  line-height: var(--app-leading-relaxed);
   color: var(--muted);
   overflow-wrap: anywhere;
 }
@@ -1044,7 +1044,7 @@
 .detail-list dd {
   margin: 0;
   overflow-wrap: anywhere;
-  line-height: 1.8;
+  line-height: var(--app-leading-relaxed);
 }
 .onboarding-title {
   display: flex;
@@ -1054,8 +1054,8 @@
 }
 .onboarding-title h2 {
   font-size: var(--text-lg);
-  font-weight: 600;
-  letter-spacing: -0.4px;
+  font-weight: var(--app-weight-semibold);
+  letter-spacing: var(--app-tracking-snug);
 }
 .onboarding-title p {
   margin-top: 7px;
@@ -1098,7 +1098,7 @@
 }
 .onboarding-step small {
   display: block;
-  line-height: 1.7;
+  line-height: var(--app-leading-relaxed);
   margin-top: 7px;
   color: var(--muted);
   font-size: var(--text-xs);

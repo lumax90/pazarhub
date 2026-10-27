@@ -196,5 +196,11 @@ export async function migrate(database: Database) {
       CREATE UNIQUE INDEX invoice_default_workspace_idx ON integration_connections(workspace_id) WHERE is_default AND kind='invoice' AND deleted_at IS NULL;
       INSERT INTO schema_migrations(version) VALUES(11);
     `)
+    const avatars = await tx.query('SELECT version FROM schema_migrations WHERE version=12')
+    if (!avatars.rows.length)
+      await tx.exec(`
+      ALTER TABLE users ADD COLUMN avatar_seed text;
+      INSERT INTO schema_migrations(version) VALUES(12);
+    `)
   })
 }

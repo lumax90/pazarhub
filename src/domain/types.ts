@@ -475,11 +475,31 @@ export interface Connection {
   active: boolean
 }
 
+/** Which alerts the header bell shows. Personal: saved per member, not per workspace. */
+export interface NotificationPreferences {
+  orders: boolean
+  listings: boolean
+  stock: boolean
+}
+
 export interface Preferences {
   businessName: string
   theme: 'light' | 'dark' | 'system'
   density: 'comfortable' | 'compact'
   orderColumns?: string[]
+  notifications?: NotificationPreferences
+}
+
+/** The seller's legal and contact details, printed as the sender on order sheets. */
+export interface BusinessProfile {
+  legalName?: string
+  taxOffice?: string
+  taxId?: string
+  phone?: string
+  email?: string
+  city?: string
+  district?: string
+  address?: string
 }
 
 export interface AppState {
@@ -512,6 +532,7 @@ export interface AppState {
   stockTransfers?: StockTransfer[]
   exchangeRates?: ExchangeRates
   ecommerce?: EcommerceSettings
+  business?: BusinessProfile
   orderReconciliations?: {
     id: string
     orderId: string
@@ -697,6 +718,7 @@ export type CoreCommand =
   | { type: 'connection.update'; connection: Connection }
   | { type: 'preferences.update'; preferences: Preferences }
   | { type: 'ecommerce.settings'; settings: EcommerceSettings }
+  | { type: 'business.update'; business: BusinessProfile }
   | { type: 'definition.save'; definition: CatalogDefinition }
   | { type: 'definition.delete'; id: string; version: number; expectedUsage: number }
   | {

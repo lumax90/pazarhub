@@ -1,0 +1,11 @@
+{
+  "spacingPx": {
+    "src/styles/content.css": 5,
+    "src/styles/inventory.css": 67,
+    "src/styles/live.css": 201,
+    "src/styles/margins.css": 12,
+    "src/styles/print.css": 19,
+    "src/styles/retail-home.css": 21,
+    "src/styles/theme-preview.css": 3
+  }
+}

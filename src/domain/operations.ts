@@ -40,6 +40,7 @@ import {
 } from './products'
 import type {
   AppState,
+  BusinessProfile,
   Command,
   CommandResult,
   OrderLine,
@@ -188,6 +189,19 @@ export function executeCommand(
         return fail(original, 'Stok eşiklerini ve varsayılan dövizin kurunu kontrol edin.')
       state.ecommerce = { ...settings, version: settings.version + 1 }
       return { state, result: { ok: true, message: 'E-ticaret ayarları kaydedildi.' } }
+    }
+    case 'business.update': {
+      const business = Object.fromEntries(
+        Object.entries(command.business)
+          .map(([key, value]) => [key, value?.trim()])
+          .filter(([, value]) => value),
+      ) as BusinessProfile
+      if (business.taxId && !/^(\d{10}|\d{11})$/.test(business.taxId))
+        return fail(original, 'Vergi numarası 10, T.C. kimlik numarası 11 haneli olmalı.')
+      if (business.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(business.email))
+        return fail(original, 'Geçerli bir e-posta adresi girin.')
+      state.business = business
+      return { state, result: { ok: true, message: 'İşletme bilgileri kaydedildi.' } }
     }
     case 'definition.move': {
       const error = moveDefinition(state, command, now)

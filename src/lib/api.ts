@@ -2,7 +2,15 @@ import type { AppState, Command, CommandResult } from '../domain/types'
 import type { Permission, Role } from '../domain/permissions'
 
 export interface SessionResponse {
-  user: { id: string; name: string; email: string; role: Role; permissions: Permission[] } | null
+  user: {
+    id: string
+    name: string
+    email: string
+    /** null: the avatar is derived from the user id. */
+    avatarSeed?: string | null
+    role: Role
+    permissions: Permission[]
+  } | null
   workspace?: { id: string; name: string }
   workspaces?: { id: string; name: string; role: Role }[]
   csrfToken?: string
@@ -157,6 +165,10 @@ export const api = {
   async logout() {
     await apiRequest('/api/auth/logout', { method: 'POST', body: {} })
     this.clear()
+  },
+  async updateProfile(input: { name: string; avatarSeed: string | null }) {
+    await apiRequest('/api/auth/profile', { method: 'PATCH', body: input })
+    return this.session()
   },
   async switchWorkspace(id: string) {
     await apiRequest('/api/workspaces/switch', { method: 'POST', body: { workspaceId: id } })

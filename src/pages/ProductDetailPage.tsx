@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Chip, Tabs } from '@heroui/react'
-import { ArrowLeft, ArrowRight, Check, Layers3, Plus, RefreshCw, Save } from 'lucide-react'
+import { ArrowRight, Check, Layers3, Plus, RefreshCw, Save } from 'lucide-react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { useApp } from '../app/AppProvider'
 import type { Listing, Product, ProductPatch, Variant } from '../domain/types'
@@ -383,15 +383,12 @@ function ProductWorkspace({ product, reload }: { product: Product; reload: () =>
   }
   return (
     <div className="product-workspace">
-      <div className="product-breadcrumb">
-        <Link to="/products">
-          <ArrowLeft size={14} />
-          Ürünler
-        </Link>
-        <span>/</span>
-        <span>{product.modelCode || product.variants[0]?.sku}</span>
-      </div>
       <PageHeader
+        back={{
+          to: '/products',
+          label: 'Ürünler',
+          context: product.modelCode || product.variants[0]?.sku,
+        }}
         title={product.name}
         description={
           product.subtitle || `${product.category} · ${product.brand || 'Marka belirtilmemiş'}`

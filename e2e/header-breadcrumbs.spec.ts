@@ -33,7 +33,9 @@ for (const theme of ['light', 'dark'] as const) {
         const controls = header.querySelector('.topbar-right')!.getBoundingClientRect()
         return {
           breadcrumbsRight: breadcrumbs.right,
+          breadcrumbsBottom: breadcrumbs.bottom,
           controlsLeft: controls.left,
+          controlsTop: controls.top,
           controlsRight: controls.right,
           overflow: document.documentElement.scrollWidth > innerWidth,
           labels: [...header.querySelectorAll('.header-crumb-label')].map((label) => {
@@ -43,11 +45,13 @@ for (const theme of ['light', 'dark'] as const) {
         }
       })
       expect(bounds.overflow, `horizontal overflow at ${width}px`).toBe(false)
-      expect(bounds.breadcrumbsRight).toBeLessThan(bounds.controlsLeft)
+      // Wide headers keep the controls card beside the trail; phones stack it below.
+      const stacked = bounds.controlsTop >= bounds.breadcrumbsBottom
+      if (!stacked) expect(bounds.breadcrumbsRight).toBeLessThan(bounds.controlsLeft)
       expect(bounds.controlsRight).toBeLessThanOrEqual(width)
       for (const label of bounds.labels) {
         expect(label.width).toBeGreaterThan(0)
-        expect(label.right).toBeLessThanOrEqual(bounds.controlsLeft)
+        expect(label.right).toBeLessThanOrEqual(stacked ? width : bounds.controlsLeft)
       }
       if (width === 1440 || width === 390) {
         expect((await nativeSkinDifferences(page)).differences).toEqual([])

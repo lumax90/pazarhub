@@ -9,39 +9,78 @@
   background: var(--accent);
   pointer-events: none;
 }
+
+/* Group pages branch off the group icon. BranchLines measures the rows and
+ * draws the lines; CSS only places them and times the accent branch. */
+.nav-group {
+  position: relative;
+}
+.nav-group-toggle > span {
+  flex: 1;
+}
+.nav-group-toggle .is-rotated {
+  transform: rotate(-90deg);
+}
+.nav-group-children {
+  overflow: hidden;
+}
+.nav-branches {
+  position: relative;
+  padding: var(--app-space-1) 0 var(--app-space-2) var(--app-branch-indent);
+}
+.nav-branches__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.nav-branches__lines path {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nav-branches__base {
+  stroke: color-mix(in oklab, var(--muted) 40%, transparent);
+}
+.nav-branches__reach {
+  stroke: var(--accent);
+  transition: stroke-dashoffset var(--app-duration-draw) var(--app-ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-branches__reach {
+    transition: none;
+  }
+}
 @media (min-width: 881px) {
   .app-shell[data-sidebar='compact'] {
     --app-sidebar-width: 72px;
   }
   .app-shell[data-sidebar='compact'] .brand {
-    padding-inline: 18px;
+    padding-inline: calc(var(--spacing) * 4.5);
     gap: 0;
   }
   .app-shell[data-sidebar='compact'] .brand-wordmark,
-  .app-shell[data-sidebar='compact'] .company-copy,
-  .app-shell[data-sidebar='compact'] .sidebar-environment > span:not(.demo-led) {
+  .app-shell[data-sidebar='compact'] .company-copy {
     display: none;
   }
   .app-shell[data-sidebar='compact'] .sidebar-navigation {
-    padding-inline: 8px;
+    padding-inline: var(--app-space-2);
   }
   .app-shell[data-sidebar='compact'] .nav-section-items {
-    padding-block: 4px;
+    padding-block: var(--app-space-1);
   }
   .app-shell[data-sidebar='compact'] .nav-section {
-    margin-bottom: 8px;
+    margin-bottom: var(--app-space-2);
   }
   .app-shell[data-sidebar='compact'] .nav-section + .nav-section {
     border-top: 1px solid var(--separator);
-    padding-top: 8px;
+    padding-top: var(--app-space-2);
   }
   .app-shell[data-sidebar='compact'] .sidebar-bottom {
-    padding-inline: 12px;
-  }
-  .app-shell[data-sidebar='compact'] .sidebar-environment {
-    justify-content: center;
-    margin-top: 8px;
-    padding: 12px 0;
+    padding-inline: var(--app-space-3);
   }
 }
 @media (min-width: 881px) and (prefers-reduced-motion: no-preference) {

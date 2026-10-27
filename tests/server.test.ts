@@ -568,6 +568,55 @@ describe('server isolation and atomic transactions', () => {
       expect(response.statusCode).toBe(403)
     }
   })
+  it('keeps the profile and alert choices personal and business details with the workspace', async () => {
+    const auth = await owner()
+    const seed = `${auth.userId}-3`
+    const renamed = await app.inject({
+      method: 'PATCH',
+      url: '/api/auth/profile',
+      headers: auth.headers,
+      payload: { name: 'Ayşe Kaya', avatarSeed: seed },
+    })
+    expect(renamed.statusCode, renamed.body).toBe(200)
+    const session = (await app.inject({ url: '/api/session', headers: auth.headers })).json()
+    expect(session.user).toMatchObject({ name: 'Ayşe Kaya', avatarSeed: seed })
+    const tooShort = await app.inject({
+      method: 'PATCH',
+      url: '/api/auth/profile',
+      headers: auth.headers,
+      payload: { name: 'A', avatarSeed: null },
+    })
+    expect(tooShort.statusCode).toBe(400)
+
+    const before = await snapshot(auth)
+    const alerts = { orders: true, listings: false, stock: true }
+    expect(
+      (
+        await command(auth, {
+          type: 'preferences.update',
+          preferences: { ...before.preferences, notifications: alerts },
+        })
+      ).statusCode,
+    ).toBe(200)
+    expect((await snapshot(auth)).preferences.notifications).toEqual(alerts)
+
+    const saved = await command(auth, {
+      type: 'business.update',
+      business: { legalName: ' Kaya Ticaret Ltd. ', taxId: '1234567890', city: '' },
+    })
+    expect(saved.statusCode, saved.body).toBe(200)
+    expect((await snapshot(auth)).business).toEqual({
+      legalName: 'Kaya Ticaret Ltd.',
+      taxId: '1234567890',
+    })
+    const invalid = await command(auth, { type: 'business.update', business: { taxId: '12' } })
+    expect(invalid.json().result.ok).toBe(false)
+    await database.query(
+      `UPDATE memberships SET role='operator' WHERE workspace_id=$1 AND user_id=$2`,
+      [auth.workspaceId, auth.userId],
+    )
+    expect((await command(auth, { type: 'business.update', business: {} })).statusCode).toBe(403)
+  })
   it('enforces current membership role on every write', async () => {
     const auth = await owner()
     await database.query(

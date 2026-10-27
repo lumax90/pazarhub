@@ -7,6 +7,7 @@
 @import '@heroui/styles';
 @import '@fontsource-variable/inter';
 @import './styles/heroui-theme.css';
+@import './styles/tokens.css' layer(base);
 @import './styles/layout.css' layer(app-layout);
 @import './styles/live.css' layer(app-layout);
 @import './styles/catalog.css' layer(app-layout);

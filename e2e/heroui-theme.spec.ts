@@ -46,6 +46,8 @@ for (const theme of ['light', 'dark'] as const) {
       '/margins',
       '/ecommerce-settings',
       '/settings',
+      '/settings/notifications',
+      '/profile',
       '/questions',
       '/reports',
     ]
@@ -55,7 +57,7 @@ for (const theme of ['light', 'dark'] as const) {
       await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible()
       await expect(page.locator('vite-error-overlay')).toHaveCount(0)
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
-      if (route === '/settings') {
+      if (route === '/profile') {
         // Prove the audit catches the observed bug even in the lower app layer.
         const legacyStyle = await page.addStyleTag({
           content: '@layer app-layout { .theme-option { border: 1px solid var(--border); } }',
@@ -104,7 +106,7 @@ for (const theme of ['light', 'dark'] as const) {
         expect(drawings.length).toBeGreaterThan(0)
         for (const image of drawings) expect(image.actual).toBeCloseTo(image.frame, 0)
       }
-      if (['/dashboard', '/orders', '/retail/sale', '/settings'].includes(route))
+      if (['/dashboard', '/orders', '/retail/sale', '/settings', '/profile'].includes(route))
         await page.screenshot({
           path: info.outputPath(`${route.replaceAll('/', '-')}-${theme}-desktop.png`),
           fullPage: true,
@@ -185,6 +187,7 @@ for (const theme of ['light', 'dark'] as const) {
       '/retail',
       '/ecommerce-settings',
       '/settings',
+      '/profile',
     ]) {
       await page.goto(route)
       await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible()

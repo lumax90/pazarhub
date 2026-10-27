@@ -167,7 +167,7 @@ test('mobil gezinme, genel arama ve koyu tema kullanılabilir', async ({ page },
   await expect(
     page.getByRole('heading', { name: 'Aura Seramik Vazo', exact: true }).first(),
   ).toBeVisible()
-  await page.goto('/settings')
+  await page.goto('/profile')
   await page.getByRole('button', { name: 'Koyu', exact: true }).click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await page.reload()

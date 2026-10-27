@@ -72,7 +72,9 @@ export function headerCrumbs(pathname: string, records: Records): HeaderCrumb[] 
     return trail({ label: 'Platform Listelemeleri', href: '/listings' }, { label: 'İlan içeriği' })
   // Connection tabs use page-local state; a route parameter only seeds the initial tab.
   if (/^\/connections(?:\/[^/]+)?$/.test(path)) return trail({ label: 'Bağlantılar' })
-  if (path === '/settings') return trail({ label: 'Çalışma alanı ayarları' })
+  if (path === '/settings' || path.startsWith('/settings/'))
+    return trail({ label: 'Çalışma alanı ayarları' })
+  if (path === '/profile') return trail({ label: 'Profilim' })
   if (path === '/finance') return trail({ label: 'Faturalar' })
   const stockPath = retail ? path.replace('/retail/inventory', '/inventory') : path
   const parent = sections

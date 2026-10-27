@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import postcss from 'postcss'
@@ -6,6 +6,14 @@ import selectorParser from 'postcss-selector-parser'
 import ts from 'typescript'
 
 export const projectRoot = fileURLToPath(new URL('../', import.meta.url))
+// Typography accepts only the --app-* scale from src/styles/tokens.css.
+export const typeScale = {
+  'font-weight': /^(?:var\(--app-weight-(?:regular|medium|semibold|bold)\)|inherit)$/,
+  'letter-spacing': /^(?:0|normal|inherit|var\(--app-tracking-(?:display|tight|snug|caps)\))$/,
+  'line-height': /^(?:1|normal|inherit|var\(--app-leading-(?:display|tight|normal|relaxed)\))$/,
+}
+const spacingProp = /^(?:padding|margin|gap|row-gap|column-gap)(?:-.+)?$/
+const baselineFile = 'scripts/design-baseline.json'
 export const appearance =
   /^(?:color|background(?:-.+)?|border(?:-.+)?|box-shadow|text-shadow|outline(?:-.+)?|font(?:-.+)?|line-height|letter-spacing|text-decoration(?:-.+)?|text-transform|opacity|filter|backdrop-filter|-webkit-backdrop-filter|fill|stroke|accent-color|color-scheme|content)$/
 export const oldTokens = new Set([
@@ -285,9 +293,50 @@ export function stylesheetViolations(css, relative, inventory) {
         !/^var\(--font-(?:sans|mono)\)$/.test(decl.value)
       )
         errors.push(`${at} Yazı ailesi tema değişkenini kullanmalı.`)
+      if (decl.prop === 'font')
+        errors.push(`${at} font kısaltması yerine ayrı özellikler ve ölçek token'ları kullanın.`)
+      if (typeScale[decl.prop] && !typeScale[decl.prop].test(decl.value.trim()))
+        errors.push(
+          `${at} Yazı ölçeği dışında değer: ${decl.prop}: ${decl.value} (src/styles/tokens.css)`,
+        )
     })
   })
   return errors
+}
+
+/** Fixed pixel spacing still waiting to move onto --app-space-* / --spacing. */
+export function spacingDebt(css) {
+  let count = 0
+  postcss.parse(css).walkDecls((decl) => {
+    if (spacingProp.test(decl.prop))
+      count += [...decl.value.matchAll(/(?<![\w.-])(\d*\.?\d+)px\b/g)].filter(
+        (match) => Number(match[1]) !== 0,
+      ).length
+  })
+  return count
+}
+
+export function readSpacingBaseline(root = projectRoot) {
+  try {
+    return JSON.parse(readFileSync(path.join(root, baselineFile), 'utf8')).spacingPx ?? {}
+  } catch {
+    return {}
+  }
+}
+
+/** Ratchet: a file may only lower its pixel-spacing count; new files start at zero. */
+export function spacingRatchet(counts, baseline) {
+  const errors = [],
+    improved = []
+  for (const [file, count] of Object.entries(counts)) {
+    const allowed = baseline[file] ?? 0
+    if (count > allowed)
+      errors.push(
+        `${file}: Sabit px boşluk ${allowed} → ${count} arttı. --app-space-* veya calc(var(--spacing) * n) kullanın.`,
+      )
+    else if (count < allowed) improved.push(`${file}: ${allowed} → ${count}`)
+  }
+  return { errors, improved }
 }
 
 /** Normalize a token-only Theme Builder export, including named light/dark themes. */
@@ -370,9 +419,11 @@ export function auditTheme(root = projectRoot) {
       imports.findIndex((value) => value.includes('./styles/heroui-theme.css'))
   )
     errors.push('src/styles.css: Tek tema girişi @heroui/styles importundan sonra gelmeli.')
+  const spacing = {}
   for (const file of cssFiles) {
     const relative = path.relative(root, file).replaceAll('\\', '/'),
       css = readFileSync(file, 'utf8')
+    spacing[relative] = spacingDebt(css)
     for (const match of css.matchAll(/var\((--[\w-]+)/g))
       if (!knownTokens.has(match[1]))
         errors.push(`${relative}: Tanımsız tema değişkeni ${match[1]}`)
@@ -412,7 +463,16 @@ export function auditTheme(root = projectRoot) {
       }
     }
   }
-  return { errors, cssFiles: cssFiles.length, controls: inventory.controls.length, inventory }
+  const ratchet = spacingRatchet(spacing, readSpacingBaseline(root))
+  errors.push(...ratchet.errors)
+  return {
+    errors,
+    cssFiles: cssFiles.length,
+    controls: inventory.controls.length,
+    inventory,
+    spacing,
+    improved: ratchet.improved,
+  }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -420,6 +480,25 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   console.log(
     `Tema sözleşmesi: ${result.cssFiles} CSS dosyası, ${result.controls} bileşen kullanımı.`,
   )
+  const debt = Object.values(result.spacing).reduce((sum, count) => sum + count, 0)
+  if (process.argv.includes('--update-baseline')) {
+    const counts = Object.fromEntries(
+      Object.entries(result.spacing)
+        .filter(([, count]) => count > 0)
+        .sort(),
+    )
+    writeFileSync(
+      path.join(projectRoot, baselineFile),
+      JSON.stringify({ spacingPx: counts }, null, 2) + '\n',
+    )
+    console.log(`Boşluk mandalı güncellendi: ${debt} sabit px.`)
+  } else {
+    console.log(`Sabit px boşluk borcu: ${debt}.`)
+    if (result.improved.length)
+      console.log(
+        `Azalan dosyalar (npm run check:theme -- --update-baseline):\n  ${result.improved.join('\n  ')}`,
+      )
+  }
   if (result.errors.length) {
     console.error(result.errors.join('\n'))
     console.error(`${result.errors.length} tema ihlali.`)

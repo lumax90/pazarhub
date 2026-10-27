@@ -29,6 +29,7 @@ for (const mode of ['light', 'dark'] as const) {
       '/retail/sale',
       '/connections',
       '/settings',
+      '/profile',
     ]
     for (const route of routes) {
       await page.goto(route)
@@ -54,11 +55,18 @@ for (const mode of ['light', 'dark'] as const) {
       }
       const card = page.locator('.card').first()
       if (await card.count()) await expect(card).toHaveCSS('border-radius', '32px')
-      const field = page.locator('input.input:not([type=file])').first()
+      // Page fields follow the theme's field radius; the header search is a pill like its neighbours.
+      const field = page.locator('main input.input:not([type=file])').first()
       if (await field.count()) {
         await expect(field).toHaveCSS('border-radius', '18px')
         await expect(field).toHaveCSS('border-top-width', '1px')
       }
+      await expect(page.locator('.global-search input')).toHaveCSS(
+        'border-radius',
+        await page
+          .locator('.workspace-switch-surface')
+          .evaluate((surface) => getComputedStyle(surface).borderTopLeftRadius),
+      )
       if (route === '/retail/sale') {
         await page.addStyleTag({
           content: '@layer base { :root { --radius: 0; --field-radius: 0; } }',
@@ -70,7 +78,7 @@ for (const mode of ['light', 'dark'] as const) {
           'square-corner token preset',
         ).toEqual([])
       }
-      if (route === '/settings') {
+      if (route === '/profile') {
         const previews = page.locator('.theme-preview-pane')
         expect(await previews.count()).toBe(4)
         expect(await previews.nth(0).evaluate((e) => getComputedStyle(e).backgroundColor)).not.toBe(
@@ -94,7 +102,7 @@ for (const mode of ['light', 'dark'] as const) {
       }
     }
     await page.setViewportSize({ width: 390, height: 844 })
-    for (const route of ['/dashboard', '/orders', '/settings']) {
+    for (const route of ['/dashboard', '/orders', '/settings', '/profile']) {
       await page.goto(route)
       await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible()
       await page.addStyleTag({ content: ocean })

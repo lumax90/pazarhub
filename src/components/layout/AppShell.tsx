@@ -4,6 +4,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router'
 import { SelectionIndicator } from 'react-aria-components'
 import {
   Button,
+  Card,
   Dropdown,
   Header,
   Label,
@@ -26,14 +27,16 @@ import {
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
+  UserRound,
 } from 'lucide-react'
 import { useApp } from '../../app/AppProvider'
 import { lowStockProducts } from '../../domain/selectors'
 import { Dialog, IconButton } from '../ui/shared'
+import { UserAvatar } from '../ui/UserAvatar'
 import { NotificationsMenu } from './NotificationsMenu'
 import { motionTransitions, useRevealMotion } from '../../lib/motion'
 import { useMediaQuery } from '../../lib/useMediaQuery'
-import { SidebarGroupMenu, SidebarLink } from './SidebarNav'
+import { SidebarGroup, SidebarGroupMenu, SidebarLink } from './SidebarNav'
 import { retailSections, sections } from './navigation'
 import { headerCrumbs } from './breadcrumbs'
 import { HeaderBreadcrumbs } from './HeaderBreadcrumbs'
@@ -71,8 +74,18 @@ function BrandMark() {
 export function AppShell() {
   const pageReveal = useRevealMotion()
   const reduced = useReducedMotion()
-  const { state, run, resolvedTheme, mode, session, changeMode, logout, switchWorkspace, notify } =
-    useApp()
+  const {
+    state,
+    run,
+    resolvedTheme,
+    mode,
+    session,
+    changeMode,
+    logout,
+    switchWorkspace,
+    notify,
+    profile,
+  } = useApp()
   const location = useLocation()
   const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({ 'MUHASEBE YÖNETİMİ': true })
@@ -92,6 +105,7 @@ export function AppShell() {
   const crumbs = headerCrumbs(location.pathname, state)
   const pageTitle = crumbs.at(-1)!.label
   const dark = resolvedTheme === 'dark'
+  const environment = mode === 'demo' ? 'Örnek çalışma alanı' : 'Sunucuya bağlı'
   const companyInitial =
     Array.from(state.preferences.businessName.trim())[0]?.toLocaleUpperCase('tr-TR') ?? '—'
 
@@ -137,119 +151,66 @@ export function AppShell() {
         className={`app-sidebar ${isMobile && mobileOpen ? 'is-open' : ''}`}
         aria-label="Ana gezinme"
       >
-        <Link
-          to="/dashboard"
-          className="brand"
-          onClick={() => setMobileOpen(false)}
-          aria-label="Pazarhub ana sayfa"
-        >
-          <BrandMark />
-          <span className="brand-wordmark">
-            pazarhub<span className="brand-dot">.</span>
-          </span>
-        </Link>
-        <Dropdown>
-          <Tooltip isDisabled={!compact} delay={250} closeDelay={0}>
-            <Button
-              variant="ghost"
-              className="workspace-company"
-              aria-label={`${state.preferences.businessName} Çalışma alanı`}
-            >
-              <span className="company-avatar" aria-hidden="true">
-                {companyInitial}
-              </span>
-              <span className="company-copy">
-                <strong title={state.preferences.businessName}>
-                  {state.preferences.businessName}
-                </strong>
-                <span>Çalışma alanı</span>
-              </span>
-              <ChevronsUpDown size={14} aria-hidden="true" />
-            </Button>
-            <Tooltip.Content placement="right" offset={20}>
-              {state.preferences.businessName}
-            </Tooltip.Content>
-          </Tooltip>
-          <Dropdown.Popover className="app-dropdown">
-            <Dropdown.Menu aria-label="Çalışma alanı">
-              {(session?.workspaces ?? [])
-                .filter((workspace) => workspace.id !== session?.workspace?.id)
-                .map((workspace) => (
-                  <Dropdown.Item
-                    key={workspace.id}
-                    id={workspace.id}
-                    textValue={workspace.name}
-                    onAction={() => void switchWorkspace(workspace.id)}
-                  >
-                    <Store size={16} />
-                    <Label>{workspace.name}</Label>
-                  </Dropdown.Item>
-                ))}
-              <Dropdown.Item
-                id="settings"
-                textValue="Çalışma alanı ayarları"
-                onAction={() => go('/settings')}
-              >
-                <Settings2 size={16} />
-                <Label>Çalışma alanı ayarları</Label>
-              </Dropdown.Item>
-              <Dropdown.Item id="retail" textValue="Perakendeye geç" onAction={() => go('/retail')}>
-                <ScanLine size={16} />
-                <Label>Perakendeye geç</Label>
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown.Popover>
-        </Dropdown>
-        <nav className="sidebar-navigation">
-          {(retail ? retailSections : sections).map((section) => (
-            <div className="nav-section" key={section.label}>
-              {!compact &&
-                (section.collapsible ? (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="nav-section-toggle"
-                    aria-expanded={!collapsed[section.label]}
-                    onPress={() =>
-                      setCollapsed((value) => ({
-                        ...value,
-                        [section.label]: !value[section.label],
-                      }))
-                    }
-                  >
-                    <span className="header nav-section-heading">
-                      <span>{section.label}</span>
-                      <ChevronDown
-                        size={12}
-                        className={collapsed[section.label] ? 'is-rotated' : ''}
-                        aria-hidden="true"
-                      />
-                    </span>
-                  </Button>
-                ) : (
-                  <Header className="nav-section-heading">{section.label}</Header>
-                ))}
-              <AnimatePresence initial={false}>
-                {(compact || !collapsed[section.label]) && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={reduced ? { duration: 0 } : motionTransitions.standard}
-                    className="nav-section-items"
-                  >
-                    {section.items.map((item) =>
-                      item.children ? (
-                        compact ? (
-                          <SidebarGroupMenu key={item.to} item={item} onNavigate={go} />
-                        ) : (
-                          <div className="nav-group" key={item.to}>
-                            <button
-                              className={`button button--md nav-item nav-group-toggle ${location.pathname.startsWith(item.to) ? 'button--secondary is-current-group' : 'button--ghost'}`}
-                              aria-expanded={
-                                expanded[item.to] ?? location.pathname.startsWith(item.to)
-                              }
-                              onClick={() =>
+        <Card className="sidebar-card">
+          <Link
+            to="/dashboard"
+            className="brand"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Pazarhub ana sayfa"
+          >
+            <BrandMark />
+            <span className="brand-wordmark">
+              pazarhub<span className="brand-dot">.</span>
+            </span>
+          </Link>
+          <nav className="sidebar-navigation">
+            {(retail ? retailSections : sections).map((section) => (
+              <div className="nav-section" key={section.label}>
+                {!compact &&
+                  (section.collapsible ? (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="nav-section-toggle"
+                      aria-expanded={!collapsed[section.label]}
+                      onPress={() =>
+                        setCollapsed((value) => ({
+                          ...value,
+                          [section.label]: !value[section.label],
+                        }))
+                      }
+                    >
+                      <span className="header nav-section-heading">
+                        <span>{section.label}</span>
+                        <ChevronDown
+                          size={12}
+                          className={collapsed[section.label] ? 'is-rotated' : ''}
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </Button>
+                  ) : (
+                    <Header className="nav-section-heading">{section.label}</Header>
+                  ))}
+                <AnimatePresence initial={false}>
+                  {(compact || !collapsed[section.label]) && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={reduced ? { duration: 0 } : motionTransitions.standard}
+                      className="nav-section-items"
+                    >
+                      {section.items.map((item) =>
+                        item.children ? (
+                          compact ? (
+                            <SidebarGroupMenu key={item.to} item={item} onNavigate={go} />
+                          ) : (
+                            <SidebarGroup
+                              key={item.to}
+                              item={item}
+                              open={expanded[item.to] ?? location.pathname.startsWith(item.to)}
+                              onToggle={() =>
                                 setExpanded((current) => ({
                                   ...current,
                                   [item.to]: !(
@@ -257,94 +218,117 @@ export function AppShell() {
                                   ),
                                 }))
                               }
-                            >
-                              <item.icon size={18} strokeWidth={1.7} />
-                              <span>{item.label}</span>
-                              <ChevronDown
-                                size={13}
-                                className={
-                                  (expanded[item.to] ?? location.pathname.startsWith(item.to))
-                                    ? ''
-                                    : 'is-rotated'
-                                }
-                              />
-                            </button>
-                            <AnimatePresence initial={false}>
-                              {(expanded[item.to] ?? location.pathname.startsWith(item.to)) && (
-                                <motion.div
-                                  key="group-links"
-                                  className="nav-group-children"
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: 'auto', opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
-                                  transition={
-                                    reduced ? { duration: 0 } : motionTransitions.standard
-                                  }
-                                >
-                                  {item.children.map((child) => (
-                                    <SidebarLink
-                                      key={child.to}
-                                      item={child}
-                                      small
-                                      compact={false}
-                                      onNavigate={() => setMobileOpen(false)}
-                                    />
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        )
-                      ) : (
-                        <SidebarLink
-                          key={item.to}
-                          item={item}
-                          compact={compact}
-                          onNavigate={() => setMobileOpen(false)}
-                          count={item.to === '/orders' ? waiting : undefined}
-                          notice={
-                            item.to === '/listings' && rejected > 0
-                              ? `${rejected} ilan işlem bekliyor`
-                              : undefined
-                          }
-                        />
-                      ),
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                              onNavigate={() => setMobileOpen(false)}
+                            />
+                          )
+                        ) : (
+                          <SidebarLink
+                            key={item.to}
+                            item={item}
+                            compact={compact}
+                            onNavigate={() => setMobileOpen(false)}
+                            count={item.to === '/orders' ? waiting : undefined}
+                            notice={
+                              item.to === '/listings' && rejected > 0
+                                ? `${rejected} ilan işlem bekliyor`
+                                : undefined
+                            }
+                          />
+                        ),
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </nav>
+          <div className="sidebar-bottom">
+            <Tooltip isDisabled={!compact} delay={250} closeDelay={0}>
+              <Button
+                variant="ghost"
+                className="sidebar-help"
+                aria-label="Yardım ve kısayollar"
+                onPress={() => setHelpOpen(true)}
+              >
+                <CircleHelp size={17} aria-hidden="true" />
+                {!compact && <span>Yardım ve kısayollar</span>}
+              </Button>
+              <Tooltip.Content placement="right" offset={20}>
+                Yardım ve kısayollar
+              </Tooltip.Content>
+            </Tooltip>
+            <SidebarLink
+              item={{ to: '/settings', label: 'Ayarlar', icon: Settings2 }}
+              compact={compact}
+              onNavigate={() => setMobileOpen(false)}
+            />
+            {/* Workspace and connection status share the foot of the card, below the pages. */}
+            <div className="sidebar-workspace">
+              <Dropdown>
+                <Tooltip isDisabled={!compact} delay={250} closeDelay={0}>
+                  <Button
+                    variant="ghost"
+                    className="workspace-company"
+                    aria-label={`${state.preferences.businessName} Çalışma alanı`}
+                  >
+                    <span className="company-avatar" aria-hidden="true">
+                      {companyInitial}
+                    </span>
+                    <span className="company-copy">
+                      <strong title={state.preferences.businessName}>
+                        {state.preferences.businessName}
+                      </strong>
+                      <span className="company-status">
+                        <span className="demo-led" />
+                        <span>{environment}</span>
+                      </span>
+                    </span>
+                    <ChevronsUpDown size={14} aria-hidden="true" />
+                  </Button>
+                  <Tooltip.Content placement="right" offset={20}>
+                    {state.preferences.businessName} · {environment}
+                  </Tooltip.Content>
+                </Tooltip>
+                <Dropdown.Popover placement="top start" className="app-dropdown">
+                  <Dropdown.Menu aria-label="Çalışma alanı">
+                    <Dropdown.Section>
+                      <Header>Pazarhub v0.3</Header>
+                      {(session?.workspaces ?? [])
+                        .filter((workspace) => workspace.id !== session?.workspace?.id)
+                        .map((workspace) => (
+                          <Dropdown.Item
+                            key={workspace.id}
+                            id={workspace.id}
+                            textValue={workspace.name}
+                            onAction={() => void switchWorkspace(workspace.id)}
+                          >
+                            <Store size={16} />
+                            <Label>{workspace.name}</Label>
+                          </Dropdown.Item>
+                        ))}
+                      <Dropdown.Item
+                        id="settings"
+                        textValue="Çalışma alanı ayarları"
+                        onAction={() => go('/settings')}
+                      >
+                        <Settings2 size={16} />
+                        <Label>Çalışma alanı ayarları</Label>
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        id="retail"
+                        textValue="Perakendeye geç"
+                        onAction={() => go('/retail')}
+                      >
+                        <ScanLine size={16} />
+                        <Label>Perakendeye geç</Label>
+                      </Dropdown.Item>
+                    </Dropdown.Section>
+                  </Dropdown.Menu>
+                </Dropdown.Popover>
+              </Dropdown>
             </div>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <Tooltip isDisabled={!compact} delay={250} closeDelay={0}>
-            <Button
-              variant="ghost"
-              className="sidebar-help"
-              aria-label="Yardım ve kısayollar"
-              onPress={() => setHelpOpen(true)}
-            >
-              <CircleHelp size={17} aria-hidden="true" />
-              {!compact && <span>Yardım ve kısayollar</span>}
-            </Button>
-            <Tooltip.Content placement="right" offset={20}>
-              Yardım ve kısayollar
-            </Tooltip.Content>
-          </Tooltip>
-          <SidebarLink
-            item={{ to: '/settings', label: 'Ayarlar', icon: Settings2 }}
-            compact={compact}
-            onNavigate={() => setMobileOpen(false)}
-          />
-          <div
-            className="sidebar-environment"
-            title={mode === 'demo' ? 'Örnek çalışma alanı' : 'Sunucuya bağlı'}
-          >
-            <span className="demo-led" />
-            <span>{mode === 'demo' ? 'Örnek çalışma alanı' : 'Sunucuya bağlı'}</span>
-            <span>v0.3</span>
           </div>
-        </div>
+        </Card>
       </aside>
       <div className="main-shell">
         <header className="topbar">
@@ -376,8 +360,8 @@ export function AppShell() {
             </Button>
             <HeaderBreadcrumbs items={crumbs} />
           </div>
-          <HeaderSearch key={location.pathname} onNavigate={go} />
-          <div className="topbar-right">
+          <Card className="topbar-right">
+            <HeaderSearch key={location.pathname} onNavigate={go} />
             <Surface variant="secondary" className="workspace-switch-surface rounded-3xl">
               <ToggleButtonGroup
                 className="workspace-switch"
@@ -442,29 +426,32 @@ export function AppShell() {
               waiting={waiting}
               rejected={rejected}
               lowStock={lowStock}
+              shown={state.preferences.notifications}
               onNavigate={go}
             />
             <Dropdown>
               <Button
-                isIconOnly
+                isIconOnly={compactHeader}
                 variant="ghost"
                 className="profile-button"
                 aria-label="Hesap menüsü"
               >
-                <span>
-                  {mode === 'demo'
-                    ? 'EY'
-                    : session?.user?.name
-                        .split(' ')
-                        .map((part) => part[0])
-                        .slice(0, 2)
-                        .join('')}
-                </span>
+                {!compactHeader && (
+                  <>
+                    <span className="profile-name">{profile.name}</span>
+                    <ChevronDown size={14} aria-hidden="true" />
+                  </>
+                )}
+                <UserAvatar name={profile.name} seed={profile.seed} />
               </Button>
               <Dropdown.Popover className="app-dropdown">
                 <Dropdown.Menu aria-label="Hesap menüsü">
+                  <Dropdown.Item id="profile" textValue="Profilim" onAction={() => go('/profile')}>
+                    <UserRound size={16} />
+                    <Label>Profilim</Label>
+                  </Dropdown.Item>
                   <Dropdown.Item
-                    id="profile"
+                    id="settings"
                     textValue="Çalışma alanı ayarları"
                     onAction={() => go('/settings')}
                   >
@@ -493,7 +480,7 @@ export function AppShell() {
                 </Dropdown.Menu>
               </Dropdown.Popover>
             </Dropdown>
-          </div>
+          </Card>
         </header>
         <main id="main-content" className="main-content">
           <motion.div key={location.pathname} className="page-frame" {...pageReveal}>

@@ -1,0 +1,88 @@
+/* Marka yönü D — Çini
+ * İznik çinisinden: krem fritte zemin, kobalt sır altı vurgu, gece-indigo
+ * mürekkep, turkuaz odak; tehlike rengi çininin "domates kırmızısı".
+ * Gövde yazısı Figtree; başlık ve rakamlarda Fraunces (önizleme ekinde).
+ * Biçim HeroUI tema dosyasıyla aynıdır: `npm run theme:apply -- design/marka-yonleri/cini.theme.css --check`
+ * Uygulamaya alınırken @fontsource-variable/figtree ve /fraunces eklenmelidir.
+ */
+@layer base {
+  :root {
+    --font-sans: 'Figtree Variable', 'Figtree', ui-sans-serif, system-ui, sans-serif;
+    --radius: 0.5rem;
+    --field-radius: calc(var(--radius) * 1.5);
+  }
+
+  :root,
+  .light,
+  [data-theme='light'] {
+    color-scheme: light;
+    --background: oklch(96.8% 0.012 88);
+    --foreground: oklch(25% 0.04 268);
+    --accent: oklch(47% 0.17 266);
+    --accent-foreground: oklch(98.5% 0.008 88);
+    --focus: oklch(62% 0.11 195);
+    --muted: oklch(51.5% 0.03 265);
+    --default: oklch(93.2% 0.014 86);
+    --default-foreground: var(--foreground);
+    --surface: oklch(99.3% 0.006 88);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(95.3% 0.014 86);
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: oklch(93.4% 0.016 85);
+    --surface-tertiary-foreground: var(--foreground);
+    --overlay: oklch(99.3% 0.006 88);
+    --overlay-foreground: var(--foreground);
+    --segment: oklch(99.3% 0.006 88);
+    --segment-foreground: var(--foreground);
+    --border: oklch(89.4% 0.016 84);
+    --separator: oklch(91.8% 0.013 84);
+    --field-background: var(--surface);
+    --field-border: transparent;
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --success: oklch(64% 0.15 145);
+    --success-foreground: oklch(98.5% 0.008 88);
+    --warning: oklch(78.5% 0.15 78);
+    --warning-foreground: oklch(24% 0.04 70);
+    --danger: oklch(57% 0.19 30);
+    --danger-foreground: oklch(98.5% 0.008 88);
+    --surface-shadow:
+      0 0 0 1px oklch(30% 0.06 268 / 0.06), 0 1px 2px 0 oklch(30% 0.06 268 / 0.05),
+      0 6px 18px -8px oklch(30% 0.06 268 / 0.14);
+    --overlay-shadow:
+      0 0 0 1px oklch(30% 0.06 268 / 0.08), 0 16px 36px -10px oklch(30% 0.06 268 / 0.26);
+    --field-shadow: 0 0 0 1px oklch(30% 0.06 268 / 0.08), 0 1px 2px 0 oklch(30% 0.06 268 / 0.04);
+  }
+
+  .dark,
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --background: oklch(16% 0.026 268);
+    --foreground: oklch(96.5% 0.012 88);
+    --accent: oklch(77% 0.11 194);
+    --accent-foreground: oklch(19% 0.04 268);
+    --focus: var(--accent);
+    --muted: oklch(72.5% 0.026 262);
+    --default: oklch(28.5% 0.032 268);
+    --default-foreground: var(--foreground);
+    --surface: oklch(21% 0.032 268);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(25% 0.034 268);
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: oklch(27.2% 0.034 268);
+    --surface-tertiary-foreground: var(--foreground);
+    --overlay: oklch(23.5% 0.034 268);
+    --overlay-foreground: var(--foreground);
+    --segment: oklch(36% 0.04 268);
+    --segment-foreground: var(--foreground);
+    --border: oklch(30.5% 0.034 268);
+    --separator: oklch(26.5% 0.03 268);
+    --field-background: var(--surface);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --success: oklch(70% 0.15 145);
+    --success-foreground: oklch(19% 0.04 268);
+    --warning: oklch(81% 0.14 80);
+    --danger: oklch(62% 0.18 30);
+  }
+}

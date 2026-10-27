@@ -1,0 +1,84 @@
+/* Marka yönü B — Kehribar
+ * Sıcak, samimi, çarşı hissi. Bakır/kiremit vurgu, kum tonlu sıcak
+ * nötrler, daha yumuşak köşeler, Plus Jakarta Sans yazı ailesi.
+ * Biçim HeroUI tema dosyasıyla aynıdır: `npm run theme:apply -- design/marka-yonleri/kehribar.theme.css --check`
+ * Yazı ailesi uygulamaya alınırken @fontsource-variable/plus-jakarta-sans eklenmelidir.
+ */
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --radius: 0.625rem;
+    --field-radius: calc(var(--radius) * 1.4);
+  }
+
+  :root,
+  .light,
+  [data-theme='light'] {
+    color-scheme: light;
+    --background: oklch(96.9% 0.0065 78);
+    --foreground: oklch(25% 0.014 52);
+    --accent: oklch(55.5% 0.145 46);
+    --accent-foreground: oklch(99% 0.004 78);
+    --focus: var(--accent);
+    --muted: oklch(53.5% 0.016 60);
+    --default: oklch(93.4% 0.009 75);
+    --default-foreground: var(--foreground);
+    --surface: oklch(99.5% 0.003 80);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(95.2% 0.008 76);
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: oklch(93.4% 0.009 75);
+    --surface-tertiary-foreground: var(--foreground);
+    --overlay: oklch(99.5% 0.003 80);
+    --overlay-foreground: var(--foreground);
+    --segment: oklch(99.5% 0.003 80);
+    --segment-foreground: var(--foreground);
+    --border: oklch(89.6% 0.011 72);
+    --separator: oklch(92% 0.009 72);
+    --field-background: var(--surface);
+    --field-border: transparent;
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --success: oklch(69% 0.16 148);
+    --success-foreground: oklch(21% 0.02 148);
+    --warning: oklch(80% 0.15 82);
+    --warning-foreground: oklch(23% 0.03 82);
+    --danger: oklch(57.5% 0.205 20);
+    --danger-foreground: oklch(99% 0 0);
+    --surface-shadow:
+      0 0 0 1px oklch(35% 0.04 55 / 0.05), 0 1px 2px 0 oklch(35% 0.04 55 / 0.05),
+      0 6px 16px -6px oklch(35% 0.04 55 / 0.1);
+    --overlay-shadow:
+      0 0 0 1px oklch(35% 0.04 55 / 0.06), 0 14px 34px -10px oklch(35% 0.04 55 / 0.22);
+    --field-shadow: 0 0 0 1px oklch(35% 0.04 55 / 0.08), 0 1px 2px 0 oklch(35% 0.04 55 / 0.04);
+  }
+
+  .dark,
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --background: oklch(16.8% 0.008 58);
+    --foreground: oklch(96.8% 0.006 78);
+    --accent: oklch(70.5% 0.135 54);
+    --accent-foreground: oklch(19.5% 0.025 50);
+    --muted: oklch(71.5% 0.014 68);
+    --default: oklch(28.8% 0.011 60);
+    --default-foreground: var(--foreground);
+    --surface: oklch(21.4% 0.01 60);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(25.4% 0.011 60);
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: oklch(27.6% 0.011 60);
+    --surface-tertiary-foreground: var(--foreground);
+    --overlay: oklch(23.6% 0.011 60);
+    --overlay-foreground: var(--foreground);
+    --segment: oklch(36% 0.013 60);
+    --segment-foreground: var(--foreground);
+    --border: oklch(30.5% 0.011 60);
+    --separator: oklch(26.8% 0.01 60);
+    --field-background: var(--surface);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --warning: oklch(82% 0.14 82);
+    --danger: oklch(61% 0.185 22);
+  }
+}

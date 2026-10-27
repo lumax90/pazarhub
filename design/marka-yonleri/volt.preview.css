@@ -1,0 +1,79 @@
+/* Volt — yalnız önizleme ekleri; uygulamaya alınmaz.
+ * Kalıcı karşılıkları planlanan uygulama token katmanındadır:
+ *   --font-display → başlık ve büyük rakamlar (Funnel Display)
+ *   --action / --action-foreground → ana eylem dolgusu (volt), metin vurgusundan ayrı
+ *   sol menü token'ları → obsidyen yüzey, volt etkin durum
+ *   --app-canvas-pattern → çok soluk nokta ızgarası
+ * Yazı ailesi ve zemin deseni dışındaki her şey yalnız değişken yeniden tanımıdır.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300..800&family=Funnel+Display:wght@400..800&display=swap');
+
+:root {
+  --volt: oklch(91.7% 0.2 114);
+  --volt-ink: oklch(17.5% 0.006 60);
+}
+
+.page-heading h1,
+.metric-value,
+.brand-wordmark {
+  font-family: 'Funnel Display', ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Highlighter: only primary actions, the highlighted KPI and the brand mark. */
+.button--primary,
+.brand-mark {
+  --accent: var(--volt);
+  --accent-foreground: var(--volt-ink);
+  --accent-hover: color-mix(in oklab, var(--volt) 88%, var(--volt-ink) 12%);
+}
+.metric-card--highlighted .metric-icon {
+  --accent-soft: var(--volt);
+  --accent-soft-foreground: var(--volt-ink);
+}
+
+.main-content {
+  background-image: radial-gradient(circle at 1px 1px, oklch(17.5% 0.006 60 / 0.09) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+[data-theme='dark'] .main-content {
+  background-image: radial-gradient(circle at 1px 1px, oklch(96.5% 0.004 75 / 0.06) 1px, transparent 0);
+}
+
+.app-sidebar {
+  color-scheme: dark;
+  --surface: oklch(18.5% 0.004 60);
+  --foreground: oklch(96% 0.004 75);
+  --muted: oklch(71% 0.004 70);
+  --default: oklch(26% 0.004 60);
+  --surface-secondary: oklch(24% 0.004 60);
+  --border: oklch(25% 0.004 60);
+  --separator: oklch(24% 0.004 60);
+  --accent: var(--volt);
+  --accent-foreground: var(--volt-ink);
+
+  --surface-foreground: var(--foreground);
+  --default-foreground: var(--foreground);
+  --surface-secondary-foreground: var(--foreground);
+  --surface-hover: color-mix(in oklab, var(--surface) 92%, var(--foreground) 8%);
+  --default-hover: color-mix(in oklab, var(--default) 92%, var(--foreground) 8%);
+  --default-soft: color-mix(in oklab, var(--default) 60%, transparent);
+  --default-soft-hover: color-mix(in oklab, var(--default) 80%, transparent);
+  --default-soft-foreground: var(--foreground);
+  --accent-soft: color-mix(in oklab, var(--accent) 16%, transparent);
+  --accent-soft-hover: color-mix(in oklab, var(--accent) 22%, transparent);
+  --accent-soft-foreground: var(--accent);
+  --separator-secondary: color-mix(in oklab, var(--surface) 85%, var(--foreground) 15%);
+  --border-secondary: color-mix(in oklab, var(--surface) 78%, var(--foreground) 22%);
+  --scrollbar-thumb: color-mix(in oklch, var(--foreground) 18%, transparent);
+  --scrollbar-color: var(--scrollbar-thumb) transparent;
+  --surface-shadow: none;
+}
+
+[data-theme='dark'] .app-sidebar {
+  --surface: oklch(12% 0.004 60);
+  --default: oklch(21% 0.004 60);
+  --surface-secondary: oklch(19% 0.004 60);
+  --border: oklch(21% 0.004 60);
+  --separator: oklch(19.5% 0.004 60);
+}

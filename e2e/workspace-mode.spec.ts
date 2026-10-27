@@ -121,13 +121,14 @@ for (const theme of ['light', 'dark'] as const) {
       const field = document.querySelector('.global-search input')!
       return {
         fieldRadius: getComputedStyle(field).borderTopLeftRadius,
-        popoverRadius: getComputedStyle(popover).borderTopLeftRadius,
+        switchRadius: getComputedStyle(document.querySelector('.workspace-switch-surface')!)
+          .borderTopLeftRadius,
         fieldWidth: field.getBoundingClientRect().width,
         popoverWidth: popover.getBoundingClientRect().width,
       }
     })
-    // A field and its separate overlay use different native HeroUI radius scales.
-    expect(searchSkin.fieldRadius).not.toBe(searchSkin.popoverRadius)
+    // The search field is the same pill as the workspace switch beside it in the header card.
+    expect(searchSkin.fieldRadius).toBe(searchSkin.switchRadius)
     expect(Math.abs(searchSkin.fieldWidth - searchSkin.popoverWidth)).toBeLessThan(1)
     expect((await nativeSkinDifferences(page)).differences).toEqual([])
     await page.screenshot({

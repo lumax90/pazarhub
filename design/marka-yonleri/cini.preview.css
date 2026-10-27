@@ -1,0 +1,56 @@
+/* Çini — yalnız önizleme ekleri; uygulamaya alınmaz.
+ * Kalıcı karşılıkları planlanan uygulama token katmanındadır:
+ *   --font-display  → başlık ve büyük rakamlar (Fraunces)
+ *   sol menü token'ları → kobalt yüzey, turkuaz vurgu
+ *   --app-sidebar-pattern → çok soluk sekiz kollu yıldız deseni
+ * Desen ve yazı ailesi dışındaki her şey yalnız değişken yeniden tanımıdır.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..800&family=Fraunces:opsz,wght@9..144,500..700&display=swap');
+
+.page-heading h1,
+.metric-value,
+.brand-wordmark {
+  font-family: 'Fraunces', ui-serif, Georgia, serif;
+  font-variation-settings: 'SOFT' 50;
+  letter-spacing: -0.01em;
+}
+
+.app-sidebar {
+  color-scheme: dark;
+  --surface: oklch(31% 0.115 266);
+  --foreground: oklch(97% 0.012 88);
+  --muted: oklch(81% 0.045 255);
+  --default: oklch(37.5% 0.12 266);
+  --surface-secondary: oklch(36% 0.115 266);
+  --border: oklch(39% 0.11 266);
+  --separator: oklch(37% 0.1 266);
+  --accent: oklch(81% 0.11 192);
+  --accent-foreground: oklch(22% 0.06 268);
+
+  --surface-foreground: var(--foreground);
+  --default-foreground: var(--foreground);
+  --surface-secondary-foreground: var(--foreground);
+  --surface-hover: color-mix(in oklab, var(--surface) 90%, var(--foreground) 10%);
+  --default-hover: color-mix(in oklab, var(--default) 90%, var(--foreground) 10%);
+  --default-soft: color-mix(in oklab, var(--default) 60%, transparent);
+  --default-soft-hover: color-mix(in oklab, var(--default) 80%, transparent);
+  --default-soft-foreground: var(--foreground);
+  --accent-soft: color-mix(in oklab, var(--accent) 18%, transparent);
+  --accent-soft-hover: color-mix(in oklab, var(--accent) 24%, transparent);
+  --accent-soft-foreground: var(--accent);
+  --separator-secondary: color-mix(in oklab, var(--surface) 85%, var(--foreground) 15%);
+  --border-secondary: color-mix(in oklab, var(--surface) 78%, var(--foreground) 22%);
+  --scrollbar-thumb: color-mix(in oklch, var(--foreground) 20%, transparent);
+  --scrollbar-color: var(--scrollbar-thumb) transparent;
+  --surface-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.045' stroke-width='1'%3E%3Cpath d='M28 10l5.3 12.7L46 28l-12.7 5.3L28 46l-5.3-12.7L10 28l12.7-5.3z'/%3E%3Cpath d='M15.3 15.3h25.4v25.4H15.3z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 56px 56px;
+}
+
+[data-theme='dark'] .app-sidebar {
+  --surface: oklch(19.5% 0.06 266);
+  --default: oklch(26% 0.07 266);
+  --surface-secondary: oklch(24% 0.065 266);
+  --border: oklch(27% 0.06 266);
+  --separator: oklch(25% 0.055 266);
+}

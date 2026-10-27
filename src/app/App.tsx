@@ -77,6 +77,9 @@ const ReportsPage = lazy(() =>
 const SettingsPage = lazy(() =>
   import('../pages/SettingsPage').then((module) => ({ default: module.SettingsPage })),
 )
+const ProfilePage = lazy(() =>
+  import('../pages/ProfilePage').then((module) => ({ default: module.ProfilePage })),
+)
 const MarginsPage = lazy(() =>
   import('../pages/MarginsPage').then((module) => ({ default: module.MarginsPage })),
 )
@@ -147,7 +150,8 @@ export function App() {
         <Route path="finance/invoices/:id" element={<InvoiceDetailPage />} />
         <Route path="finance/invoices/:id/edit" element={<InvoiceEditorPage />} />
         <Route path="reports" element={<ReportsPage />} />
-        <Route path="settings" element={<SettingsPage />} />
+        <Route path="settings/:section?" element={<SettingsPage />} />
+        <Route path="profile" element={<ProfilePage />} />
         <Route path="margins" element={<MarginsPage />} />
         <Route path="ecommerce-settings" element={<EcommerceSettingsPage />} />
         <Route path="team" element={<TeamPage />} />

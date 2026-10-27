@@ -1,0 +1,36 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "scripts/project.ps1",
+        "-Task",
+        "dev"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "api",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$node = (Get-Command node.exe -ErrorAction SilentlyContinue).Source; if (-not $node) { $node = Join-Path $env:LOCALAPPDATA 'Temp\\opencode\\node-v24.22.1-win-x64\\node.exe' }; & $node scripts/build-server.mjs; if ($?) { & $node --enable-source-maps server-dist/index.js }"
+      ],
+      "port": 3001
+    },
+    {
+      "name": "dev-attach",
+      "url": "http://localhost:5173",
+      "port": 5173
+    }
+  ]
+}

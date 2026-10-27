@@ -1,200 +1,296 @@
 import { useState } from 'react'
-import { MIN_PASSWORD_LENGTH, PASSWORD_HINT } from '../domain/auth-policy'
 import type { FormEvent } from 'react'
-import { Button } from '@heroui/react'
-import { Check, Laptop, Moon, RotateCcw, Sun, KeyRound, Users } from 'lucide-react'
-import { Link } from 'react-router'
+import { Button, Description, Label, Switch, Tabs } from '@heroui/react'
+import {
+  Bell,
+  Building2,
+  Check,
+  DatabaseBackup,
+  Download,
+  FlaskConical,
+  RotateCcw,
+} from 'lucide-react'
+import { useNavigate, useParams } from 'react-router'
 import { useApp } from '../app/AppProvider'
-import { Dialog, Field, PageHeader, Panel, SectionTitle } from '../components/ui/shared'
-import { apiRequest } from '../lib/api'
-import { roleLabels } from '../domain/permissions'
+import type { BusinessProfile, NotificationPreferences } from '../domain/types'
+import { useMediaQuery } from '../lib/useMediaQuery'
+import { Dialog, Field, PageHeader, Panel } from '../components/ui/shared'
+
+const sections = [
+  { id: 'business', label: 'İşletme bilgileri', icon: Building2 },
+  { id: 'notifications', label: 'Bildirimler', icon: Bell },
+  { id: 'data', label: 'Veri ve yedek', icon: DatabaseBackup },
+] as const
+type SectionId = (typeof sections)[number]['id']
 
 export function SettingsPage() {
-  const { state, run, reset, mode, session, can, changeMode } = useApp()
-  const [name, setName] = useState(state.preferences.businessName)
-  const [confirmReset, setConfirmReset] = useState(false)
-  const [passwordOpen, setPasswordOpen] = useState(false)
-  const save = (event: FormEvent) => {
-    event.preventDefault()
-    run({ type: 'preferences.update', preferences: { ...state.preferences, businessName: name } })
-  }
+  const { section } = useParams()
+  const navigate = useNavigate()
+  const narrow = useMediaQuery('(max-width: 880px)')
+  const selected = sections.find((item) => item.id === section)?.id ?? 'business'
   return (
     <>
       <PageHeader
         title="Çalışma Alanı Ayarları"
-        description="Görünümü ve çalışma düzenini kendinize göre ayarlayın."
+        description="İşletmenizin bilgileri, bildirimleriniz ve verileriniz."
       />
-      <div className="settings-layout">
-        <Panel className="settings-main">
-          <form onSubmit={save}>
-            <SectionTitle
-              title="İşletme bilgileri"
-              description="Bu ad çalışma alanı menüsünde görünür."
+      <Tabs
+        className="settings-tabs"
+        orientation={narrow ? 'horizontal' : 'vertical'}
+        align="start"
+        selectedKey={selected}
+        onSelectionChange={(key) => navigate(`/settings/${String(key) as SectionId}`)}
+      >
+        <Tabs.ListContainer>
+          <Tabs.List aria-label="Ayar bölümleri">
+            {sections.map((item) => (
+              <Tabs.Tab id={item.id} key={item.id}>
+                <item.icon size={16} aria-hidden="true" />
+                {item.label}
+                <Tabs.Indicator />
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+        </Tabs.ListContainer>
+        <Tabs.Panel id="business">
+          <BusinessSection />
+        </Tabs.Panel>
+        <Tabs.Panel id="notifications">
+          <NotificationSection />
+        </Tabs.Panel>
+        <Tabs.Panel id="data">
+          <DataSection />
+        </Tabs.Panel>
+      </Tabs>
+    </>
+  )
+}
+
+const businessFields: {
+  key: keyof BusinessProfile
+  label: string
+  type?: 'tel' | 'email'
+  description?: string
+  wide?: boolean
+}[] = [
+  {
+    key: 'legalName',
+    label: 'Ticari unvan',
+    description: 'Resmi belgelerde geçen tam unvan.',
+    wide: true,
+  },
+  { key: 'taxOffice', label: 'Vergi dairesi' },
+  {
+    key: 'taxId',
+    label: 'Vergi no / T.C. kimlik no',
+    description: '10 haneli vergi ya da 11 haneli T.C. kimlik numarası.',
+  },
+  { key: 'phone', label: 'Telefon', type: 'tel' },
+  { key: 'email', label: 'E-posta', type: 'email' },
+  { key: 'city', label: 'İl' },
+  { key: 'district', label: 'İlçe' },
+  { key: 'address', label: 'Açık adres', wide: true },
+]
+
+/** Trimmed, empty fields dropped, keys sorted: what the command will actually store. */
+const stored = (business: BusinessProfile) =>
+  JSON.stringify(
+    Object.entries(business)
+      .map(([key, value]) => [key, value?.trim()])
+      .filter(([, value]) => value)
+      .sort(([a], [b]) => String(a).localeCompare(String(b))),
+  )
+
+function BusinessSection() {
+  const { state, run, can, notify } = useApp()
+  const editable = can('workspace.manage')
+  const [name, setName] = useState(state.preferences.businessName)
+  const [business, setBusiness] = useState<BusinessProfile>(state.business ?? {})
+  const [busy, setBusy] = useState(false)
+  const renamed = name.trim() !== state.preferences.businessName
+  const dirty = renamed || stored(business) !== stored(state.business ?? {})
+  const save = async (event: FormEvent) => {
+    event.preventDefault()
+    if (busy || !dirty) return
+    setBusy(true)
+    try {
+      if (renamed) {
+        const result = await run(
+          {
+            type: 'preferences.update',
+            preferences: { ...state.preferences, businessName: name.trim() },
+          },
+          { silent: true },
+        )
+        if (!result.ok) {
+          notify(result.message, 'error')
+          return
+        }
+      }
+      await run({ type: 'business.update', business })
+    } finally {
+      setBusy(false)
+    }
+  }
+  return (
+    <Panel title="İşletme bilgileri" description="Sipariş çıktısında gönderici olarak yazdırılır.">
+      <form onSubmit={save}>
+        <div className="form-grid">
+          <Field
+            className="span-2"
+            label="İşletme adı"
+            description="Menüde ve sipariş çıktısında görünen kısa ad."
+            value={name}
+            onChange={setName}
+            required
+            readOnly={!editable}
+          />
+          {businessFields.map((field) => (
+            <Field
+              key={field.key}
+              className={field.wide ? 'span-2' : ''}
+              label={field.label}
+              type={field.type}
+              description={field.description}
+              value={business[field.key] ?? ''}
+              onChange={(value) => setBusiness((current) => ({ ...current, [field.key]: value }))}
+              readOnly={!editable}
+            />
+          ))}
+        </div>
+        {editable ? (
+          <div className="settings-save">
+            <Button variant="primary" type="submit" isDisabled={!dirty || busy}>
+              <Check size={16} />
+              Kaydet
+            </Button>
+          </div>
+        ) : (
+          <p className="subtle settings-note">
+            Bu bilgileri yalnız çalışma alanı yöneticileri değiştirebilir.
+          </p>
+        )}
+      </form>
+    </Panel>
+  )
+}
+
+const alerts: { key: keyof NotificationPreferences; label: string; description: string }[] = [
+  {
+    key: 'orders',
+    label: 'Gönderim bekleyen siparişler',
+    description: 'Onay ya da kargo bekleyen sipariş olduğunda.',
+  },
+  {
+    key: 'listings',
+    label: 'Kontrol bekleyen ilanlar',
+    description: 'Pazaryeri bir ilanı reddettiğinde.',
+  },
+  {
+    key: 'stock',
+    label: 'Düşük stok',
+    description: 'Bir ürün belirlediğiniz stok eşiğine indiğinde.',
+  },
+]
+
+function NotificationSection() {
+  const { state, run, notify } = useApp()
+  const shown = state.preferences.notifications ?? { orders: true, listings: true, stock: true }
+  const change = async (key: keyof NotificationPreferences, value: boolean) => {
+    const result = await run(
+      {
+        type: 'preferences.update',
+        preferences: { ...state.preferences, notifications: { ...shown, [key]: value } },
+      },
+      { silent: true },
+    )
+    notify(
+      result.ok ? 'Bildirim tercihiniz kaydedildi.' : result.message,
+      result.ok ? 'success' : 'error',
+    )
+  }
+  return (
+    <Panel
+      title="Bildirimler"
+      description="Sağ üstteki zil menüsünde hangi uyarıların görüneceğini seçin. Bu tercih yalnız sizin hesabınız için geçerlidir."
+    >
+      <div className="settings-switches">
+        {alerts.map((alert) => (
+          <div className="settings-switch-row" key={alert.key}>
+            <Switch
+              className="settings-switch"
+              isSelected={shown[alert.key]}
+              onChange={(value) => void change(alert.key, value)}
             >
-              <div className="form-grid">
-                <Field
-                  label="İşletme adı"
-                  value={name}
-                  onChange={setName}
-                  required
-                  readOnly={!can('workspace.manage')}
-                />
-                <Field label="Para birimi" value="TRY · Türk Lirası" readOnly />
-              </div>
-              <div className="settings-save">
-                <Button variant="primary" type="submit">
-                  <Check size={16} />
-                  Bilgileri kaydet
-                </Button>
-              </div>
-            </SectionTitle>
-          </form>
-          <SectionTitle
-            title="Görünüm"
-            description="Her ekranda aynı tasarım dili, sizin seçtiğiniz tema."
-          >
-            <div className="theme-options">
-              {(
-                [
-                  { id: 'light', label: 'Açık', icon: Sun },
-                  { id: 'dark', label: 'Koyu', icon: Moon },
-                  { id: 'system', label: 'Sistem', icon: Laptop },
-                ] as const
-              ).map((theme) => (
-                <Button
-                  variant={state.preferences.theme === theme.id ? 'secondary' : 'ghost'}
-                  className={`theme-option ${state.preferences.theme === theme.id ? 'is-selected' : ''}`}
-                  key={theme.id}
-                  aria-pressed={state.preferences.theme === theme.id}
-                  onPress={() =>
-                    void run({
-                      type: 'preferences.update',
-                      preferences: { ...state.preferences, theme: theme.id },
-                    })
-                  }
-                >
-                  <span className="theme-preview" aria-hidden="true">
-                    {(theme.id === 'system' ? ['light', 'dark'] : [theme.id]).map((appearance) => (
-                      <span className="theme-preview-pane" data-theme={appearance} key={appearance}>
-                        <i />
-                        <span>
-                          <b />
-                          <b />
-                          <b />
-                        </span>
-                      </span>
-                    ))}
-                  </span>
-                  <span>
-                    <theme.icon size={15} />
-                    {theme.label}
-                    {state.preferences.theme === theme.id && <Check size={15} />}
-                  </span>
-                </Button>
-              ))}
-            </div>
-          </SectionTitle>
-          <SectionTitle
-            title="Tablo yoğunluğu"
-            description="Aynı bilgiler, alıştığınız boşluk düzeni."
-          >
-            <div className="density-options">
-              {(
-                [
-                  {
-                    id: 'comfortable',
-                    label: 'Rahat',
-                    description: 'Daha geniş satırlar ve boşluklar',
-                  },
-                  { id: 'compact', label: 'Kompakt', description: 'Bir ekranda daha fazla kayıt' },
-                ] as const
-              ).map((density) => (
-                <Button
-                  variant={state.preferences.density === density.id ? 'secondary' : 'ghost'}
-                  key={density.id}
-                  aria-pressed={state.preferences.density === density.id}
-                  className={state.preferences.density === density.id ? 'is-selected' : ''}
-                  onPress={() =>
-                    void run({
-                      type: 'preferences.update',
-                      preferences: { ...state.preferences, density: density.id },
-                    })
-                  }
-                >
-                  <strong>{density.label}</strong>
-                  <span>{density.description}</span>
-                  {state.preferences.density === density.id && <Check size={16} />}
-                </Button>
-              ))}
-            </div>
-          </SectionTitle>
-        </Panel>
-        <div className="settings-aside">
-          <Panel title="Bu çalışma alanı hakkında">
-            <div className="about-workspace">
-              <span className="version-pill">Bağlı çalışma alanı · v0.2</span>
-              <p>
-                {mode === 'demo'
-                  ? 'Örnek kayıtlar bu tarayıcıda saklanır.'
-                  : 'Kayıtlar sunucudaki PostgreSQL veritabanında saklanır.'}{' '}
-                Sipariş, stok, perakende ve kasa ortak çalışır.
-              </p>
-              <div>
-                <span>Arayüz</span>
-                <strong>HeroUI 3.2.6</strong>
-              </div>
-              <div>
-                <span>Uygulama</span>
-                <strong>React + Vite</strong>
-              </div>
-              <div>
-                <span>Hareket</span>
-                <strong>Motion for React</strong>
-              </div>
-              <div>
-                <span>Ortam</span>
-                <strong>{mode === 'demo' ? 'Yerel demo' : 'Sunucu bağlantısı'}</strong>
-              </div>
-            </div>
-          </Panel>
-          {mode === 'live' && (
-            <Panel title="Hesap ve ekip">
-              <div className="form-section">
-                <p className="description field-description">
-                  {session?.user?.email} · {session?.user && roleLabels[session.user.role]}
-                </p>
-                <Button variant="secondary" onPress={() => setPasswordOpen(true)}>
-                  <KeyRound size={15} />
-                  Parolamı değiştir
-                </Button>
-                {can('team.manage') && (
-                  <Link to="/team" className="button button--secondary">
-                    <Users size={15} />
-                    Kullanıcılar ve roller
-                  </Link>
-                )}
-              </div>
-            </Panel>
-          )}
-          {mode === 'demo' ? (
-            <Panel
-              title="Örnek verileri yenile"
-              description="Çalışma alanını başlangıçtaki örnek kayıtlara döndürün."
-            >
-              <Button variant="secondary" onPress={() => setConfirmReset(true)}>
-                <RotateCcw size={15} />
-                Örnek verileri sıfırla
-              </Button>
-            </Panel>
-          ) : (
-            <Panel title="Örnek ekranlar">
-              <Button variant="secondary" onPress={() => changeMode('demo')}>
-                Örnek çalışma alanını aç
-              </Button>
-            </Panel>
+              <Switch.Content>
+                <Switch.Control>
+                  <Switch.Thumb />
+                </Switch.Control>
+                <Label>{alert.label}</Label>
+              </Switch.Content>
+              <Description>{alert.description}</Description>
+            </Switch>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  )
+}
+
+function DataSection() {
+  const { state, mode, reset, changeMode, can } = useApp()
+  const [confirmReset, setConfirmReset] = useState(false)
+  const manager = can('workspace.manage')
+  const download = () => {
+    const file = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(file)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `pazarhub-yedek-${new Date().toISOString().slice(0, 10)}.json`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+  return (
+    <div className="settings-stack">
+      <Panel
+        title="Yedek indir"
+        description="Ürün, sipariş, stok, cari ve kasa kayıtlarınızın tamamı tek bir JSON dosyasına yazılır ve yalnız bu bilgisayara iner."
+      >
+        <div className="settings-actions">
+          <Button variant="secondary" onPress={download} isDisabled={!manager}>
+            <Download size={16} />
+            Yedeği indir
+          </Button>
+          {!manager && (
+            <p className="subtle">Yedeği yalnız çalışma alanı yöneticileri indirebilir.</p>
           )}
         </div>
-      </div>
+      </Panel>
+      {mode === 'demo' ? (
+        <Panel
+          title="Örnek verileri sıfırla"
+          description="Bu tarayıcıda yaptığınız değişiklikler silinir; çalışma alanı başlangıçtaki örnek kayıtlara döner."
+        >
+          <div className="settings-actions">
+            <Button variant="secondary" onPress={() => setConfirmReset(true)}>
+              <RotateCcw size={16} />
+              Örnek verileri sıfırla
+            </Button>
+          </div>
+        </Panel>
+      ) : (
+        <Panel
+          title="Örnek çalışma alanı"
+          description="Gerçek kayıtlarınıza dokunmadan ekranları örnek verilerle deneyin."
+        >
+          <div className="settings-actions">
+            <Button variant="secondary" onPress={() => changeMode('demo')}>
+              <FlaskConical size={16} />
+              Örnek çalışma alanını aç
+            </Button>
+          </div>
+        </Panel>
+      )}
       <Dialog
         open={confirmReset}
         onClose={() => setConfirmReset(false)}
@@ -209,7 +305,6 @@ export function SettingsPage() {
               variant="danger"
               onPress={() => {
                 reset()
-                setName('Kuzey Studio')
                 setConfirmReset(false)
               }}
             >
@@ -220,75 +315,6 @@ export function SettingsPage() {
       >
         <p className="subtle">Bu işlem yalnızca yerel demo çalışma alanını etkiler.</p>
       </Dialog>
-      {passwordOpen && <PasswordDialog onClose={() => setPasswordOpen(false)} />}
-    </>
-  )
-}
-
-function PasswordDialog({ onClose }: { onClose: () => void }) {
-  const { notify } = useApp()
-  const [currentPassword, setCurrent] = useState(''),
-    [newPassword, setNew] = useState(''),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState('')
-  const save = async () => {
-    if (busy) return
-    setBusy(true)
-    try {
-      await apiRequest('/api/auth/password', {
-        method: 'POST',
-        body: { currentPassword, newPassword },
-      })
-      notify('Parolanız değiştirildi; diğer oturumlar kapatıldı.')
-      onClose()
-    } catch (problem) {
-      setError(problem instanceof Error ? problem.message : 'Parola değiştirilemedi.')
-    } finally {
-      setBusy(false)
-    }
-  }
-  return (
-    <Dialog
-      open
-      title="Parolamı değiştir"
-      onClose={onClose}
-      footer={
-        <>
-          <Button variant="secondary" onPress={onClose}>
-            Vazgeç
-          </Button>
-          <Button
-            variant="primary"
-            isDisabled={busy || newPassword.length < MIN_PASSWORD_LENGTH}
-            onPress={() => void save()}
-          >
-            Parolayı kaydet
-          </Button>
-        </>
-      }
-    >
-      <div className="form-section">
-        <Field
-          type="password"
-          label="Mevcut parola"
-          value={currentPassword}
-          onChange={setCurrent}
-          required
-        />
-        <Field
-          type="password"
-          label="Yeni parola"
-          value={newPassword}
-          onChange={setNew}
-          required
-          description={PASSWORD_HINT}
-        />
-        {error && (
-          <p role="alert" className="form-error">
-            {error}
-          </p>
-        )}
-      </div>
-    </Dialog>
+    </div>
   )
 }

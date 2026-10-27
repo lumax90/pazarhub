@@ -1,0 +1,30 @@
+/* Kehribar — yalnız önizleme ekleri; uygulamaya alınmaz.
+ * 1) Yazı ailesini Google Fonts'tan yükler (kalıcı kurulumda @fontsource kullanılır).
+ * 2) Sol menüye kum tonlu açık bir yüzey verir; yalnız HeroUI değişkenleri
+ *    .app-sidebar kapsamında yeniden tanımlanır. Kalıcı karşılığı planlanan
+ *    uygulama token katmanındaki sol menü token'larıdır.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&display=swap');
+
+.app-sidebar {
+  --surface: oklch(94.6% 0.013 74);
+  --surface-secondary: oklch(91.8% 0.015 72);
+  --default: oklch(91.4% 0.016 72);
+  --border: oklch(88.5% 0.016 70);
+  --separator: oklch(89.5% 0.014 70);
+
+  --surface-hover: color-mix(in oklab, var(--surface) 94%, var(--foreground) 6%);
+  --default-hover: color-mix(in oklab, var(--default) 94%, var(--foreground) 6%);
+  --default-soft: color-mix(in oklab, var(--default) 60%, transparent);
+  --default-soft-hover: color-mix(in oklab, var(--default) 80%, transparent);
+  --separator-secondary: color-mix(in oklab, var(--surface) 85%, var(--foreground) 15%);
+  --border-secondary: color-mix(in oklab, var(--surface) 78%, var(--foreground) 22%);
+}
+
+[data-theme='dark'] .app-sidebar {
+  --surface: oklch(19.2% 0.011 60);
+  --surface-secondary: oklch(24% 0.012 60);
+  --default: oklch(25.5% 0.013 60);
+  --border: oklch(26.5% 0.012 60);
+  --separator: oklch(24.5% 0.011 60);
+}
