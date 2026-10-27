@@ -32,6 +32,19 @@ import { registerOrderReconciliation } from './order-reconciliation'
 import { registerListingContent } from './listing-content/service'
 import { registerClaimDocuments } from './marketplace/claim-documents'
 
+/**
+ * Unknown paths get the app shell only when they look like an app page. A dot segment
+ * (`/.env`, `/.git/HEAD`) or a file extension (`/wp-config.php`, `/backup.sql`) gets a
+ * plain 404, so scanners probing for leaked files are not answered with 200.
+ */
+export function isAppPage(url: string) {
+  const segments = url.split('?')[0].split('/').filter(Boolean)
+  return (
+    !segments.some((segment) => segment.startsWith('.')) &&
+    !/\.[a-z\d]{1,8}$/i.test(segments.at(-1) ?? '')
+  )
+}
+
 export async function createApp(
   config: ServerConfig,
   options: {
@@ -50,6 +63,8 @@ export async function createApp(
     bodyLimit: 1024 * 1024,
     requestTimeout: 30000,
     genReqId: () => randomUUID(),
+    // Per-request lines come from the onResponse hook below, which keeps only the useful ones.
+    disableRequestLogging: true,
     logger:
       options.logger === false
         ? false
@@ -105,6 +120,16 @@ export async function createApp(
   })
   app.addHook('onRequest', async (request, reply) => {
     if (request.url.startsWith('/api/')) reply.header('cache-control', 'no-store')
+  })
+  // Log API writes, API refusals, server errors and slow responses; page loads, assets,
+  // revision polling and scanner noise stay out of the log.
+  app.addHook('onResponse', async (request, reply) => {
+    const api = request.url.startsWith('/api/'),
+      status = reply.statusCode,
+      write = !['GET', 'HEAD', 'OPTIONS'].includes(request.method),
+      ms = Math.round(reply.elapsedTime)
+    if ((api && (write || status >= 400)) || status >= 500 || ms > 3000)
+      request.log.info({ req: request, status, ms }, 'request completed')
   })
   app.setErrorHandler((error, request, reply) => {
     if (error instanceof ZodError)
@@ -177,12 +202,8 @@ export async function createApp(
   await registerFileRoutes(app, database, config)
   const worker = new IntegrationWorker(integrations)
   if (options.worker ?? config.embeddedWorker) worker.start()
-  app.get('/api/health', async () => ({
-    status: 'ok',
-    version: '0.3.0',
-    database: database.kind,
-    environment: config.environment,
-  }))
+  // Public and unauthenticated: say only that the API is up, nothing that fingerprints it.
+  app.get('/api/health', async () => ({ status: 'ok' }))
   app.get('/api/ready', async (_request, reply) => {
     await database.query('SELECT 1')
     const heartbeat = (
@@ -209,7 +230,8 @@ export async function createApp(
       if (
         request.method === 'GET' &&
         !request.url.startsWith('/api/') &&
-        !request.url.startsWith('/media/')
+        !request.url.startsWith('/media/') &&
+        isAppPage(request.url)
       )
         return reply.header('cache-control', 'no-cache').sendFile('index.html')
       return reply
