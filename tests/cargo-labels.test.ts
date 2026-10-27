@@ -60,4 +60,10 @@ describe('cargo labels', () => {
       ['o3', 'Kendi kargo gönderisi var; taşıyıcının etiketini kullanın.'],
     ])
   })
+  it('skips codes a scanner would not read back unchanged', () => {
+    const turkish = order({ trackingNumber: 'KARGO-ŞİŞLİ-1' })
+    expect(cargoLabels(state([turkish]), [turkish]).skipped[0].reason).toBe(
+      'Kargo kodu barkoda dönüştürülemiyor.',
+    )
+  })
 })

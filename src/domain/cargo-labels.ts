@@ -1,5 +1,7 @@
-import { code128Encodable } from '../lib/code128'
 import type { AppState, Order } from './types'
+
+/** Printable ASCII: what every carrier's Code 128 scanner reads back unchanged. */
+const encodable = (code: string) => /^[\x20-\x7e]+$/.test(code)
 
 export interface CargoLabel {
   key: string
@@ -60,7 +62,7 @@ export function cargoLabels(state: AppState, orders: Order[], packageId?: string
       continue
     }
     for (const item of wanted)
-      if (code128Encodable(item.trackingNumber)) labels.push({ order, ...item })
+      if (encodable(item.trackingNumber)) labels.push({ order, ...item })
       else skipped.push({ order, reason: 'Kargo kodu barkoda dönüştürülemiyor.' })
   }
   return { labels, skipped }
