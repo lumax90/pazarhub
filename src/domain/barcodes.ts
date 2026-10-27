@@ -1,3 +1,4 @@
+import type { Symbology } from '../lib/linear-barcode'
 import type { AppState, EcommerceSettings } from './types'
 
 /** Global trade item number lengths: GTIN-8, UPC-A (12), EAN-13, GTIN-14. */
@@ -31,6 +32,18 @@ export function gtinProblem(code: string) {
   return Number(code.at(-1)) === expected
     ? undefined
     : `Kontrol hanesi hatalı; son hane ${expected} olmalı.`
+}
+
+/** Retail scanners expect a GTIN in its own symbology; anything else prints as Code 128. */
+export function productSymbology(code: string): Symbology {
+  if (!isGtin(code)) return 'code128'
+  return code.length === 13
+    ? 'ean13'
+    : code.length === 8
+      ? 'ean8'
+      : code.length === 12
+        ? 'upca'
+        : 'code128'
 }
 
 /** GS1 company prefix: digits only, leaving room for an item number in an EAN-13. */

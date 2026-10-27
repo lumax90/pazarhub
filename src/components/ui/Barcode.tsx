@@ -1,32 +1,38 @@
-import { code128Widths, QUIET_ZONE } from '../../lib/code128'
+import { barcodeWidths, quietZone } from '../../lib/linear-barcode'
+import type { Symbology } from '../../lib/linear-barcode'
 
 /** One dot of a 203 dpi thermal printer, the coarsest printer a label meets. */
 const DOT_MM = 25.4 / 203
 
 /**
- * Code 128 drawn in physical units. The module width is snapped to whole printer dots so
- * every bar keeps its exact width ratio when a thermal printer rasterises it.
+ * A linear barcode drawn in physical units. The module width is snapped to whole printer
+ * dots so every bar keeps its exact width ratio when a thermal printer rasterises it.
  */
 export function Barcode({
   value,
   widthMm,
   heightMm,
+  symbology = 'code128',
+  className = 'order-print-label-barcode',
 }: {
   value: string
   widthMm: number
   heightMm: number
+  symbology?: Symbology
+  className?: string
 }) {
-  const widths = code128Widths(value)
-  const modules = widths.reduce((sum, width) => sum + width, 0) + QUIET_ZONE * 2
+  const widths = barcodeWidths(value, symbology)
+  const quiet = quietZone(symbology)
+  const modules = widths.reduce((sum, width) => sum + width, 0) + quiet * 2
   const fitted = widthMm / modules
   // Two dots per module is the readable minimum; past four dots a wider bar adds nothing.
   const module = fitted >= DOT_MM * 2 ? Math.min(Math.floor(fitted / DOT_MM), 4) * DOT_MM : fitted
   let path = ''
-  for (let index = 0, x = QUIET_ZONE; index < widths.length; x += widths[index++])
+  for (let index = 0, x = quiet; index < widths.length; x += widths[index++])
     if (index % 2 === 0) path += `M${x} 0h${widths[index]}v1h-${widths[index]}z`
   return (
     <svg
-      className="order-print-label-barcode"
+      className={className}
       role="img"
       aria-label={`Barkod ${value}`}
       viewBox={`0 0 ${modules} 1`}

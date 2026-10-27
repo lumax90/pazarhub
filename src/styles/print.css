@@ -212,6 +212,87 @@
   border-top: 0.25mm solid #000;
   font-size: 0.85em;
 }
+/* Product barcode stickers; kept under .order-print-page because they are paper output. */
+.order-print-page .product-label-copies {
+  max-width: 900px;
+  margin: 0 auto 4mm;
+}
+.order-print-page .product-label-sheet {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4mm;
+  margin: 0 auto 4mm;
+  max-width: 220mm;
+}
+.order-print-page .product-label {
+  width: 50mm;
+  height: 30mm;
+  box-sizing: border-box;
+  padding: 1.5mm 2mm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5mm;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+  border: 0.3mm solid #c8ced6;
+  font-family: var(--font-sans);
+  font-size: 7pt;
+  line-height: var(--app-leading-tight);
+  text-align: center;
+}
+.order-print-page.product-labels--60x40 .product-label {
+  width: 60mm;
+  height: 40mm;
+  padding: 2mm 2.5mm;
+  gap: 1mm;
+  font-size: 8.5pt;
+}
+.order-print-page.product-labels--a4 .product-label {
+  width: 70mm;
+  height: 37mm;
+  padding: 2mm 3mm;
+  gap: 0.8mm;
+  font-size: 8pt;
+}
+.order-print-page .product-label-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-weight: var(--app-weight-semibold);
+}
+.order-print-page .product-label-meta {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.85em;
+}
+.order-print-page .product-label-barcode {
+  flex: none;
+}
+.order-print-page .product-label-code {
+  font-family: var(--font-mono);
+  letter-spacing: var(--app-tracking-caps);
+}
+@page product-label-50x30 {
+  size: 50mm 30mm;
+  margin: 0;
+}
+@page product-label-60x40 {
+  size: 60mm 40mm;
+  margin: 0;
+}
+@page product-label-a4 {
+  size: A4;
+  margin: 0;
+}
 @page order-print-label-100x100 {
   size: 100mm 100mm;
   margin: 0;
@@ -329,5 +410,38 @@
   .order-print-labels--a4 .order-print-label {
     outline: 0.2mm dashed #999;
     outline-offset: 1.5mm;
+  }
+  .order-print-page .product-label-copies {
+    display: none;
+  }
+  .order-print-page .product-label-sheet {
+    display: block;
+    margin: 0;
+    max-width: none;
+    break-after: page;
+  }
+  .order-print-page .product-label-sheet:last-child {
+    break-after: auto;
+  }
+  .order-print-page.product-labels--50x30 .product-label-sheet {
+    page: product-label-50x30;
+  }
+  .order-print-page.product-labels--60x40 .product-label-sheet {
+    page: product-label-60x40;
+  }
+  .order-print-page .product-label {
+    border: 0;
+  }
+  /* A4 sticker sheet: 3 × 8 labels of 70 × 37 mm, filled from the top-left sticker. */
+  .order-print-page.product-labels--a4 .product-label-sheet {
+    page: product-label-a4;
+    display: grid;
+    grid-template-columns: repeat(3, 70mm);
+    grid-auto-rows: 37mm;
+    align-content: start;
+    gap: 0;
+    padding-top: 0.5mm;
+    width: 210mm;
+    height: 297mm;
   }
 }

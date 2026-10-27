@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Chip, Tabs } from '@heroui/react'
-import { ArrowRight, Check, Layers3, Plus, RefreshCw, Save } from 'lucide-react'
+import { ArrowRight, Barcode, Check, Layers3, Plus, RefreshCw, Save } from 'lucide-react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { useApp } from '../app/AppProvider'
 import type { Listing, Product, ProductPatch, Variant } from '../domain/types'
@@ -569,6 +569,15 @@ function ProductWorkspace({ product, reload }: { product: Product; reload: () =>
               disabled={disabled}
             />,
             'Barkod ve stok kodları çalışma alanınızda benzersiz olmalı. Barkodları metin olarak saklarız; baştaki sıfırlar korunur.',
+            <a
+              className="button button--secondary button--sm"
+              href={`/products/labels?ids=${encodeURIComponent(base.id)}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Barcode size={14} />
+              Barkod etiketi yazdır
+            </a>,
           )}
         </Tabs.Panel>
         <Tabs.Panel id="images">

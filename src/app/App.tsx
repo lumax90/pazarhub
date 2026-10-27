@@ -20,6 +20,9 @@ const OrderPrintPage = lazy(() =>
 const CargoLabelPage = lazy(() =>
   import('../pages/CargoLabelPage').then((module) => ({ default: module.CargoLabelPage })),
 )
+const ProductLabelPage = lazy(() =>
+  import('../pages/ProductLabelPage').then((module) => ({ default: module.ProductLabelPage })),
+)
 const ProductsPage = lazy(() =>
   import('../pages/ProductsPage').then((module) => ({ default: module.ProductsPage })),
 )
@@ -129,6 +132,20 @@ export function App() {
             }
           >
             <CargoLabelPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="products/labels"
+        element={
+          <Suspense
+            fallback={
+              <div className="page-loading" role="status">
+                Barkod etiketleri hazırlanıyor…
+              </div>
+            }
+          >
+            <ProductLabelPage />
           </Suspense>
         }
       />
