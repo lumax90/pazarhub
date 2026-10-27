@@ -1,0 +1,91 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    init: true
+    environment: &application-environment
+      NODE_ENV: production
+      API_PORT: 3001
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?Set PUBLIC_ORIGIN to your HTTPS domain}
+      DATABASE_URL: postgresql://pazarhub:${POSTGRES_PASSWORD:?Set a database password}@database:5432/pazarhub
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set a stable 64-character hexadecimal key}
+      EMBEDDED_WORKER: 'false'
+      REGISTRATION_ENABLED: ${REGISTRATION_ENABLED:-true}
+      INTEGRATION_NAME: ${INTEGRATION_NAME:-Pazarhub}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+    expose:
+      - '3001'
+    depends_on:
+      database:
+        condition: service_healthy
+    stop_grace_period: 60s
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3001/api/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+
+  worker:
+    build: .
+    command: ['node', 'server-dist/worker-entry.js']
+    restart: unless-stopped
+    init: true
+    environment: *application-environment
+    depends_on:
+      database:
+        condition: service_healthy
+    stop_grace_period: 90s
+    healthcheck:
+      test: ['CMD', 'node', 'scripts/worker-health.mjs']
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+  database:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pazarhub
+      POSTGRES_USER: pazarhub
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a database password}
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U pazarhub -d pazarhub']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backup:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    entrypoint: ['/bin/sh', '/scripts/backup.sh']
+    environment:
+      PGHOST: database
+      PGDATABASE: pazarhub
+      PGUSER: pazarhub
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set a database password}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+    volumes:
+      - ./scripts/backup.sh:/scripts/backup.sh:ro
+      - database-backups:/backups
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  database-backups:

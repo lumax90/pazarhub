@@ -1,0 +1,4 @@
+Model;SKU;Barkod;Ürün adı;Varyant;Kategori;Marka;Satış fiyatı;Alış fiyatı;Stok;KDV
+GECIS-HAVLU;GECIS-BEYAZ;8690000900001;Geçiş havlusu;Beyaz;Banyo;Örnek;120,00;40,00;12;20
+GECIS-HAVLU;GECIS-SIYAH;8690000900002;Geçiş havlusu;Siyah;Banyo;Örnek;150,00;50,00;8;20
+GECIS-SABUN;GECIS-SABUN;8690000900003;Geçiş sabunu;Standart;Banyo;Örnek;50,00;15,00;30;20

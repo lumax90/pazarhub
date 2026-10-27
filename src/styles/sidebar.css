@@ -1,0 +1,57 @@
+/* Rail geometry only; interactive surfaces retain their native HeroUI skin. */
+.nav-rail-indicator {
+  position: absolute;
+  right: 8px;
+  top: 5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+}
+@media (min-width: 881px) {
+  .app-shell[data-sidebar='compact'] {
+    --app-sidebar-width: 72px;
+  }
+  .app-shell[data-sidebar='compact'] .brand {
+    padding-inline: 18px;
+    gap: 0;
+  }
+  .app-shell[data-sidebar='compact'] .brand-wordmark,
+  .app-shell[data-sidebar='compact'] .company-copy,
+  .app-shell[data-sidebar='compact'] .sidebar-environment > span:not(.demo-led) {
+    display: none;
+  }
+  .app-shell[data-sidebar='compact'] .sidebar-navigation {
+    padding-inline: 8px;
+  }
+  .app-shell[data-sidebar='compact'] .nav-section-items {
+    padding-block: 4px;
+  }
+  .app-shell[data-sidebar='compact'] .nav-section {
+    margin-bottom: 8px;
+  }
+  .app-shell[data-sidebar='compact'] .nav-section + .nav-section {
+    border-top: 1px solid var(--separator);
+    padding-top: 8px;
+  }
+  .app-shell[data-sidebar='compact'] .sidebar-bottom {
+    padding-inline: 12px;
+  }
+  .app-shell[data-sidebar='compact'] .sidebar-environment {
+    justify-content: center;
+    margin-top: 8px;
+    padding: 12px 0;
+  }
+}
+@media (min-width: 881px) and (prefers-reduced-motion: no-preference) {
+  .app-sidebar {
+    transition: width 220ms var(--ease-out);
+  }
+  .main-shell {
+    transition: margin-left 220ms var(--ease-out);
+  }
+  .brand {
+    transition: padding 220ms var(--ease-out);
+  }
+}

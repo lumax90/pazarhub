@@ -1,0 +1,73 @@
+/* Token-only test theme based on HeroUI's documented Ocean example.
+ * https://heroui.com/docs/react/getting-started/theming#create-your-own-theme
+ * Deliberately varies font, field borders and shadows as well as the accent.
+ */
+@layer base {
+  :root {
+    --font-sans: Arial, sans-serif;
+    --radius: 0.75rem;
+    --field-radius: calc(var(--radius) * 1.5);
+    --field-border-width: 1px;
+  }
+  :root,
+  .light,
+  [data-theme='light'] {
+    color-scheme: light;
+    --background: oklch(0.985 0.015 225);
+    --foreground: oklch(0.2103 0.0059 285.89);
+    --surface: oklch(1 0 0);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(0.95 0.018 225);
+    --surface-tertiary: oklch(0.93 0.024 225);
+    --overlay: var(--surface);
+    --overlay-foreground: var(--foreground);
+    --accent: oklch(0.45 0.15 230);
+    --accent-foreground: var(--snow);
+    --focus: var(--accent);
+    --link: var(--accent);
+    --muted: oklch(0.5517 0.0138 285.94);
+    --default: oklch(0.94 0.015 225);
+    --default-foreground: var(--foreground);
+    --field-background: oklch(0.98 0.009 225);
+    --field-border: oklch(0.7 0.06 225);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --segment: var(--surface);
+    --segment-foreground: var(--foreground);
+    --border: oklch(0.5 0.06 230 / 22%);
+    --separator: oklch(0.92 0.004 286.32);
+    --surface-shadow: 0 2px 4px rgb(0 0 0 / 4%);
+    --field-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+    --overlay-shadow: 0 4px 16px rgb(24 24 27 / 8%);
+  }
+  .dark,
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --background: oklch(0.14 0.02 230);
+    --foreground: var(--snow);
+    --surface: oklch(0.2103 0.0059 285.89);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(0.26 0.01 225);
+    --surface-tertiary: oklch(0.3 0.02 225);
+    --overlay: oklch(0.22 0.0059 285.89);
+    --overlay-foreground: var(--foreground);
+    --accent: oklch(0.86 0.08 230);
+    --accent-foreground: var(--eclipse);
+    --focus: var(--accent);
+    --link: var(--accent);
+    --muted: oklch(0.705 0.015 286.067);
+    --default: oklch(0.274 0.006 286.033);
+    --default-foreground: var(--snow);
+    --field-background: var(--default);
+    --field-border: oklch(0.4 0.03 225);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --segment: oklch(0.3964 0.01 285.93);
+    --segment-foreground: var(--foreground);
+    --border: oklch(0.22 0.006 286.033);
+    --separator: oklch(0.22 0.006 286.033);
+    --surface-shadow: 0 0 0 0 transparent inset;
+    --field-shadow: 0 0 0 0 transparent inset;
+    --overlay-shadow: 0 0 0 0 transparent inset;
+  }
+}

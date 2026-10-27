@@ -1,0 +1,166 @@
+/* Paper rendering is independent of the selected screen theme. */
+
+.order-print-page {
+  color: #283345;
+  background: #f4f5f7;
+  min-height: 100vh;
+  padding: 24px;
+  color-scheme: light;
+}
+.order-print-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto 24px;
+  font-size: 13px;
+}
+.order-print-document {
+  max-width: 900px;
+  margin: 0 auto 24px;
+  padding: 38px;
+  border: 1px solid #e1e5ea;
+  background: #fff;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.7;
+  page: order-summary;
+}
+.order-print-document > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e1e5ea;
+}
+.order-print-document h1 {
+  font-size: 23px;
+  font-weight: 600;
+  margin: 8px 0;
+}
+.order-print-document h2 {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.order-print-addresses {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 30px;
+  margin: 24px 0;
+}
+.order-print-document p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.order-print-document table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+}
+.order-print-document th,
+.order-print-document td {
+  padding: 10px;
+  border-bottom: 1px solid #e1e5ea;
+  text-align: right;
+  vertical-align: top;
+}
+.order-print-document th:first-child,
+.order-print-document td:first-child {
+  text-align: left;
+}
+.order-print-document th {
+  font-weight: 500;
+  font-size: 11px;
+  background: #f5f7fa;
+}
+.order-print-document td small {
+  display: block;
+  color: #66748a;
+}
+.order-print-totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 0 24px;
+}
+.order-print-totals strong {
+  font-size: 16px;
+}
+.order-print-document footer {
+  margin-top: 30px;
+  font-size: 10px;
+  color: #66748a;
+}
+@media (max-width: 700px) {
+  .order-print-page {
+    padding: 14px;
+  }
+}
+@media (max-width: 700px) {
+  .order-print-document {
+    padding: 20px;
+    overflow-x: auto;
+  }
+}
+@media (max-width: 700px) {
+  .order-print-document table {
+    min-width: 580px;
+  }
+}
+@media print {
+  .order-print-page {
+    padding: 0;
+    background: #fff;
+  }
+}
+@media print {
+  .order-print-toolbar {
+    display: none;
+  }
+}
+@media print {
+  .order-print-document {
+    border: 0;
+    border-radius: 0;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    break-after: page;
+    overflow: visible;
+  }
+}
+@media print {
+  .order-print-document:last-child {
+    break-after: auto;
+  }
+}
+@media print {
+  .order-print-document table {
+    min-width: 0;
+    font-size: 10px;
+  }
+}
+@media print {
+  .order-print-document tr {
+    break-inside: avoid;
+  }
+}
+@media print {
+  .order-print-addresses {
+    break-inside: avoid;
+  }
+}
+@media print {
+  .sale-bundle-contents > div {
+    display: grid !important;
+  }
+}
+@media print {
+  .sale-bundle-contents {
+    break-inside: avoid;
+    border-color: #ddd;
+  }
+}

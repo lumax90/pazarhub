@@ -1,0 +1,77 @@
+/* Application layout; visual values use the selected HeroUI theme. */
+.margin-template-summary {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.ecommerce-settings-body {
+  padding: 22px;
+}
+.margin-template-summary strong {
+  font-size: var(--text-sm);
+  font-weight: 570;
+}
+.margin-template-summary p {
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.margin-template-summary span {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+.margin-rule-form {
+  display: grid;
+  gap: 18px;
+}
+.margin-example {
+  padding: 18px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--separator);
+  background: var(--surface-secondary);
+  display: grid;
+  gap: 18px;
+}
+.margin-example > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent);
+}
+.margin-example strong {
+  font-size: var(--text-sm);
+  font-weight: 550;
+}
+.margin-example dl {
+  display: grid;
+  gap: 10px;
+  font-size: var(--text-sm);
+}
+.margin-example dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+.margin-example dt {
+  color: var(--muted);
+}
+.margin-example dd {
+  font-variant-numeric: tabular-nums;
+}
+.margin-example dl > div:last-child {
+  padding-top: 14px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-base);
+  font-weight: 550;
+}
+@media (max-width: 600px) {
+  .margin-example {
+    padding: 14px;
+  }
+  .margin-template-summary .row-actions {
+    flex-wrap: wrap;
+  }
+}

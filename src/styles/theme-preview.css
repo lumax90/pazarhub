@@ -1,0 +1,39 @@
+/* These miniature canvases read the same light/dark tokens as the application. */
+.theme-preview {
+  display: flex;
+  width: 100%;
+  height: 87px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.theme-preview-pane {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+  gap: 8px;
+  background: var(--background);
+  border: 1px solid var(--border);
+}
+.theme-preview-pane > i {
+  width: 25%;
+  background: var(--surface-secondary);
+  border-radius: var(--radius-sm);
+}
+.theme-preview-pane > span {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.theme-preview-pane b {
+  width: calc(50% - 2px);
+  height: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.theme-preview-pane b:last-child {
+  width: 100%;
+  height: 34px;
+}

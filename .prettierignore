@@ -1,0 +1,9 @@
+dist
+server-dist
+.data
+backups
+scripts/*.ps1
+node_modules
+package-lock.json
+test-results
+playwright-report

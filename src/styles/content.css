@@ -1,0 +1,206 @@
+/* Brand identifiers and product artwork; these are data, not the UI palette. */
+
+.channel-icon {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-md);
+  font-size: 17px;
+  font-weight: 720;
+  letter-spacing: -1px;
+  line-height: 1;
+  position: relative;
+  background: white;
+}
+.channel-icon-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+.channel-icon--cargo {
+  background: white;
+}
+.channel-icon--manual {
+  color: var(--muted);
+  background: var(--default);
+  font-size: 12px;
+  letter-spacing: -0.4px;
+}
+.channel-icon--lg {
+  height: 44px;
+  width: 44px;
+  border-radius: var(--radius-xl);
+  font-size: 30px;
+}
+.product-art {
+  width: 44px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: color-mix(in oklab, var(--product-color) 12%, var(--surface-secondary));
+}
+.product-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.distribution-trendyol {
+  background: #f3986a;
+}
+.distribution-hepsiburada {
+  background: #efbc70;
+}
+.distribution-n11 {
+  background: #dfa0aa;
+}
+.distribution-amazon {
+  background: #8191a9;
+}
+.distribution-manual {
+  background: var(--muted);
+}
+.simple-table .channel-icon {
+  height: 18px;
+  width: 18px;
+  border-radius: var(--radius-md);
+}
+.top-product-row .product-art {
+  width: 36px;
+  height: 39px;
+  border-radius: var(--radius-md);
+}
+.order-products .product-art {
+  width: 30px;
+  height: 33px;
+  border: 2px solid var(--surface);
+  margin-left: -5px;
+}
+.order-products .product-art:first-child {
+  margin-left: 0;
+}
+.channel-icon-stack {
+  display: flex;
+  gap: 4px;
+}
+.channel-icon-stack .channel-icon {
+  width: 20px;
+  height: 20px;
+}
+.product-grid-image .product-art {
+  width: 100%;
+  height: 190px;
+  border-radius: 0;
+}
+.product-grid-image .product-art svg {
+  padding: 15px;
+}
+.retail-product-image .product-art {
+  width: 100%;
+  height: 145px;
+  border-radius: 0;
+}
+.retail-product-image .product-art svg {
+  padding: 8px;
+}
+.cart-line .product-art {
+  width: 42px;
+  height: 46px;
+}
+.connection-card.is-paused .channel-icon {
+  opacity: 0.65;
+}
+@media (max-width: 1250px) {
+  .recent-orders-table .channel-badge > span:last-child:not(.channel-icon) {
+    display: none;
+  }
+}
+@media (max-width: 680px) {
+  .channel-total-row .channel-icon {
+    width: 19px;
+    height: 19px;
+  }
+}
+@media (max-width: 680px) {
+  .top-product-row .product-art {
+    width: 41px;
+    height: 44px;
+  }
+}
+@media (max-width: 680px) {
+  .product-grid-image .product-art {
+    height: 150px;
+  }
+}
+@media (max-width: 680px) {
+  .retail-product-image .product-art {
+    height: 155px;
+  }
+}
+@media (max-width: 680px) {
+  .connection-card-top .channel-icon--lg {
+    width: 37px;
+    height: 37px;
+  }
+}
+.publication-product .product-art {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 18px;
+  border-radius: var(--radius-2xl);
+}
+@media (max-width: 780px) {
+  .publication-product .product-art {
+    width: 65px;
+    height: 65px;
+    margin-bottom: 10px;
+  }
+}
+.product-art--photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: inherit;
+}
+.provider-card .provider-icon,
+.provider-card .channel-icon {
+  flex-shrink: 0;
+}
+.product-draft-summary .product-art {
+  width: 100%;
+  height: 190px;
+  border-radius: var(--radius-xl);
+}
+.product-overview-card .product-art {
+  width: 82px;
+  height: 82px;
+  border-radius: var(--radius-xl);
+  flex-shrink: 0;
+}
+.product-image-lightbox .product-art {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+@media (max-width: 640px) {
+  .product-overview-card .product-art {
+    width: 65px;
+    height: 65px;
+  }
+}
+.retail-low-stock .product-art {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+}
+.order-detail-product .product-art {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}

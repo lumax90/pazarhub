@@ -1,0 +1,137 @@
+{
+  "checkedAt": "2026-10-27",
+  "logos": [
+    {
+      "id": "trendyol",
+      "file": "trendyol.png",
+      "width": 512,
+      "height": 512,
+      "sourcePage": "https://apps.apple.com/tr/app/id524362642",
+      "sourceUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ee/8e/36/ee8e36e4-8fb5-d443-8426-52f6fb1c1b3b/AppIcon-0-0-1x_U007epad-0-1-0-0-85-220.png/512x512bb.jpg",
+      "sourceSha256": "13973a281832ea8473154dc421c95ed3d2406ab453516fbe47b20d15dcd562ec",
+      "sha256": "d342f0015225ae704e1bbeefc15e13b21674b6af89949caa7b82e323c644fd70",
+      "processing": "PNG conversion at original decoded dimensions; no recoloring or cropping"
+    },
+    {
+      "id": "hepsiburada",
+      "file": "hepsiburada.png",
+      "width": 32,
+      "height": 32,
+      "sourcePage": "https://www.hepsiburada.com/",
+      "sourceUrl": "https://images.hepsiburada.net/storefront/storefront/www/assets/images/favicon-32x32.png",
+      "sourceSha256": "b8946858a05581ededef1e4cab06e7edbc79b650a68564cf7b90f9b48f6c2d90",
+      "sha256": "b8946858a05581ededef1e4cab06e7edbc79b650a68564cf7b90f9b48f6c2d90",
+      "processing": "unchanged"
+    },
+    {
+      "id": "n11",
+      "file": "n11.png",
+      "width": 1000,
+      "height": 1000,
+      "sourcePage": "https://www.n11.com/",
+      "sourceUrl": "https://n11scdn.akamaized.net/a1/org/26/06/22/46/33/24/20/13/92/26/12/52/988359710264570852.png",
+      "sourceSha256": "2b595dfec1c36377bd234ee6ddb797f8a0b429dc4dbd569d5e0d524b30826027",
+      "sha256": "2b595dfec1c36377bd234ee6ddb797f8a0b429dc4dbd569d5e0d524b30826027",
+      "processing": "unchanged"
+    },
+    {
+      "id": "amazon",
+      "file": "amazon.png",
+      "width": 48,
+      "height": 48,
+      "sourcePage": "https://www.amazon.com.tr/",
+      "sourceUrl": "https://www.amazon.com.tr/favicon.ico",
+      "sourceSha256": "5866636f18764cd66366ae6eb682e972b4eae1771512cd76b304b6dd3c0f1d2d",
+      "sha256": "b8648103a8d3d4b56d44b9cb1080472417320026e9796c86bdd71fb482a51968",
+      "processing": "PNG conversion at original decoded dimensions; no recoloring or cropping"
+    },
+    {
+      "id": "ciceksepeti",
+      "file": "ciceksepeti.png",
+      "width": 152,
+      "height": 152,
+      "sourcePage": "https://www.ciceksepeti.com/",
+      "sourceUrl": "https://cdn.ciceksepeti.com/Themes/Ciceksepeti/Assets/images/apple/apple-touch-icon-152x152.png",
+      "sourceSha256": "5c9fe37f0ccbbb8d2beb8ca9076b6613f5c42c18b64488836590efe9d3cd36e6",
+      "sha256": "5c9fe37f0ccbbb8d2beb8ca9076b6613f5c42c18b64488836590efe9d3cd36e6",
+      "processing": "unchanged"
+    },
+    {
+      "id": "pazarama",
+      "file": "pazarama.png",
+      "width": 512,
+      "height": 512,
+      "sourcePage": "https://apps.apple.com/tr/app/id1641102585",
+      "sourceUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/05/06/16/05061681-de07-08a9-539b-5187bde7920e/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
+      "sourceSha256": "e0147f6f24ec4a9869b1aa3c1fe3fbf5aa2b4d45067de19d5a97f6db401581ba",
+      "sha256": "193353efe9a22876bedd989e30038f391099e0287c2ee629afc8d4ea5215be50",
+      "processing": "PNG conversion at original decoded dimensions; no recoloring or cropping"
+    },
+    {
+      "id": "pttavm",
+      "file": "pttavm.png",
+      "width": 196,
+      "height": 196,
+      "sourcePage": "https://www.pttavm.com/",
+      "sourceUrl": "https://cdn-s3.pttavm.com/frontend/web/73679/icons/favicon.png",
+      "sourceSha256": "04275937c5a79c0d773e19f83c3ccf542b563ea6ee4dbae0a41a47de8cd0bb82",
+      "sha256": "04275937c5a79c0d773e19f83c3ccf542b563ea6ee4dbae0a41a47de8cd0bb82",
+      "processing": "unchanged"
+    },
+    {
+      "id": "toptantr",
+      "file": "toptantr.png",
+      "width": 48,
+      "height": 48,
+      "sourcePage": "https://www.toptantr.com/",
+      "sourceUrl": "https://www.toptantr.com/icons/icons_0/favicon.ico",
+      "sourceSha256": "1a138296b41e099aec6f653e49795eb13abb98a271254f8aeae6302b677acfc3",
+      "sha256": "df850a28f83ac0a66acdd40ab6e74c40e17fa1208eab361d99f4fdcbbbc8118d",
+      "processing": "PNG conversion at original decoded dimensions; no recoloring or cropping"
+    },
+    {
+      "id": "yurtici",
+      "file": "yurtici.png",
+      "width": 512,
+      "height": 512,
+      "sourcePage": "https://apps.apple.com/tr/app/id358749389",
+      "sourceUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8a/dd/43/8add43ac-fc48-5d0d-c0d9-3f3ee2129b08/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
+      "sourceSha256": "057d6f60dbe82d2bc792ae3a8403592ee21f8d2e300d883a474595bde1b46c24",
+      "sha256": "27c9909b9eea1c66b363939d247dc29a7f3f19d7760ace1090d531353d85153f",
+      "processing": "PNG conversion at original decoded dimensions; no recoloring or cropping"
+    },
+    {
+      "id": "dhl",
+      "file": "dhl.png",
+      "width": 48,
+      "height": 48,
+      "sourcePage": "https://www.dhlecommerce.com.tr/",
+      "sourceUrl": "https://www.dhlecommerce.com.tr/favicon.ico",
+      "sourceSha256": "c071b7d5f554e8c6bf5322448fed6c10e07824b26f8214e520aefc9f15eeb79d",
+      "sha256": "696a7997c1bae3906409f48f94ef41008a97dda3ab7ce422182e45a12c2d0d2c",
+      "processing": "PNG conversion at original decoded dimensions; no recoloring or cropping"
+    },
+    {
+      "id": "aras",
+      "file": "aras.png",
+      "width": 512,
+      "height": 512,
+      "sourcePage": "https://apps.apple.com/tr/app/id1524636976",
+      "sourceUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/0e/34/63/0e346351-83ce-83ea-53ec-c522bb1485b8/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
+      "sourceSha256": "e3ae3fc4adc6c173a137e6f82b8d1cc75f18e3c28408e66765892947ffc6a586",
+      "sha256": "2dd33adf783c99371349def6579039d1d11d437ae7ec91fb37a6067158c41e90",
+      "processing": "PNG conversion at original decoded dimensions; no recoloring or cropping"
+    },
+    {
+      "id": "ptt",
+      "file": "ptt.png",
+      "width": 512,
+      "height": 512,
+      "sourcePage": "https://apps.apple.com/tr/app/id1620344929",
+      "sourceUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/fa/c2/1e/fac21ed9-92fa-1bd6-5548-5143c0c88d10/AppIcon-0-0-1x_U007emarketing-0-6-0-85-220.png/512x512bb.jpg",
+      "sourceSha256": "32ec4a9cbfc78584be19d1884460bd430b5891248055cc806c00ad9342fa7f26",
+      "sha256": "c6f7c1c934cd705379507a117ff7ae68c4be9dfc9b7a9a71687cdd6f2a81e424",
+      "processing": "PNG conversion at original decoded dimensions; no recoloring or cropping"
+    }
+  ]
+}
