@@ -27,6 +27,7 @@ export function DataTable<T extends { id: string }>({
   emptyDescription,
   pageSize: initialPageSize = 10,
   paginate = true,
+  onRowAction,
 }: {
   items: T[]
   columns: Column<T>[]
@@ -40,6 +41,8 @@ export function DataTable<T extends { id: string }>({
   emptyDescription?: string
   pageSize?: number
   paginate?: boolean
+  /** Opens the row: the whole row is clickable and Enter triggers it, so cells need no button. */
+  onRowAction?: (item: T) => void
 }) {
   const [page, setPage] = useState(1)
   const [size, setSize] = useState(initialPageSize)
@@ -76,7 +79,7 @@ export function DataTable<T extends { id: string }>({
     )
 
   return (
-    <div className="data-table-wrap">
+    <div className={`data-table-wrap${onRowAction ? ' is-actionable' : ''}`}>
       <Table className="app-data-table">
         <Table.ScrollContainer>
           <Table.Content
@@ -98,6 +101,13 @@ export function DataTable<T extends { id: string }>({
             }
             sortDescriptor={sort}
             onSortChange={setSort}
+            onRowAction={
+              onRowAction &&
+              ((key) => {
+                const item = displayed.find((row) => row.id === key)
+                if (item) onRowAction(item)
+              })
+            }
           >
             <Table.Header>
               {onSelectionChange && (

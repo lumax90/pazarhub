@@ -109,8 +109,10 @@ test('configures verified margin rules, VAT input and provider-wide brand mappin
     )?.variants[0].price,
   ).toBe(12000)
   await page.goto('/definitions/mappings')
-  await page.getByRole('button', { name: 'Eşleme türü', exact: true }).click()
-  await page.getByRole('menuitemradio', { name: 'Markalar', exact: true }).click()
+  await page
+    .getByRole('group', { name: 'Eşleme türü', exact: true })
+    .getByRole('button', { name: 'Markalar', exact: true })
+    .click()
   await page.getByRole('button', { name: 'Eşleme ekle', exact: true }).click()
   await page.getByRole('button', { name: 'Pazaryeri markası', exact: true }).click()
   await page

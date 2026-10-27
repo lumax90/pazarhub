@@ -22,6 +22,7 @@ import { DataTable } from '../components/ui/DataTable'
 import {
   Dialog,
   EmptyState,
+  FilterTabs,
   PageHeader,
   Panel,
   SearchBox,
@@ -584,21 +585,24 @@ function DefinitionMappingsPage() {
         title="Eşleştirmeler"
         description="Yerel kategorilerin pazaryeri kategori ve ortak özellik karşılıkları."
       />
-      <Panel className="product-form-card">
-        <SelectButton
-          label="Eşleme mağazası"
-          value={storeId}
-          onChange={(value) => {
-            setStore(value)
-            setTab('category')
-          }}
-          options={state.connections.map((store) => ({ id: store.id, label: store.name }))}
-        />
-        <SelectButton
+      <Panel className="product-form-card mapping-panel">
+        <div className="select-field mapping-store">
+          <label className="label">Mağaza</label>
+          <SelectButton
+            label="Eşleme mağazası"
+            value={storeId}
+            onChange={(value) => {
+              setStore(value)
+              setTab('category')
+            }}
+            options={state.connections.map((store) => ({ id: store.id, label: store.name }))}
+          />
+        </div>
+        <FilterTabs
           label="Eşleme türü"
           value={tab}
           onChange={setTab}
-          options={[
+          items={[
             { id: 'category', label: 'Kategoriler' },
             ...(['trendyol', 'pazarama', 'toptantr'].includes(provider ?? '')
               ? [{ id: 'brand', label: 'Markalar' }]
@@ -620,7 +624,13 @@ function DefinitionMappingsPage() {
           )
         ) : (
           <EmptyState
-            title="Mağaza bağlantısı seçin"
+            title={
+              !storeId
+                ? 'Mağaza seçin'
+                : mode !== 'live'
+                  ? 'Örnek çalışma alanında eşleme yapılmaz'
+                  : 'Bu pazaryeri için eşleme yok'
+            }
             description="Kategori eşlemesi gerçek pazaryeri bağlantısıyla hazırlanır."
           />
         )}

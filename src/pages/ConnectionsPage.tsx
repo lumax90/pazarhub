@@ -93,18 +93,28 @@ export function ConnectionsPage() {
             </div>
           </Panel>
         ))}
-        <button
-          className="button button--md button--ghost add-connection-card"
-          onClick={() =>
-            setEditing({ id: crypto.randomUUID(), channel: 'hepsiburada', name: '', active: true })
-          }
-        >
-          <span>
+        <Panel className="add-connection-card">
+          <span className="add-connection-icon" aria-hidden="true">
             <Plus size={26} strokeWidth={1.5} />
           </span>
           <strong>Bir mağaza daha ekleyin</strong>
           <p>Aynı pazaryerinde birden fazla mağazayı ayrı takip edin.</p>
-        </button>
+          <Button
+            size="sm"
+            variant="secondary"
+            onPress={() =>
+              setEditing({
+                id: crypto.randomUUID(),
+                channel: 'hepsiburada',
+                name: '',
+                active: true,
+              })
+            }
+          >
+            <Plus size={14} />
+            Mağaza ekle
+          </Button>
+        </Panel>
       </div>
       <div className="integration-bottom-note">
         <Link2 size={17} />

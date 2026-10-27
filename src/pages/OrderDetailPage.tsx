@@ -335,6 +335,45 @@ function OrderWorkspace({ order, back }: { order: Order; back: string }) {
               )}
             </div>
           </Panel>
+          <Panel
+            title="Müşteri"
+            className="order-card"
+            actions={
+              customer && (
+                <Link
+                  className="provider-doc-link"
+                  to={`/customers?customer=${encodeURIComponent(customer.id)}`}
+                >
+                  Kartı aç
+                </Link>
+              )
+            }
+          >
+            <div className="order-card-body order-card-stack">
+              <strong className="order-customer-title">
+                {customer?.company || customer?.name || order.shippingAddress?.name}
+              </strong>
+              {customer?.email && <p className="description field-description">{customer.email}</p>}
+              <div className="order-customer-addresses">
+                <OrderAddressView
+                  title="Gönderim adresi"
+                  address={order.shippingAddress ?? customer}
+                />
+                <OrderAddressView title="Fatura adresi" address={order.billingAddress} />
+              </div>
+              {order.billingAddress?.taxId && (
+                <p className="description field-description">
+                  VKN / TCKN: {order.billingAddress.taxId}
+                  {order.billingAddress.taxOffice ? ` · ${order.billingAddress.taxOffice}` : ''}
+                </p>
+              )}
+            </div>
+          </Panel>
+          <Panel title="Sipariş notları" className="order-card">
+            <div className="order-card-body order-card-stack">
+              <OrderNotes orderId={order.id} />
+            </div>
+          </Panel>
           <Panel title="Sipariş geçmişi" className="order-card">
             <div className="order-card-body activity-timeline">
               {[...order.events].reverse().map((event, index) => (
@@ -351,47 +390,9 @@ function OrderWorkspace({ order, back }: { order: Order; back: string }) {
         </div>
         <aside className="order-detail-aside">
           <OrderInvoiceCard order={order} />
-          <OrderAttachments order={order} />
-          <MarketplaceFulfillment order={order} />
-          <Panel title="Sipariş notları" className="order-card">
-            <div className="order-card-body">
-              <OrderNotes orderId={order.id} />
-            </div>
-          </Panel>
-          <Panel
-            title="Müşteri"
-            className="order-card"
-            actions={
-              customer && (
-                <Link
-                  className="provider-doc-link"
-                  to={`/customers?customer=${encodeURIComponent(customer.id)}`}
-                >
-                  Kartı aç
-                </Link>
-              )
-            }
-          >
-            <div className="order-card-body">
-              <strong className="order-customer-title">
-                {customer?.company || customer?.name || order.shippingAddress?.name}
-              </strong>
-              {customer?.email && <p className="description field-description">{customer.email}</p>}
-              <OrderAddressView
-                title="Gönderim adresi"
-                address={order.shippingAddress ?? customer}
-              />
-              <OrderAddressView title="Fatura adresi" address={order.billingAddress} />
-              {order.billingAddress?.taxId && (
-                <p className="description field-description">
-                  VKN / TCKN: {order.billingAddress.taxId}
-                  {order.billingAddress.taxOffice ? ` · ${order.billingAddress.taxOffice}` : ''}
-                </p>
-              )}
-            </div>
-          </Panel>
           <OrderPaymentCard order={order} />
           <OrderShipmentCard order={order} />
+          <MarketplaceFulfillment order={order} />
           <Panel title="Ödeme ve kargo" className="order-card">
             <dl className="order-card-body order-metadata">
               <div>
@@ -469,6 +470,7 @@ function OrderWorkspace({ order, back }: { order: Order; back: string }) {
               />
             )}
           </Panel>
+          <OrderAttachments order={order} />
         </aside>
       </div>
     </div>

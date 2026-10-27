@@ -40,16 +40,13 @@ export function CustomersPage() {
       rowHeader: true,
       sortValue: (customer) => customer.name,
       cell: (customer) => (
-        <button
-          className="button button--md button--ghost customer-cell customer-cell-button"
-          onClick={() => setEditing(customer)}
-        >
+        <div className="customer-cell">
           <span className="customer-avatar">{initials(customer.name)}</span>
           <span>
             <strong>{customer.name}</strong>
             <span className="cell-secondary">{customer.company ?? 'Bireysel müşteri'}</span>
           </span>
-        </button>
+        </div>
       ),
     },
     {
@@ -166,7 +163,12 @@ export function CustomersPage() {
           />
           <span className="record-count">{filtered.length} müşteri</span>
         </div>
-        <DataTable items={filtered} columns={columns} label="Müşteri listesi" />
+        <DataTable
+          items={filtered}
+          columns={columns}
+          label="Müşteri listesi"
+          onRowAction={setEditing}
+        />
       </Panel>
       {currentCustomer && (
         <CustomerEditor

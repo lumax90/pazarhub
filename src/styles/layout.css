@@ -628,6 +628,10 @@ svg {
   min-height: 51px;
   scrollbar-width: none;
 }
+/* Eşleştirmeler: store picker above the mapping-type tabs. */
+.mapping-panel .filter-tabs {
+  margin-bottom: var(--app-space-4);
+}
 .filter-tab-count {
   font-size: var(--text-xs);
   display: inline-grid;
@@ -1589,7 +1593,7 @@ svg {
 .connection-enable .inline-notice {
   margin: var(--app-space-2) 0;
 }
-.add-connection-card > span {
+.add-connection-icon {
   width: 47px;
   height: 47px;
   border-radius: var(--radius-3xl);
@@ -1600,12 +1604,12 @@ svg {
   color: var(--muted);
   margin-bottom: var(--app-space-4);
 }
-.add-connection-card > strong {
+.add-connection-card strong {
   font-size: var(--text-sm);
   font-weight: var(--app-weight-medium);
 }
-.add-connection-card > p {
-  max-width: 200px;
+.add-connection-card p {
+  max-width: 240px;
   font-size: var(--text-xs);
   line-height: var(--app-leading-relaxed);
   color: var(--muted);
@@ -2250,10 +2254,10 @@ kbd {
   .integration-bottom-note > span {
     min-width: 80%;
   }
-  .add-connection-card > strong {
+  .add-connection-card strong {
     font-size: var(--text-xs);
   }
-  .add-connection-card > p {
+  .add-connection-card p {
     font-size: var(--text-xs);
   }
   .settings-layout {
