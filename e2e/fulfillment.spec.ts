@@ -120,9 +120,25 @@ test('packages marketplace order lines and downloads a verified carrier label fr
   await page.getByRole('button', { name: 'Pazaryeri işlemi', exact: true }).click()
   await page.getByRole('menuitemradio', { name: 'Etiket al', exact: true }).click()
   await page.getByRole('button', { name: 'Pazaryerine gönder', exact: true }).click()
-  await expect(page.getByRole('link', { name: 'Etiket', exact: true })).toBeVisible({
+  await expect(page.getByRole('link', { name: 'Pazaryeri etiketi', exact: true })).toBeVisible({
     timeout: 25000,
   })
+  // Our own label carries the marketplace tracking code as a Code 128 barcode.
+  const tracking = (await state()).orders[0].marketplacePackages?.find(
+    (item) => item.trackingNumber,
+  )?.trackingNumber
+  expect(tracking).toBeTruthy()
+  const labelPage = await page.context().newPage()
+  await labelPage.goto(
+    (await page
+      .getByRole('link', { name: 'Kargo etiketi', exact: true })
+      .first()
+      .getAttribute('href'))!,
+  )
+  await expect(labelPage.locator('.order-print-label')).toHaveCount(1)
+  await expect(labelPage.getByRole('img', { name: `Barkod ${tracking}` })).toBeVisible()
+  await expect(labelPage.locator('.order-print-label-recipient')).not.toBeEmpty()
+  await labelPage.close()
   await page.getByRole('button', { name: 'Paket işlemleri', exact: true }).click()
   await page.getByRole('button', { name: 'Pazaryeri işlemi', exact: true }).click()
   await page.getByRole('menuitemradio', { name: 'Pazaryerinde iptal et', exact: true }).click()

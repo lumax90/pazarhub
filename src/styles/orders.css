@@ -782,9 +782,13 @@
 }
 .order-attachment {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--app-space-3);
   justify-content: space-between;
   align-items: start;
+}
+.order-attachment > .row-actions {
+  flex-wrap: wrap;
 }
 .order-attachment > div {
   min-width: 0;

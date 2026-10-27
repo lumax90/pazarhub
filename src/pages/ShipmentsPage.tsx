@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Button, Chip } from '@heroui/react'
-import { Download, Plus, RefreshCw, Truck } from 'lucide-react'
+import { Barcode, Download, Plus, RefreshCw, Truck } from 'lucide-react'
 import { Link } from 'react-router'
 import { useApp } from '../app/AppProvider'
 import { providers } from '../domain/integrations'
@@ -232,9 +232,20 @@ export function ShipmentsPage() {
               download
             >
               <Download size={13} />
-              Etiket
+              Pazaryeri
             </a>
           ))}
+          {(row.package?.trackingNumber || (!row.package && row.order.trackingNumber)) && (
+            <a
+              className="button button--secondary button--sm"
+              href={`/orders/labels?ids=${encodeURIComponent(row.order.id)}${row.package ? `&package=${encodeURIComponent(row.package.id)}` : ''}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Barcode size={13} />
+              Yazdır
+            </a>
+          )}
         </div>
       ),
     },

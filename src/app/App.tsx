@@ -17,6 +17,9 @@ const OrderDetailPage = lazy(() =>
 const OrderPrintPage = lazy(() =>
   import('../pages/OrderPrintPage').then((module) => ({ default: module.OrderPrintPage })),
 )
+const CargoLabelPage = lazy(() =>
+  import('../pages/CargoLabelPage').then((module) => ({ default: module.CargoLabelPage })),
+)
 const ProductsPage = lazy(() =>
   import('../pages/ProductsPage').then((module) => ({ default: module.ProductsPage })),
 )
@@ -112,6 +115,20 @@ export function App() {
             }
           >
             <OrderPrintPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="orders/labels"
+        element={
+          <Suspense
+            fallback={
+              <div className="page-loading" role="status">
+                Kargo etiketleri hazırlanıyor…
+              </div>
+            }
+          >
+            <CargoLabelPage />
           </Suspense>
         }
       />

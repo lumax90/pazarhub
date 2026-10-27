@@ -100,6 +100,130 @@
   font-size: 10px;
   color: #66748a;
 }
+/* Cargo labels: physical sizes, pure black for scanners. */
+.order-print-label-hint,
+.order-print-label-skipped {
+  max-width: 900px;
+  margin: 0 auto 4mm;
+  font-size: 12px;
+  color: #66748a;
+}
+.order-print-label-skipped {
+  padding-left: 5mm;
+  color: #a4361f;
+}
+.order-print-label-sheet {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6mm;
+  margin: 0 auto 6mm;
+}
+.order-print-label {
+  width: 100mm;
+  height: 100mm;
+  box-sizing: border-box;
+  padding: 4mm;
+  display: flex;
+  flex-direction: column;
+  gap: 2mm;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+  border: 0.3mm solid #c8ced6;
+  font-family: var(--font-sans);
+  font-size: 8.5pt;
+  line-height: var(--app-leading-tight);
+}
+.order-print-labels--100x150 .order-print-label,
+.order-print-labels--a4 .order-print-label {
+  height: 145mm;
+  padding: 5mm;
+  gap: 3mm;
+  font-size: 10pt;
+}
+.order-print-labels--100x150 .order-print-label {
+  height: 150mm;
+}
+.order-print-label > header,
+.order-print-label > footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2mm;
+}
+.order-print-label > header {
+  padding-bottom: 1.5mm;
+  border-bottom: 0.5mm solid #000;
+}
+.order-print-label-carrier {
+  font-size: 14pt;
+  font-weight: var(--app-weight-bold);
+  text-transform: uppercase;
+}
+.order-print-label-code {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1mm;
+}
+.order-print-label-code > span {
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  font-weight: var(--app-weight-bold);
+  letter-spacing: var(--app-tracking-caps);
+}
+.order-print-label h2 {
+  margin-bottom: 0.8mm;
+  font-size: 7pt;
+  font-weight: var(--app-weight-semibold);
+  letter-spacing: var(--app-tracking-caps);
+  text-transform: uppercase;
+}
+.order-print-label-recipient {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 1.5mm;
+  border-top: 0.5mm solid #000;
+}
+.order-print-label-recipient > strong {
+  display: block;
+  font-size: 1.25em;
+}
+.order-print-label-recipient p {
+  overflow-wrap: anywhere;
+}
+.order-print-label-city {
+  font-weight: var(--app-weight-bold);
+}
+/* Large labels give the courier a bigger address. */
+.order-print-labels--100x150 .order-print-label-recipient,
+.order-print-labels--a4 .order-print-label-recipient {
+  font-size: 1.2em;
+}
+.order-print-labels--100x150 .order-print-label-city,
+.order-print-labels--a4 .order-print-label-city {
+  font-size: 1.15em;
+}
+.order-print-label-sender,
+.order-print-label > footer {
+  padding-top: 1.2mm;
+  border-top: 0.25mm solid #000;
+  font-size: 0.85em;
+}
+@page order-print-label-100x100 {
+  size: 100mm 100mm;
+  margin: 0;
+}
+@page order-print-label-100x150 {
+  size: 100mm 150mm;
+  margin: 0;
+}
+@page order-print-label-a4 {
+  size: A4;
+  margin: 0;
+}
 @media (max-width: 700px) {
   .order-print-page {
     padding: 14px;
@@ -168,5 +292,42 @@
   .sale-bundle-contents {
     break-inside: avoid;
     border-color: #ddd;
+  }
+}
+@media print {
+  .order-print-label-hint,
+  .order-print-label-skipped {
+    display: none;
+  }
+  .order-print-label-sheet {
+    display: block;
+    margin: 0;
+    break-after: page;
+  }
+  .order-print-label-sheet:last-child {
+    break-after: auto;
+  }
+  .order-print-labels--100x100 .order-print-label-sheet {
+    page: order-print-label-100x100;
+  }
+  .order-print-labels--100x150 .order-print-label-sheet {
+    page: order-print-label-100x150;
+  }
+  .order-print-label {
+    border: 0;
+  }
+  /* A4: four labels in A6 cells, with dashed cut lines. */
+  .order-print-labels--a4 .order-print-label-sheet {
+    page: order-print-label-a4;
+    display: grid;
+    grid-template-columns: repeat(2, 105mm);
+    grid-auto-rows: 148mm;
+    place-items: center;
+    gap: 0;
+    width: 210mm;
+  }
+  .order-print-labels--a4 .order-print-label {
+    outline: 0.2mm dashed #999;
+    outline-offset: 1.5mm;
   }
 }

@@ -1,6 +1,16 @@
 import { useState } from 'react'
 import { Button, Checkbox, Chip, Label } from '@heroui/react'
-import { ArrowLeft, Check, FileText, MapPin, Printer, RefreshCw, Truck, Wallet } from 'lucide-react'
+import {
+  ArrowLeft,
+  Barcode,
+  Check,
+  FileText,
+  MapPin,
+  Printer,
+  RefreshCw,
+  Truck,
+  Wallet,
+} from 'lucide-react'
 import { Link, useLocation, useParams } from 'react-router'
 import { useApp } from '../app/AppProvider'
 import type { Order, OrderAddress, Shipment } from '../domain/types'
@@ -9,6 +19,7 @@ import { providers } from '../domain/integrations'
 import { orderContentKey, orderLineKey, orderPreparation } from '../domain/orders'
 import { findVariant, orderTotal, taxTotal } from '../domain/selectors'
 import { channelNames } from '../domain/channels'
+import { cargoLabels } from '../domain/cargo-labels'
 import { invoiceStatusLabels } from '../domain/labels'
 import { invoiceDocumentLabel } from '../domain/invoice-document'
 import { dateLabel, money } from '../lib/format'
@@ -135,6 +146,17 @@ function OrderWorkspace({ order, back }: { order: Order; back: string }) {
               <Printer size={15} />
               Sipariş detayı yazdır
             </a>
+            {cargoLabels(state, [order]).labels.length > 0 && (
+              <a
+                href={`/orders/labels?ids=${encodeURIComponent(order.id)}`}
+                className="button button--secondary"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Barcode size={15} />
+                Kargo etiketi
+              </a>
+            )}
           </>
         }
       />

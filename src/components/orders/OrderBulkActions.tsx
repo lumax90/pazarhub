@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Dropdown, Label } from '@heroui/react'
-import { Check, Printer, X } from 'lucide-react'
+import { Barcode, Check, Printer, X } from 'lucide-react'
 import { useApp } from '../../app/AppProvider'
 import type { Command, Order } from '../../domain/types'
 import { orderContentKey, orderLineKey, orderPrintKey } from '../../domain/orders'
@@ -141,6 +141,15 @@ export function OrderBulkActions({
             >
               <Printer size={14} />
               Detayları Yazdır
+            </a>
+            <a
+              className="button button--secondary button--sm"
+              href={`/orders/labels?ids=${encodeURIComponent(orders.map((order) => order.id).join(','))}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Barcode size={14} />
+              Kargo Etiketi Yazdır
             </a>
             <Dropdown>
               <Button size="sm" variant="secondary" isDisabled={busy}>

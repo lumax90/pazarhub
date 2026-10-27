@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Checkbox, Label } from '@heroui/react'
-import { Download, Package, RefreshCw } from 'lucide-react'
+import { Barcode, Download, Package, RefreshCw } from 'lucide-react'
 import { useApp } from '../../app/AppProvider'
 import type { Order } from '../../domain/types'
 import type { MarketplaceOrderAction, OrderFulfillmentView } from '../../domain/order-fulfillment'
@@ -58,9 +58,20 @@ export function MarketplaceFulfillment({ order }: { order: Order }) {
                   download
                 >
                   <Download size={14} />
-                  Etiket
+                  Pazaryeri etiketi
                 </a>
               ))}
+              {item.trackingNumber && (
+                <a
+                  className="button button--secondary button--sm"
+                  href={`/orders/labels?ids=${encodeURIComponent(order.id)}&package=${encodeURIComponent(item.id)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Barcode size={14} />
+                  Kargo etiketi
+                </a>
+              )}
             </div>
           </div>
         ))}
