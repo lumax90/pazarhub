@@ -1,21 +1,54 @@
 import { useState } from 'react'
 import { Button, Checkbox, Label } from '@heroui/react'
 import { Check, RefreshCw } from 'lucide-react'
+import { useSearchParams } from 'react-router'
 import { useApp } from '../app/AppProvider'
-import type { EcommerceSettings } from '../domain/types'
+import type { AppState, EcommerceSettings } from '../domain/types'
 import { defaultEcommerceSettings } from '../domain/ecommerce'
+import {
+  barcodePrefixProblem,
+  barcodeScheme,
+  gs1PrefixProblem,
+  nextBarcodes,
+  usedBarcodes,
+} from '../domain/barcodes'
 import { currencyCodes } from '../domain/money'
 import { apiRequest } from '../lib/api'
 import { Field, FilterTabs, PageHeader, Panel, SelectButton } from '../components/ui/shared'
 import { DataTable } from '../components/ui/DataTable'
 import { warehouses } from '../domain/inventory'
 
+const tabs = [
+  { id: 'general', label: 'Genel' },
+  { id: 'stock', label: 'Ürün ve Stok' },
+  { id: 'currency', label: 'Döviz Kurları' },
+  { id: 'orders', label: 'Siparişler' },
+]
+
+/** What "Boş barkodları üret" will do with the prefixes as typed. */
+function barcodeHelp(state: AppState, draft: EcommerceSettings) {
+  const scheme = barcodeScheme(draft)
+  if (!scheme)
+    return 'GS1 Türkiye’den aldığınız firma önekini girin: ürün kartındaki “Boş barkodları üret” bu önekle kontrol haneli EAN-13 barkodlar üretir ve bunlar her pazaryerinde geçerlidir. GS1 öneki yoksa kendi önekinizle yalnız serbest barkod kabul eden pazaryerleri (ör. Trendyol) için barkod üretilir.'
+  try {
+    const [next] = nextBarcodes(scheme, usedBarcodes(state), 1)
+    return scheme.kind === 'gs1'
+      ? `Kontrol haneli EAN-13 barkodlar üretilir; sıradaki: ${next}. Pazarhub’daki ürünlerin en büyük numarasından devam eder. Bu önekle Pazarhub dışında numara verdiyseniz o ürünleri önce Pazarhub’a ekleyin; aksi hâlde aynı numara yeniden üretilebilir.`
+      : `GS1 öneki olmadığından ${next} gibi barkodlar üretilir. Trendyol gibi serbest barkod kabul eden pazaryerlerinde kullanılabilir; Hepsiburada, ToptanTR ve PttAVM GS1 barkodu ister.`
+  } catch (error) {
+    return (error as Error).message
+  }
+}
+
 export function EcommerceSettingsPage() {
+  const [params] = useSearchParams()
   const { state, run, refresh, can, mode } = useApp(),
     [draft, setDraft] = useState<EcommerceSettings>(() =>
       structuredClone(state.ecommerce ?? defaultEcommerceSettings),
     ),
-    [tab, setTab] = useState('general'),
+    [tab, setTab] = useState(() =>
+      tabs.some((item) => item.id === params.get('tab')) ? params.get('tab')! : 'general',
+    ),
     [busy, setBusy] = useState(false),
     [error, setError] = useState('')
   const set = <K extends keyof EcommerceSettings>(key: K, value: EcommerceSettings[K]) =>
@@ -45,17 +78,7 @@ export function EcommerceSettingsPage() {
         }
       />
       <Panel className="product-form-card">
-        <FilterTabs
-          label="E-ticaret ayar bölümleri"
-          value={tab}
-          onChange={setTab}
-          items={[
-            { id: 'general', label: 'Genel' },
-            { id: 'stock', label: 'Ürün ve Stok' },
-            { id: 'currency', label: 'Döviz Kurları' },
-            { id: 'orders', label: 'Siparişler' },
-          ]}
-        />
+        <FilterTabs label="E-ticaret ayar bölümleri" value={tab} onChange={setTab} items={tabs} />
         <div className="form-section margin-rule-form ecommerce-settings-body">
           {tab === 'general' && (
             <div className="form-grid">
@@ -182,6 +205,27 @@ export function EcommerceSettingsPage() {
                   onChange={(value) => set('criticalStock', Number(value))}
                 />
               </div>
+              <div className="form-grid">
+                <Field
+                  label="GS1 firma öneki"
+                  value={draft.gs1Prefix ?? ''}
+                  onChange={(value) => set('gs1Prefix', value.replace(/\D/g, '') || undefined)}
+                  maxLength={11}
+                  placeholder="Örn. 8691234"
+                  error={draft.gs1Prefix && gs1PrefixProblem(draft.gs1Prefix)}
+                />
+                <Field
+                  label="Kendi barkod önekiniz"
+                  value={draft.barcodePrefix ?? ''}
+                  onChange={(value) =>
+                    set('barcodePrefix', value.toUpperCase().replace(/[^A-Z0-9]/g, '') || undefined)
+                  }
+                  maxLength={12}
+                  placeholder="Örn. MARKA"
+                  error={draft.barcodePrefix && barcodePrefixProblem(draft.barcodePrefix)}
+                />
+              </div>
+              <p className="description field-description">{barcodeHelp(state, draft)}</p>
             </>
           )}
           {tab === 'currency' && (

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { randomUUID } from 'node:crypto'
 import { defaultIntegrationSettings } from '../src/domain/integrations'
+import { gtinCheckDigit } from '../src/domain/barcodes'
 import type { AppState } from '../src/domain/types'
 import { groupedPublicationOwner } from '../tests/integration-workspace-fixtures'
 
@@ -91,7 +92,7 @@ test('previews and publishes all PttAVM variants together and follows each resul
           id,
           name: index ? 'Siyah' : 'Beyaz',
           sku: `GROUP-${index}`,
-          barcode: `869123456789${index}`,
+          barcode: `86912345678${index}${gtinCheckDigit(`86912345678${index}`)}`,
           price: index ? 15000 : 12000,
           cost: 5000,
           stock: index ? 3 : 5,

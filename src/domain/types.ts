@@ -560,6 +560,10 @@ export interface EcommerceSettings {
   stockScope?: 'all' | 'selected'
   warehouseIds?: string[]
   invoiceTiming?: InvoiceTiming
+  /** GS1 company prefix; generated barcodes are check-digited EAN-13s under it. */
+  gs1Prefix?: string
+  /** Own prefix for marketplaces that accept free-form barcodes, used without a GS1 prefix. */
+  barcodePrefix?: string
 }
 export type InvoiceTiming = 'manual' | 'on_created' | 'on_approval' | 'on_shipped' | 'on_delivered'
 export interface StockAllocation {

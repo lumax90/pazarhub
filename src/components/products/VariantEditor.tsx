@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Button, Chip, SurfaceContext } from '@heroui/react'
-import { Plus, Trash2, X } from 'lucide-react'
+import { Barcode, Plus, Trash2, X } from 'lucide-react'
+import { Link } from 'react-router'
 import type { Variant, VariantAxis } from '../../domain/types'
 import { MAX_VARIANT_AXES } from '../../domain/products'
+import { barcodeScheme, gtinProblem, nextBarcodes, usedBarcodes } from '../../domain/barcodes'
 import { DataTable } from '../ui/DataTable'
 import type { Column } from '../ui/DataTable'
 import { Field, MoneyField, SelectButton } from '../ui/shared'
@@ -320,6 +322,7 @@ export function VariantFieldsTable({
             onChange={(barcode) => onChange(variant.id, { barcode })}
             maxLength={80}
             isDisabled={disabled}
+            description={gtinProblem(variant.barcode)}
           />
         ),
       },
@@ -405,6 +408,9 @@ export function VariantFieldsTable({
     })
   return (
     <div className={`variant-fields-table variant-fields-table--${mode}`}>
+      {(mode === 'create' || mode === 'barcodes') && (
+        <BarcodeGenerator variants={variants} onChange={onChange} disabled={disabled} />
+      )}
       <DataTable
         items={variants}
         columns={columns}
@@ -417,6 +423,56 @@ export function VariantFieldsTable({
         }
         paginate={variants.length > 10}
       />
+    </div>
+  )
+}
+
+/** Fills the empty barcodes from the prefix set in E-Ticaret Ayarları. */
+function BarcodeGenerator({
+  variants,
+  onChange,
+  disabled,
+}: {
+  variants: Variant[]
+  onChange: (id: string, patch: Partial<Variant>) => void
+  disabled?: boolean
+}) {
+  const { state, notify } = useApp()
+  const scheme = barcodeScheme(state.ecommerce)
+  const empty = variants.filter((variant) => !variant.barcode.trim())
+  const generate = () => {
+    if (!scheme) return
+    try {
+      const taken = [...usedBarcodes(state), ...variants.map((variant) => variant.barcode)]
+      const codes = nextBarcodes(scheme, taken, empty.length)
+      empty.forEach((variant, index) => onChange(variant.id, { barcode: codes[index] }))
+    } catch (error) {
+      notify((error as Error).message, 'error')
+    }
+  }
+  return (
+    <div className="variant-barcode-tools">
+      <Button
+        size="sm"
+        variant="secondary"
+        isDisabled={disabled || !scheme || !empty.length}
+        onPress={generate}
+      >
+        <Barcode size={14} />
+        {empty.length > 1 ? `Boş barkodları üret (${empty.length})` : 'Boş barkodları üret'}
+      </Button>
+      <p className="description field-description">
+        {!scheme ? (
+          <>
+            Barkod üretmek için <Link to="/ecommerce-settings?tab=stock">E-Ticaret Ayarları</Link>
+            ’nda GS1 firma önekinizi veya kendi barkod önekinizi girin.
+          </>
+        ) : scheme.kind === 'gs1' ? (
+          `GS1 önekinizle (${scheme.prefix}) kontrol haneli EAN-13 üretilir.`
+        ) : (
+          `Kendi önekinizle (${scheme.prefix}) üretilir; Hepsiburada, ToptanTR ve PttAVM GS1 barkodu ister.`
+        )}
+      </p>
     </div>
   )
 }

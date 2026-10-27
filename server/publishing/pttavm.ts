@@ -8,6 +8,7 @@ import { ProviderError } from '../errors'
 import { canonicalJson } from '../security'
 import type { Inspection, PreparedListing, PublicationAdapter, PublicationPlan } from './types'
 import { failField, numericId } from './shared'
+import { gtinProblem, isGtin } from '../../src/domain/barcodes'
 
 export class PttAvmPublisher implements PublicationAdapter {
   readonly provider = 'pttavm' as const
@@ -50,8 +51,11 @@ export class PttAvmPublisher implements PublicationAdapter {
   build(_context: AdapterContext, item: PreparedListing, _schema: CategorySchema | null) {
     if (!/^PH-[a-f0-9]{32}$/.test(item.config.productMainId ?? ''))
       failField('Üst ürün', 'PttAVM için oluşturulmuş üst ürün kimliği gerekli.')
-    if (!/^\d{8}$|^\d{12,14}$/.test(item.variant.barcode))
-      failField('EAN', 'Geçerli uzunlukta sayısal global barkod girin.')
+    if (!isGtin(item.variant.barcode))
+      failField(
+        'EAN',
+        gtinProblem(item.variant.barcode) ?? 'Geçerli uzunlukta sayısal global barkod girin.',
+      )
     if (item.price <= 100) failField('Fiyat', 'PttAVM fiyatı 1 TL’den büyük olmalı.')
     if (![0, 1, 10, 20].includes(item.product.taxRate))
       failField('KDV', 'PttAVM KDV oranı 0, 1, 10 veya 20 olmalı.')

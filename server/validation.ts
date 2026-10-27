@@ -387,6 +387,9 @@ export const commandSchema = z.discriminatedUnion('type', [
       invoiceTiming: z
         .enum(['manual', 'on_created', 'on_approval', 'on_shipped', 'on_delivered'])
         .optional(),
+      // Formats are checked in the domain, which explains them in Turkish.
+      gs1Prefix: z.string().max(20).optional(),
+      barcodePrefix: z.string().max(20).optional(),
     }),
   }),
   z.strictObject({

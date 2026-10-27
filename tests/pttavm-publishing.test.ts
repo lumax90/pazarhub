@@ -115,7 +115,7 @@ async function setup() {
         id: randomUUID(),
         name: 'Siyah',
         sku: 'PTT-B',
-        barcode: '8691234567891',
+        barcode: '8691234567883',
         price: 15000,
         cost: 6000,
         stock: 3,

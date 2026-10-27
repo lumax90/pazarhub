@@ -6,6 +6,7 @@ import { currencySnapshot, exchangeRate, toTry } from './money'
 import { orderCurrencies, orderLineCurrencyTotal } from './order-currency'
 import { salesWarehouseIds, allocateOrderStock, reserveOrderWarehouses } from './stock-allocation'
 import { orderPrintKey } from './orders'
+import { barcodePrefixProblem, gs1PrefixProblem } from './barcodes'
 import {
   bindProductDefinitions,
   deleteDefinition,
@@ -187,7 +188,16 @@ export function executeCommand(
         !exchangeRate(state.exchangeRates, settings.defaultCurrency, settings.exchangeRateType)
       )
         return fail(original, 'Stok eşiklerini ve varsayılan dövizin kurunu kontrol edin.')
-      state.ecommerce = { ...settings, version: settings.version + 1 }
+      const prefixProblem =
+        (settings.gs1Prefix && gs1PrefixProblem(settings.gs1Prefix)) ||
+        (settings.barcodePrefix && barcodePrefixProblem(settings.barcodePrefix))
+      if (prefixProblem) return fail(original, prefixProblem)
+      state.ecommerce = {
+        ...settings,
+        gs1Prefix: settings.gs1Prefix || undefined,
+        barcodePrefix: settings.barcodePrefix || undefined,
+        version: settings.version + 1,
+      }
       return { state, result: { ok: true, message: 'E-ticaret ayarları kaydedildi.' } }
     }
     case 'business.update': {

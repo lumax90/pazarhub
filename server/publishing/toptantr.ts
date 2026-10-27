@@ -8,6 +8,7 @@ import { ProviderError } from '../errors'
 import { canonicalJson } from '../security'
 import type { Inspection, PreparedListing, PublicationAdapter, PublicationPlan } from './types'
 import { failField } from './shared'
+import { gtinProblem, isGtin } from '../../src/domain/barcodes'
 
 export class ToptanTrPublisher implements PublicationAdapter {
   readonly provider = 'toptantr' as const
@@ -97,8 +98,11 @@ export class ToptanTrPublisher implements PublicationAdapter {
     return { schema: { id: query.categoryId!, name: text(data.name), attributes: fields } }
   }
   build(_context: AdapterContext, item: PreparedListing, schema: CategorySchema | null) {
-    if (!/^\d{8}$|^\d{12,14}$/.test(item.variant.barcode))
-      failField('GTIN', '8, 12, 13 veya 14 haneli global barkod girin.')
+    if (!isGtin(item.variant.barcode))
+      failField(
+        'GTIN',
+        gtinProblem(item.variant.barcode) ?? '8, 12, 13 veya 14 haneli global barkod girin.',
+      )
     if (!item.config.brandId) failField('Marka', 'ToptanTR marka eşlemesini tamamlayın.')
     if (item.description.length > 4000)
       failField('Açıklama', 'ToptanTR için en fazla 4.000 karakter girin.')

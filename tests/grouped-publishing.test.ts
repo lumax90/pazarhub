@@ -180,7 +180,7 @@ async function setup(shared = false) {
       {
         id: randomUUID(),
         sku: `${model}-B`,
-        barcode: '8691234567891',
+        barcode: '8691234567883',
         name: 'Siyah',
         price: 12000,
         cost: 6000,

@@ -281,6 +281,20 @@
   padding-left: calc(var(--spacing) * 2.5);
   padding-right: calc(var(--spacing) * 2.5);
 }
+.variant-barcode-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-2) var(--app-space-3);
+  margin-bottom: var(--app-space-3);
+}
+.variant-barcode-tools > p {
+  flex: 1 1 calc(var(--spacing) * 60);
+  margin: 0;
+}
+.variant-barcode-tools a {
+  color: var(--accent);
+}
 .variant-table-title {
   display: flex;
   flex-direction: column;

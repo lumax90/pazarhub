@@ -5,6 +5,7 @@ import { basicAuth, ProviderHttp, requireCredential } from '../integrations/http
 import { ProviderError } from '../errors'
 import type { Inspection, PreparedListing, PublicationAdapter, PublicationPlan } from './types'
 import { failField, numericId } from './shared'
+import { gtinProblem, isGtin } from '../../src/domain/barcodes'
 
 const automatic = new Set([
   'merchantSku',
@@ -137,7 +138,11 @@ export class HepsiburadaPublisher implements PublicationAdapter {
   build(context: AdapterContext, item: PreparedListing, schema: CategorySchema | null) {
     if (!/^[A-Z0-9._:/-]+$/.test(item.variant.sku))
       failField('SKU', 'Hepsiburada stok kodunu büyük harf ve boşluksuz bekler.')
-    if (!/^\d{13}$/.test(item.variant.barcode)) failField('Barkod', '13 haneli EAN barkodu girin.')
+    if (item.variant.barcode.length !== 13 || !isGtin(item.variant.barcode))
+      failField(
+        'Barkod',
+        gtinProblem(item.variant.barcode) ?? 'Kontrol haneli 13 haneli EAN barkodu girin.',
+      )
     if (!item.product.brand.trim()) failField('Marka', 'Ürün markası gerekli.')
     const attributes: Record<string, unknown> = {}
     for (const field of schema?.attributes ?? []) {
