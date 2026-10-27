@@ -27,8 +27,11 @@ describe('production configuration', () => {
       'PUBLIC_ORIGIN is not a URL: "Set PUBLIC_ORIGIN to your HTTPS domain"',
     )
   })
-  it('rejects an encryption key that is not 64 hexadecimal characters', () => {
-    use({ ...production, ENCRYPTION_KEY: 'Set a stable 64-character hexadecimal key' })
-    expect(() => loadConfig()).toThrow('ENCRYPTION_KEY must contain 64 hexadecimal characters.')
+  it('rejects an encryption key that is not 64 hexadecimal characters, naming only its length', () => {
+    use({ ...production, ENCRYPTION_KEY: 'ab'.repeat(64) })
+    expect(() => loadConfig()).toThrow(
+      'ENCRYPTION_KEY must contain 64 hexadecimal characters (got 128).',
+    )
+    expect(() => loadConfig()).not.toThrow(/abab/)
   })
 })

@@ -47,7 +47,10 @@ export function loadConfig(): ServerConfig {
   let key: Buffer
   if (process.env.ENCRYPTION_KEY) {
     if (!/^[a-f\d]{64}$/i.test(process.env.ENCRYPTION_KEY))
-      throw new Error('ENCRYPTION_KEY must contain 64 hexadecimal characters.')
+      // The length helps tell a wrong generator from a typo; the key itself is never logged.
+      throw new Error(
+        `ENCRYPTION_KEY must contain 64 hexadecimal characters (got ${process.env.ENCRYPTION_KEY.length}).`,
+      )
     key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex')
   } else {
     if (environment === 'production') throw new Error('ENCRYPTION_KEY is required in production.')

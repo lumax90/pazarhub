@@ -1,7 +1,8 @@
 # Coolify: PUBLIC_ORIGIN is required (`:?` with no text — Coolify blocks the deploy until it is
 # filled; text after `:?` would be stored as the value). The database password and the
 # encryption key are Coolify magic variables: generated once, kept, and shown under
-# Environment Variables. Back up SERVICE_HEX_64_ENCRYPTION with the database dumps.
+# Environment Variables. SERVICE_HEX_32_* hex-encodes 32 characters, giving the 64 hex
+# characters ENCRYPTION_KEY needs (HEX_64 gives 128). Back it up with the database dumps.
 services:
   app:
     build: .
@@ -12,7 +13,7 @@ services:
       API_PORT: 3001
       PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?}
       DATABASE_URL: postgresql://pazarhub:${SERVICE_PASSWORD_POSTGRES}@database:5432/pazarhub
-      ENCRYPTION_KEY: ${SERVICE_HEX_64_ENCRYPTION}
+      ENCRYPTION_KEY: ${SERVICE_HEX_32_ENCRYPTION}
       EMBEDDED_WORKER: 'false'
       REGISTRATION_ENABLED: ${REGISTRATION_ENABLED:-true}
       INTEGRATION_NAME: ${INTEGRATION_NAME:-Pazarhub}

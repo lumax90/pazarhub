@@ -13,7 +13,7 @@ Paket `compose.yaml` üzerinden dört servis açar: **app**, **worker**, **datab
    INTEGRATION_NAME=Pazarhub
    ```
 
-   Veritabanı parolası (`SERVICE_PASSWORD_POSTGRES`) ve şifreleme anahtarı (`SERVICE_HEX_64_ENCRYPTION`) Coolify tarafından bir kez üretilir ve saklanır; aynı ekranda görünürler. **Şifreleme anahtarını güvenli bir yere kopyalayın**: yedekten geri dönüşte bağlantı bilgilerini açmak için gerekir.
+   Veritabanı parolası (`SERVICE_PASSWORD_POSTGRES`) ve şifreleme anahtarı (`SERVICE_HEX_32_ENCRYPTION`, 64 hex karakter) Coolify tarafından bir kez üretilir ve saklanır; aynı ekranda görünürler. **Şifreleme anahtarını güvenli bir yere kopyalayın**: yedekten geri dönüşte bağlantı bilgilerini açmak için gerekir.
 
 3. `app` servisine `https://panel.alanadiniz.com:3001` domainini atayın. `:3001` Coolify'ın servis içindeki hedef portudur; kullanıcı adresi standart HTTPS kalır. `PUBLIC_ORIGIN` bu adresin `:3001` olmayan halidir. DNS kaydını sunucuya yönlendirin.
 4. Deploy edin. Migration uygulama açılışında işlem kilidi altında çalışır. API `/api/ready` ile veritabanını ve işleyici kalp atışını kontrol eder.
@@ -43,7 +43,7 @@ MAIL_FROM=Pazarhub <noreply@alanadiniz.com>
 
 - PostgreSQL named volume'ü tüm kayıtları saklar. Ürün görselleri, fatura PDF'leri ve etiketler de veritabanındadır.
 - `backup` günlük `pg_dump` alır. `database-backups` volume'ünde varsayılan 30 gün tutulur; `BACKUP_RETENTION_DAYS` ile değişir.
-- Şifreli bağlantı bilgilerini geri açmak için yedekle birlikte **aynı şifreleme anahtarı** (`SERVICE_HEX_64_ENCRYPTION`) de korunmalıdır. Anahtar veritabanı dump'ına dahil değildir.
+- Şifreli bağlantı bilgilerini geri açmak için yedekle birlikte **aynı şifreleme anahtarı** (`SERVICE_HEX_32_ENCRYPTION`) de korunmalıdır. Anahtar veritabanı dump'ına dahil değildir.
 - Coolify'ın volume/yedek yönetimi üzerinden dump dosyalarını sunucu dışına kopyalayın.
 - Geri yükleme: app ve worker durdurulmuşken boş PostgreSQL veritabanına `pg_restore --no-owner --no-acl -U pazarhub -d pazarhub /yedek.dump`; ardından aynı anahtarla servisleri başlatın.
 
