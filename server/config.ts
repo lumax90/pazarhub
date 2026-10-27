@@ -34,7 +34,15 @@ export function loadConfig(): ServerConfig {
       : process.env.NODE_ENV === 'test'
         ? 'test'
         : 'development'
-  const publicOrigin = new URL(process.env.PUBLIC_ORIGIN ?? 'http://localhost:5173').origin
+  const origin = process.env.PUBLIC_ORIGIN?.trim() || 'http://localhost:5173'
+  let publicOrigin: string
+  try {
+    publicOrigin = new URL(origin).origin
+  } catch {
+    throw new Error(
+      `PUBLIC_ORIGIN is not a URL: "${origin}". Set it to the address people open, e.g. https://panel.example.com`,
+    )
+  }
   const dataDirectory = resolve(process.env.DATA_DIR ?? '.data')
   let key: Buffer
   if (process.env.ENCRYPTION_KEY) {

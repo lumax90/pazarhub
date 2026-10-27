@@ -1,3 +1,7 @@
+# Coolify: PUBLIC_ORIGIN is required (`:?` with no text — Coolify blocks the deploy until it is
+# filled; text after `:?` would be stored as the value). The database password and the
+# encryption key are Coolify magic variables: generated once, kept, and shown under
+# Environment Variables. Back up SERVICE_HEX_64_ENCRYPTION with the database dumps.
 services:
   app:
     build: .
@@ -6,9 +10,9 @@ services:
     environment: &application-environment
       NODE_ENV: production
       API_PORT: 3001
-      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?Set PUBLIC_ORIGIN to your HTTPS domain}
-      DATABASE_URL: postgresql://pazarhub:${POSTGRES_PASSWORD:?Set a database password}@database:5432/pazarhub
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set a stable 64-character hexadecimal key}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?}
+      DATABASE_URL: postgresql://pazarhub:${SERVICE_PASSWORD_POSTGRES}@database:5432/pazarhub
+      ENCRYPTION_KEY: ${SERVICE_HEX_64_ENCRYPTION}
       EMBEDDED_WORKER: 'false'
       REGISTRATION_ENABLED: ${REGISTRATION_ENABLED:-true}
       INTEGRATION_NAME: ${INTEGRATION_NAME:-Pazarhub}
@@ -60,7 +64,7 @@ services:
     environment:
       POSTGRES_DB: pazarhub
       POSTGRES_USER: pazarhub
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a database password}
+      POSTGRES_PASSWORD: ${SERVICE_PASSWORD_POSTGRES}
     volumes:
       - postgres-data:/var/lib/postgresql
     healthcheck:
@@ -77,7 +81,7 @@ services:
       PGHOST: database
       PGDATABASE: pazarhub
       PGUSER: pazarhub
-      PGPASSWORD: ${POSTGRES_PASSWORD:?Set a database password}
+      PGPASSWORD: ${SERVICE_PASSWORD_POSTGRES}
       BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
     volumes:
       - ./scripts/backup.sh:/scripts/backup.sh:ro
