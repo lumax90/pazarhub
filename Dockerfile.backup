@@ -1,0 +1,7 @@
+# Daily pg_dump sidecar. The script is baked into the image rather than bind-mounted:
+# Coolify turns a bind-mounted repository file into an empty file mount, and an empty
+# script exits at once, so the container restarted forever without a log line.
+FROM postgres:18-alpine
+COPY scripts/backup.sh /usr/local/bin/pazarhub-backup
+RUN chmod 0755 /usr/local/bin/pazarhub-backup
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/pazarhub-backup"]

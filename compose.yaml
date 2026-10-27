@@ -75,9 +75,10 @@ services:
       retries: 10
 
   backup:
-    image: postgres:18-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.backup
     restart: unless-stopped
-    entrypoint: ['/bin/sh', '/scripts/backup.sh']
     environment:
       PGHOST: database
       PGDATABASE: pazarhub
@@ -85,7 +86,6 @@ services:
       PGPASSWORD: ${SERVICE_PASSWORD_POSTGRES}
       BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
     volumes:
-      - ./scripts/backup.sh:/scripts/backup.sh:ro
       - database-backups:/backups
     depends_on:
       database:
