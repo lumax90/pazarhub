@@ -280,6 +280,7 @@ textarea {
 .quick-search-shortcut {
   position: absolute;
   top: 50%;
+  right: 10px;
   transform: translateY(-50%);
 }
 .quick-search-icon {
@@ -288,9 +289,6 @@ textarea {
   z-index: 1;
 }
 .quick-search-clear,
-.quick-search-shortcut {
-  right: 10px;
-}
 .select-surface {
   display: contents;
 }
@@ -447,6 +445,7 @@ textarea {
   text-align: left;
 }
 /* Product drawings are content, not the small SVG icon inside a native button. */
+/* Repeats content.css on purpose: inside a button, HeroUI's icon sizing would shrink the art. */
 .product-art svg {
   width: 100%;
   height: 100%;
@@ -859,11 +858,16 @@ textarea {
   gap: var(--app-space-2);
   text-align: left;
 }
-/* Two-line cell buttons grow with their text so the hover fill covers all of it. */
+/* Cell buttons grow with their content so the hover fill covers all of it. */
 .order-invoice-link.button,
-.marketplace-question-cell.button {
+.text-button.button,
+.product-thumbnail-button.button {
   height: auto;
   padding-block: var(--app-space-1);
+}
+/* Single-line text buttons keep the small button's height. */
+.text-button.button {
+  min-height: calc(var(--spacing) * 8);
 }
 .order-form-card {
   margin-bottom: var(--app-space-5);

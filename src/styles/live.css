@@ -936,11 +936,6 @@
   padding-top: 15px;
   border-top: 1px solid var(--separator);
 }
-.connection-last-test {
-  color: var(--muted);
-  font-size: var(--text-xs);
-  margin-top: 13px;
-}
 .connection-error {
   color: var(--danger-soft-foreground);
   font-size: var(--text-xs);

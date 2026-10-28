@@ -163,9 +163,6 @@ svg {
 }
 .workspace-company > svg {
   color: var(--muted);
-  width: 14px;
-  height: 14px;
-  margin: 0;
 }
 .sidebar-navigation {
   flex: 1;
@@ -454,21 +451,6 @@ svg {
 }
 .small-link:hover {
   color: var(--accent);
-}
-.panel-text-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--app-space-2);
-  font-size: var(--text-xs);
-  font-weight: var(--app-weight-medium);
-  color: var(--muted);
-  border-top: 1px solid var(--separator);
-  height: 43px;
-}
-.panel-text-link:hover {
-  color: var(--accent);
-  background: var(--surface-secondary);
 }
 .status-dot {
   display: inline-block;
@@ -2064,7 +2046,6 @@ kbd {
 @media (max-width: 680px) {
   .topbar {
     padding-inline: var(--app-space-4);
-    gap: var(--app-space-2);
   }
   .topbar-divider {
     display: none;
