@@ -55,7 +55,7 @@ Sayfalar arası tutarlılık bu değişkenlerden gelir; aynı ilişki için baş
 - **Kişi avatarı:** `UserAvatar`. Çerçeve HeroUI `Avatar`, içi DiceBear "Glass" (CC0) ile tarayıcıda üretilir. Aynı kimlik (kullanıcı id) hep aynı görseli verir; görsel yüklenene kadar baş harfler görünür. Başka bir yerde avatar gerekirse yeni stil eklemeden bunu kullanın.
 - **Sayfa başlığı:** `PageHeader` — başlık, açıklama, sağda eylemler. Detay sayfalarında `back={{ to, label, context }}` listeye dönüş bağlantısını ve kayıt kodunu başlığın üstünde gösterir; sayfaya ayrı breadcrumb yazılmaz.
 - **Panel:** `Panel` — başlık/açıklama/eylem başlığı ve içerik. Tablo veya liste taşıyan panel `flush` kullanır; iç satırlar `--app-panel-inset` ile hizalanır.
-- **Liste:** `Panel flush` içinde araç çubuğu (`.list-toolbar` ya da sayfanın araç çubuğu), filtre satırı (`FilterTabs`), `DataTable`, sayfalama. `DataTable` hücreleri panelin kenar çizgisine kendiliğinden hizalanır.
+- **Liste:** `Panel flush` içinde araç çubuğu (`.list-toolbar` ya da sayfanın araç çubuğu), filtre satırı (`FilterTabs`), `DataTable`, sayfalama. `DataTable` çerçevesi panelin iç çizgisinde (`--app-panel-inset`) başlar; tablo kartın kenarına değmez, böylece satır kutusunun yuvarlak köşeleri kart kenarında iz bırakmaz.
 
 ## Renk ve bileşen
 

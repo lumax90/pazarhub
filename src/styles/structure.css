@@ -165,11 +165,11 @@
   padding-block: var(--app-table-row-padding);
   white-space: nowrap;
 }
-/* In a flush panel the table runs edge to edge: the primary variant's inner frame would
-   otherwise show as a strip along the panel border, with its corners meeting the panel's. */
+/* In a flush panel the table sits on the panel's inset line like a card, so its frame and
+   the body's rounded corners stay clear of the panel border instead of meeting it. */
 .app-panel--flush .app-data-table {
-  padding-inline: 0;
-  padding-bottom: 0;
+  width: auto;
+  margin-inline: var(--app-panel-inset);
 }
 /* Table edges line up with the flush panel's heading and toolbar. */
 .app-data-table :is(.table__column, .table__cell) {
@@ -180,6 +180,13 @@
 }
 .app-data-table :is(.table__column, .table__cell):last-child {
   padding-inline-end: var(--app-panel-inset);
+}
+/* The framed table in a flush panel already starts on the inset line. */
+.app-panel--flush .app-data-table :is(.table__column, .table__cell):first-child {
+  padding-inline-start: var(--app-cell-inset);
+}
+.app-panel--flush .app-data-table :is(.table__column, .table__cell):last-child {
+  padding-inline-end: var(--app-cell-inset);
 }
 .checkbox-column {
   width: 48px;

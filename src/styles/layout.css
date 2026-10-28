@@ -670,6 +670,10 @@ svg {
   font-size: var(--text-xs);
   color: var(--muted);
 }
+/* The framed table closes itself; a full-width rule under it would cross the inset. */
+.app-panel--flush .table-pagination {
+  border-top: 0;
+}
 .table-pagination > span > strong {
   color: var(--muted);
   font-weight: var(--app-weight-medium);
