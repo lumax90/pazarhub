@@ -109,8 +109,21 @@ describe('official Pazarama and ToptanTR contracts', () => {
   it('uses Basic client credentials and the current approved cursor/unapproved page APIs', async () => {
     const fetcher = vi.fn<typeof fetch>(async (input) => {
       const url = new URL(String(input))
+      // The documented Pazarama response (token-alma): the token is wrapped in data.
       if (url.pathname === '/connect/token')
-        return json({ access_token: 'pazarama-token', expires_in: 3600 })
+        return json({
+          success: true,
+          messageCode: '',
+          message: '',
+          userMessage: '',
+          data: {
+            accessToken: 'pazarama-token',
+            refreshToken: null,
+            expiresIn: 3600,
+            tokenType: 'Bearer',
+            scope: 'merchantgatewayapi.fullaccess',
+          },
+        })
       if (url.pathname.endsWith('/approved'))
         return json({
           success: true,
@@ -139,6 +152,9 @@ describe('official Pazarama and ToptanTR contracts', () => {
     )
     expect(String(tokenRequest.body)).not.toContain('fixture-secret')
     expect(fetcher.mock.calls.filter(([u]) => String(u).includes('/connect/token'))).toHaveLength(1)
+    expect(fetcher.mock.calls[1][1]?.headers).toMatchObject({
+      authorization: 'Bearer pazarama-token',
+    })
   })
   it('does not call a Pazarama price marked for approval successful even when its inner status is zero', async () => {
     const fetcher = vi.fn<typeof fetch>(async (input) => {

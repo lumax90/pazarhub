@@ -28,7 +28,9 @@ export async function accessToken(
       idempotent: true,
     }),
   )
-  const token = text(response.access_token)
+  // Standard OAuth puts the token at the top; Pazarama wraps it as data.accessToken.
+  const wrapped = record(response.data)
+  const token = text(response.access_token) || text(wrapped.accessToken)
   if (!token)
     throw new ProviderError(
       'TOKEN_REJECTED',
@@ -38,7 +40,7 @@ export async function accessToken(
     typeof response.expires_at_utc === 'string' ? Date.parse(response.expires_at_utc) : NaN
   const expires = Number.isFinite(absolute)
     ? absolute
-    : Date.now() + Math.min(86400, Number(response.expires_in) || 3600) * 1000
+    : Date.now() + Math.min(86400, Number(response.expires_in ?? wrapped.expiresIn) || 3600) * 1000
   if (expires <= Date.now())
     throw new ProviderError('TOKEN_EXPIRED', 'Sağlayıcı süresi dolmuş erişim anahtarı döndürdü.')
   tokens.set(key, {
