@@ -29,6 +29,7 @@ export function registerListingContent(app: FastifyInstance, service: Integratio
       settings: connection.settings,
       state,
       integrationName: service.config.integrationName,
+      hepsiburadaIntegrator: service.config.hepsiburadaIntegrator,
     })
   app.get('/api/listing-content/:id', async (request) => {
     const auth = requirePermission(request, 'catalog.write'),

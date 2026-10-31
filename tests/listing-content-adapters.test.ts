@@ -26,6 +26,7 @@ const context = (provider: AdapterContext['provider']): AdapterContext => ({
   settings: defaultIntegrationSettings,
   state: createEmptyState('Content'),
   integrationName: 'Test',
+  hepsiburadaIntegrator: 'fixture',
 })
 const listing = (channel: Listing['channel'], externalId: string): Listing => ({
   id: 'listing',

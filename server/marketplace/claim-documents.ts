@@ -30,6 +30,7 @@ export function registerClaimDocuments(app: FastifyInstance, service: Integratio
         credentials: service.credentials(connection),
         settings: connection.settings,
         integrationName: service.config.integrationName,
+        hepsiburadaIntegrator: service.config.hepsiburadaIntegrator,
         state,
       },
       new ProviderHttp(service.fetcher),

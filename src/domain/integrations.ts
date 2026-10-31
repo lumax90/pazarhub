@@ -68,13 +68,9 @@ export const providers: ProviderDefinition[] = [
     id: 'hepsiburada',
     name: 'Hepsiburada',
     kind: 'marketplace',
-    fields: [
-      field('merchantId', 'Merchant ID'),
-      field('username', 'Entegratör kullanıcı adı'),
-      field('password', 'Servis anahtarı', true),
-    ],
+    fields: [field('merchantId', 'Merchant ID'), field('password', 'Servis anahtarı', true)],
     docsUrl: 'https://developers.hepsiburada.com/',
-    note: 'Servis anahtarını satıcı panelinde Bilgilerim → Entegrasyon → Entegratör Bilgileri bölümünden, seçtiğiniz entegratör için oluşturun. Kullanıcı adı o entegratörün adıdır.',
+    note: 'Satıcı panelinde Bilgilerim → Entegrasyon → Entegratör Bilgileri bölümünde Pazarhub’ı entegratör olarak ekleyin ve onun için servis anahtarı oluşturun. Yetkinin açılması 2 saate kadar sürebilir.',
   },
   {
     id: 'n11',

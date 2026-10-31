@@ -59,6 +59,7 @@ export function registerValueMappingRoutes(app: FastifyInstance, integrations: I
       settings: connection.settings,
       state,
       integrationName: integrations.config.integrationName,
+      hepsiburadaIntegrator: integrations.config.hepsiburadaIntegrator,
     }
     const metadata = new CatalogMetadata(
       database,

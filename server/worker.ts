@@ -971,6 +971,7 @@ export class IntegrationWorker {
           credentials: secrets,
           settings: connection.settings,
           integrationName: this.service.config.integrationName,
+          hepsiburadaIntegrator: this.service.config.hepsiburadaIntegrator,
           state: stateRow.document,
         },
         providerPayload,

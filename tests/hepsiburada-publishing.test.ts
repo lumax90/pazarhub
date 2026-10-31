@@ -25,11 +25,11 @@ function fixture() {
     provider: 'hepsiburada',
     credentials: {
       merchantId: '11111111-1111-4111-8111-111111111111',
-      username: 'test-integrator',
       password: 'fixture-secret',
     },
     settings: { ...defaultIntegrationSettings, environment: 'sandbox' },
     integrationName: 'Pazarhub',
+    hepsiburadaIntegrator: 'test-integrator',
   }
   const item: PreparedListing = {
     product,

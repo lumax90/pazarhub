@@ -76,6 +76,7 @@ export class PublicationService {
       settings: connection.settings,
       state,
       integrationName: this.integrations.config.integrationName,
+      hepsiburadaIntegrator: this.integrations.config.hepsiburadaIntegrator,
     }
   }
   private assertProvider(connection: ConnectionRow) {

@@ -17,6 +17,7 @@ export interface ServerConfig {
   embeddedWorker: boolean
   serveFrontend: boolean
   integrationName: string
+  hepsiburadaIntegrator?: string
   smtp?: {
     host: string
     port: number
@@ -83,6 +84,7 @@ export function loadConfig(): ServerConfig {
     embeddedWorker: process.env.EMBEDDED_WORKER !== 'false' && environment !== 'production',
     serveFrontend: environment === 'production' || process.env.SERVE_FRONTEND === 'true',
     integrationName: process.env.INTEGRATION_NAME ?? 'Pazarhub',
+    hepsiburadaIntegrator: process.env.HEPSIBURADA_INTEGRATOR_USER?.trim() || undefined,
     smtp:
       process.env.SMTP_HOST && process.env.MAIL_FROM
         ? {

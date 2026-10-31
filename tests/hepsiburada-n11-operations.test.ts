@@ -24,7 +24,6 @@ const context = (provider: AdapterContext['provider']): AdapterContext => ({
   connectionId: randomUUID(),
   credentials: {
     merchantId: 'merchant',
-    username: 'fixture',
     password: 'fixture',
     appKey: 'fixture',
     appSecret: 'fixture',
@@ -32,6 +31,7 @@ const context = (provider: AdapterContext['provider']): AdapterContext => ({
   settings: defaultIntegrationSettings,
   state: createEmptyState('Operations'),
   integrationName: 'Test',
+  hepsiburadaIntegrator: 'fixture',
 })
 const json = (value: unknown) =>
   new Response(JSON.stringify(value), { headers: { 'content-type': 'application/json' } })

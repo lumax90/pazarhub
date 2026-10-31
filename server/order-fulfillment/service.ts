@@ -51,6 +51,7 @@ export function registerOrderFulfillment(app: FastifyInstance, service: Integrat
         settings: connection.settings,
         state: row.document,
         integrationName: service.config.integrationName,
+        hepsiburadaIntegrator: service.config.hepsiburadaIntegrator,
       },
       order,
     )

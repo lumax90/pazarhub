@@ -39,6 +39,7 @@ const config: ServerConfig = {
   embeddedWorker: false,
   serveFrontend: true,
   integrationName: 'Pazarhub E2E',
+  hepsiburadaIntegrator: 'fixture',
 }
 const database = await createDatabase(config, true)
 const fixture = publishingFixture()

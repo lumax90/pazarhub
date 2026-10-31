@@ -21,6 +21,8 @@ export interface AdapterContext {
   credentials: Record<string, string>
   settings: IntegrationSettings
   integrationName: string
+  /** Our Hepsiburada integrator username; unset until Hepsiburada issues one. */
+  hepsiburadaIntegrator?: string
   state: AppState
 }
 

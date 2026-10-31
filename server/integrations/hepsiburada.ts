@@ -21,16 +21,22 @@ import { basicAuth, ProviderHttp, requireCredential } from './http'
 
 /**
  * Hepsiburada's current authentication, for every service: Basic merchant ID : service key
- * (the key the seller creates for an integrator under Bilgilerim → Entegrasyon → Entegratör
- * Bilgileri) and that integrator's username as the required User-Agent.
+ * (the key the seller creates for us under Bilgilerim → Entegrasyon → Entegratör Bilgileri)
+ * and our integrator username, issued by Hepsiburada and shared by every seller, as the
+ * required User-Agent.
  */
 export function hepsiburadaHeaders(context: AdapterContext) {
+  if (!context.hepsiburadaIntegrator)
+    throw new ProviderError(
+      'INTEGRATOR_NOT_REGISTERED',
+      'Hepsiburada entegratör kaydımız henüz sunucuda tanımlı değil.',
+    )
   return {
     authorization: basicAuth(
       requireCredential(context.credentials, 'merchantId'),
       requireCredential(context.credentials, 'password'),
     ),
-    'user-agent': requireCredential(context.credentials, 'username'),
+    'user-agent': context.hepsiburadaIntegrator,
   }
 }
 

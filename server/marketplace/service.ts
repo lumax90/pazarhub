@@ -204,6 +204,7 @@ export function registerMarketplaceRoutes(app: FastifyInstance, service: Integra
             settings: checkedConnection.settings,
             state: checkedState!,
             integrationName: service.config.integrationName,
+            hepsiburadaIntegrator: service.config.hepsiburadaIntegrator,
           },
           new ProviderHttp(service.fetcher),
         )

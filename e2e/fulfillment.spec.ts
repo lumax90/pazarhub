@@ -67,7 +67,6 @@ test('packages marketplace order lines and downloads a verified carrier label fr
     settings: defaultIntegrationSettings,
     credentials: {
       merchantId: '11111111-1111-4111-8111-111111111111',
-      username: 'fixture',
       password: 'fixture',
     },
   }

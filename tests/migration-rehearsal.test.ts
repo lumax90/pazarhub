@@ -28,6 +28,7 @@ const config: ServerConfig = {
   embeddedWorker: false,
   serveFrontend: false,
   integrationName: 'Test',
+  hepsiburadaIntegrator: 'fixture',
 }
 const skus = ['GECIS-BEYAZ', 'GECIS-SIYAH', 'GECIS-SABUN'],
   physical = [10, 7, 30],
@@ -227,7 +228,6 @@ it('rehearses grouped catalogue, two store links, cutover open orders and openin
           ? { sellerId: '123', apiKey: 'fixture', apiSecret: 'fixture' }
           : {
               merchantId: '11111111-1111-4111-8111-111111111111',
-              username: 'fixture',
               password: 'fixture',
             },
     }

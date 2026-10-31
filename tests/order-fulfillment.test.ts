@@ -29,6 +29,7 @@ const config: ServerConfig = {
   embeddedWorker: false,
   serveFrontend: false,
   integrationName: 'Test',
+  hepsiburadaIntegrator: 'fixture',
 }
 let app: FastifyInstance,
   db: Database,
@@ -74,7 +75,7 @@ async function setup(provider: 'hepsiburada' | 'trendyol' = 'hepsiburada') {
     headers = { cookie, origin: config.publicOrigin, 'x-csrf-token': session.csrfToken }
   const credentials =
     provider === 'hepsiburada'
-      ? { merchantId: fixture.merchantId, username: 'fixture', password: 'fixture' }
+      ? { merchantId: fixture.merchantId, password: 'fixture' }
       : { sellerId: '123', apiKey: 'fixture', apiSecret: 'fixture' }
   const connection = await app.inject({
     method: 'POST',

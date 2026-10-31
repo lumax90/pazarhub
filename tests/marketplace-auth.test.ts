@@ -20,28 +20,27 @@ function context(
     credentials,
     settings: defaultIntegrationSettings,
     integrationName: 'Pazarhub',
+    hepsiburadaIntegrator: 'pazarhub_dev',
     state: createEmptyState('Test'),
   }
 }
 
 describe('marketplace authentication', () => {
-  it('signs Hepsiburada with merchant ID and service key, integrator as User-Agent', async () => {
+  it('signs Hepsiburada with merchant ID and service key, our integrator as User-Agent', async () => {
     const fetcher = vi.fn(async (_url: string | URL | Request, _init?: RequestInit) =>
       json({ success: true, data: [] }),
     )
-    await new HepsiburadaAdapter(new ProviderHttp(fetcher)).execute(
-      'test',
-      context('hepsiburada', {
-        merchantId: 'merchant-1',
-        username: 'pazarhub_dev',
-        password: 'service-key',
-      }),
-      {},
-    )
+    const adapter = new HepsiburadaAdapter(new ProviderHttp(fetcher)),
+      ctx = context('hepsiburada', { merchantId: 'merchant-1', password: 'service-key' })
+    await adapter.execute('test', ctx, {})
     expect(fetcher.mock.calls[0][1]?.headers).toMatchObject({
       authorization: `Basic ${Buffer.from('merchant-1:service-key').toString('base64')}`,
       'user-agent': 'pazarhub_dev',
     })
+    await expect(
+      adapter.execute('test', { ...ctx, hepsiburadaIntegrator: undefined }, {}),
+    ).rejects.toMatchObject({ code: 'INTEGRATOR_NOT_REGISTERED' })
+    expect(fetcher).toHaveBeenCalledTimes(1)
   })
 
   it('sends Çiçeksepeti user-agent as SellerId-IntegratorName and reads numeric statuses', async () => {

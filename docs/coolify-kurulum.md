@@ -11,7 +11,10 @@ Paket `compose.yaml` üzerinden dört servis açar: **app**, **worker**, **datab
    PUBLIC_ORIGIN=https://panel.alanadiniz.com
    REGISTRATION_ENABLED=true
    INTEGRATION_NAME=Pazarhub
+   HEPSIBURADA_INTEGRATOR_USER=
    ```
+
+   `INTEGRATION_NAME` Trendyol, n11, Çiçeksepeti ve Amazon isteklerinde entegratör adı olarak gider. `HEPSIBURADA_INTEGRATOR_USER`, Hepsiburada'nın bize verdiği entegratör kullanıcı adıdır; tanımlanana kadar Hepsiburada bağlantıları çalışmaz.
 
    Veritabanı parolası (`SERVICE_PASSWORD_POSTGRES`) ve şifreleme anahtarı (`SERVICE_HEX_32_ENCRYPTION`, 64 hex karakter) Coolify tarafından bir kez üretilir ve saklanır; aynı ekranda görünürler. **Şifreleme anahtarını güvenli bir yere kopyalayın**: yedekten geri dönüşte bağlantı bilgilerini açmak için gerekir.
 
