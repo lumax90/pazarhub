@@ -1,7 +1,8 @@
 import type { CategorySchema, MetadataQuery, MetadataResult } from '../../src/domain/publishing'
 import type { AdapterContext } from '../integrations/contracts'
 import { array, cents, integer, record, remoteInteger, text } from '../integrations/contracts'
-import { basicAuth, ProviderHttp, requireCredential } from '../integrations/http'
+import { ProviderHttp, requireCredential } from '../integrations/http'
+import { hepsiburadaHeaders } from '../integrations/hepsiburada'
 import { ProviderError } from '../errors'
 import type { Inspection, PreparedListing, PublicationAdapter, PublicationPlan } from './types'
 import { failField, numericId } from './shared'
@@ -29,13 +30,7 @@ export class HepsiburadaPublisher implements PublicationAdapter {
       base: `https://mpop${suffix}.hepsiburada.com/product`,
       listings: `https://listing-external${suffix}.hepsiburada.com`,
       merchant: requireCredential(context.credentials, 'merchantId'),
-      headers: {
-        authorization: basicAuth(
-          requireCredential(context.credentials, 'username'),
-          requireCredential(context.credentials, 'password'),
-        ),
-        'user-agent': context.credentials.username,
-      },
+      headers: hepsiburadaHeaders(context),
     }
   }
   private async api(context: AdapterContext, path: string) {

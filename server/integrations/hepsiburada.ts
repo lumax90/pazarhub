@@ -19,6 +19,21 @@ import {
 import type { AdapterContext, AdapterResult, ProviderAdapter } from './contracts'
 import { basicAuth, ProviderHttp, requireCredential } from './http'
 
+/**
+ * Hepsiburada's current authentication, for every service: Basic merchant ID : service key
+ * (the key the seller creates for an integrator under Bilgilerim → Entegrasyon → Entegratör
+ * Bilgileri) and that integrator's username as the required User-Agent.
+ */
+export function hepsiburadaHeaders(context: AdapterContext) {
+  return {
+    authorization: basicAuth(
+      requireCredential(context.credentials, 'merchantId'),
+      requireCredential(context.credentials, 'password'),
+    ),
+    'user-agent': requireCredential(context.credentials, 'username'),
+  }
+}
+
 export class HepsiburadaAdapter implements ProviderAdapter {
   capabilities: readonly IntegrationOperation[] = [
     'test',
@@ -38,13 +53,7 @@ export class HepsiburadaAdapter implements ProviderAdapter {
     const listingBase = `https://listing-external${suffix}.hepsiburada.com`
     const orderBase = `https://oms-external${suffix}.hepsiburada.com`
     const catalogBase = `https://mpop${suffix}.hepsiburada.com/product`
-    const headers = {
-      authorization: basicAuth(
-        requireCredential(context.credentials, 'username'),
-        requireCredential(context.credentials, 'password'),
-      ),
-      'user-agent': context.credentials.username,
-    }
+    const headers = hepsiburadaHeaders(context)
     if (operation === 'test' || operation === 'catalog.pull') {
       const page = integer(payload.page),
         size = operation === 'test' ? 1 : 50

@@ -17,7 +17,7 @@ export class CiceksepetiPublisher implements PublicationAdapter {
           : 'https://apis.ciceksepeti.com/api/v1',
       headers: {
         'x-api-key': requireCredential(context.credentials, 'apiKey'),
-        'user-agent': `${requireCredential(context.credentials, 'sellerId')} - ${context.integrationName}`,
+        'user-agent': `${requireCredential(context.credentials, 'sellerId')}-${context.integrationName}`,
       },
     }
   }

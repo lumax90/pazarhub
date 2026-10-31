@@ -74,7 +74,7 @@ export const providers: ProviderDefinition[] = [
       field('password', 'Servis anahtarı', true),
     ],
     docsUrl: 'https://developers.hepsiburada.com/',
-    note: 'Entegratör hesabına atanmış kullanıcı adı ve servis anahtarı gerekir.',
+    note: 'Servis anahtarını satıcı panelinde Bilgilerim → Entegrasyon → Entegratör Bilgileri bölümünden, seçtiğiniz entegratör için oluşturun. Kullanıcı adı o entegratörün adıdır.',
   },
   {
     id: 'n11',
@@ -102,6 +102,7 @@ export const providers: ProviderDefinition[] = [
     kind: 'marketplace',
     fields: [field('sellerId', 'Satıcı ID'), field('apiKey', 'API Key', true)],
     docsUrl: 'https://ciceksepeti.dev/',
+    note: 'API anahtarı ilk kez Çiçeksepeti destekten "API Entegrasyon Süreçleri" talebiyle alınır; sonra Hesap Yönetimi → Entegrasyon Bilgilerim\'de görünür. Aynı alanda Entegratör Adı olarak Pazarhub yazın. Bağlantı testi 10 dakikada bir tekrarlanabilir.',
   },
   {
     id: 'pazarama',

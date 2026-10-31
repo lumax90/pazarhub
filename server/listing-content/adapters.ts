@@ -7,6 +7,7 @@ import { pttVariantAttributes, pttVariantValuesMatch } from '../integrations/ptt
 import { ToptanTrApi } from '../integrations/toptantr'
 import { ProviderError } from '../errors'
 import { n11Headers } from '../integrations/n11-api'
+import { hepsiburadaHeaders } from '../integrations/hepsiburada'
 import { contentDefinitions } from '../../src/domain/listing-content'
 import { contentSource, contentMatches } from './contracts'
 import type { ContentPlan, ContentSource } from './contracts'
@@ -32,13 +33,7 @@ export class ListingContentAdapter {
     if (context.provider === 'hepsiburada')
       return {
         base: `https://mpop${sandbox ? '-sit' : ''}.hepsiburada.com`,
-        headers: {
-          authorization: basicAuth(
-            requireCredential(context.credentials, 'username'),
-            requireCredential(context.credentials, 'password'),
-          ),
-          'user-agent': context.credentials.username,
-        },
+        headers: hepsiburadaHeaders(context),
       }
     if (context.provider === 'n11')
       return {

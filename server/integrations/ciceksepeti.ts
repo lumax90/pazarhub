@@ -39,7 +39,8 @@ export class CiceksepetiAdapter implements ProviderAdapter {
         : 'https://apis.ciceksepeti.com/api/v1'
     const headers = {
       'x-api-key': requireCredential(context.credentials, 'apiKey'),
-      'user-agent': `${requireCredential(context.credentials, 'sellerId')} - ${context.integrationName}`,
+      // Documented form "SatıcıId-EntegratörAdı", without spaces.
+      'user-agent': `${requireCredential(context.credentials, 'sellerId')}-${context.integrationName}`,
     }
     if (operation === 'test' || operation === 'catalog.pull') {
       const page = operation === 'test' ? 1 : Math.max(1, integer(payload.page, 1)),
@@ -58,15 +59,27 @@ export class CiceksepetiAdapter implements ProviderAdapter {
           sku: text(item.stockCode),
           barcode: text(item.barcode),
           title: text(item.productName),
-          price: cents(item.salesPrice ?? item.totalPrice),
+          // The example response has salesPrice; the field table names it TotalPrice.
+          price: cents(item.salesPrice ?? item.TotalPrice ?? item.totalPrice),
           quantity: Math.max(0, integer(item.stockQuantity ?? item.StockQuantity ?? item.stock)),
           category: text(item.categoryName),
           categoryId: text(item.categoryId),
           images: urls(item.images),
+          // Text in the example response, numbers in the field table (3 yayında, 7 yayında-onay
+          // bekleyen, 8 stoğu biten, 5 pasif, 4 reddedilen).
           status:
-            ({ YAYINDA: 'active', PASIF: 'archived', REDDEDILEN: 'rejected' } as const)[
-              text(item.productStatusType) as 'YAYINDA'
-            ] ?? 'pending',
+            (
+              {
+                YAYINDA: 'active',
+                3: 'active',
+                7: 'active',
+                8: 'active',
+                PASIF: 'archived',
+                5: 'archived',
+                REDDEDILEN: 'rejected',
+                4: 'rejected',
+              } as Record<string, RemoteProduct['status']>
+            )[text(item.productStatusType)] ?? 'pending',
         }
         if (!product.externalId || !product.title || !Number.isFinite(product.price))
           throw new ProviderError('INVALID_PRODUCT', 'Çiçeksepeti ürün kimliği veya fiyatı eksik.')

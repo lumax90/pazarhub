@@ -2,7 +2,8 @@ import type { FinancialRecord } from '../../src/domain/marketplace'
 import { decimalTicks } from '../../src/domain/marketplace'
 import type { AdapterResult, ProviderAdapter } from '../integrations/contracts'
 import { record, text, remoteInteger } from '../integrations/contracts'
-import { ProviderHttp, basicAuth, requireCredential } from '../integrations/http'
+import { ProviderHttp, requireCredential } from '../integrations/http'
+import { hepsiburadaHeaders } from '../integrations/hepsiburada'
 import { ProviderError } from '../errors'
 
 function money(value: unknown) {
@@ -101,13 +102,7 @@ export function withHepsiburadaFinance(
         await http.request(
           `${base}/transactions/merchantid/${encodeURIComponent(merchant)}?${query}`,
           {
-            headers: {
-              authorization: basicAuth(
-                requireCredential(context.credentials, 'username'),
-                requireCredential(context.credentials, 'password'),
-              ),
-              'user-agent': context.credentials.username,
-            },
+            headers: hepsiburadaHeaders(context),
           },
         ),
       )

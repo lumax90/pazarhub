@@ -1,7 +1,8 @@
 import type { MarketplaceClaim } from '../../src/domain/marketplace'
 import type { AdapterContext, AdapterResult } from '../integrations/contracts'
 import { array, cents, record, remoteInteger, text } from '../integrations/contracts'
-import { basicAuth, ProviderHttp, requireCredential } from '../integrations/http'
+import { ProviderHttp, requireCredential } from '../integrations/http'
+import { hepsiburadaHeaders } from '../integrations/hepsiburada'
 import { AppError, ProviderError } from '../errors'
 import { claimDecisionOptions, validateClaimDecision } from './claim-options'
 
@@ -60,13 +61,7 @@ export class HepsiburadaClaims {
     return {
       base: `https://oms-external${context.settings.environment === 'sandbox' ? '-sit' : ''}.hepsiburada.com`,
       merchant: encodeURIComponent(requireCredential(context.credentials, 'merchantId')),
-      headers: {
-        authorization: basicAuth(
-          requireCredential(context.credentials, 'username'),
-          requireCredential(context.credentials, 'password'),
-        ),
-        'user-agent': context.credentials.username,
-      },
+      headers: hepsiburadaHeaders(context),
     }
   }
   private async page(context: AdapterContext, payload: Record<string, unknown>) {
