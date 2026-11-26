@@ -202,5 +202,17 @@ export async function migrate(database: Database) {
       ALTER TABLE users ADD COLUMN avatar_seed text;
       INSERT INTO schema_migrations(version) VALUES(12);
     `)
+    const errorLog = await tx.query('SELECT version FROM schema_migrations WHERE version=13')
+    if (!errorLog.rows.length)
+      await tx.exec(`
+      CREATE TABLE integration_errors (
+        id uuid PRIMARY KEY, workspace_id uuid NOT NULL REFERENCES workspaces(id), job_id uuid,
+        connection_id uuid, kind text NOT NULL, code text NOT NULL, message text NOT NULL,
+        attempt integer NOT NULL DEFAULT 1, detail jsonb NOT NULL DEFAULT '{}',
+        created_at timestamptz NOT NULL DEFAULT now()
+      );
+      CREATE INDEX integration_errors_workspace_idx ON integration_errors(workspace_id,created_at DESC);
+      INSERT INTO schema_migrations(version) VALUES(13);
+    `)
   })
 }

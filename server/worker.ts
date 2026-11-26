@@ -21,6 +21,7 @@ import {
 } from '../src/domain/selectors'
 import { MAIN_WAREHOUSE } from '../src/domain/inventory'
 import { audit } from './auth'
+import { recordError } from './error-log'
 import type { Sql } from './db'
 import { ProviderError } from './errors'
 import type { IntegrationService } from './integration-service'
@@ -519,6 +520,7 @@ export class IntegrationWorker {
     heartbeat.unref()
     let secrets: Record<string, string> = {}
     let providerResultReceived = false
+    let lastHttp: ProviderHttp | undefined
     try {
       if (!job.connection_id)
         throw new ProviderError('CONNECTION_REQUIRED', 'İşlemin bağlantısı eksik.')
@@ -796,6 +798,7 @@ export class IntegrationWorker {
             )
         }
       })
+      lastHttp = http
       const adapter = this.service.factory(connection.provider, http)
       if (job.kind === 'listing.content' || job.kind === 'listing.content.status') {
         const listing = stateRow.document.listings.find(
@@ -1052,6 +1055,18 @@ export class IntegrationWorker {
           [status, attempts, `${providerError.code}: ${message}`, seconds, job.id, this.id],
         )
         if (!updated.rows.length) return
+        await recordError(tx, {
+          workspaceId: job.workspace_id,
+          jobId: job.id,
+          connectionId: job.connection_id,
+          kind: job.kind,
+          code: providerError.code,
+          message,
+          attempt: attempts,
+          exchange: providerError.detail ?? lastHttp?.lastExchange,
+          cause: error,
+          secrets,
+        })
         if (job.kind === 'test')
           await tx.query(
             `UPDATE integration_connections SET status='failed',enabled=false,last_error=$1,last_test_at=now() WHERE id=$2 AND workspace_id=$3 AND credential_version=$4`,
@@ -1822,6 +1837,16 @@ export class IntegrationWorker {
         await audit(tx, job.workspace_id, null, 'integration.job_failed', job.id, {
           kind: job.kind,
           code: result.failure.code,
+        })
+        await recordError(tx, {
+          workspaceId: job.workspace_id,
+          jobId: job.id,
+          connectionId: job.connection_id,
+          kind: job.kind,
+          code: result.failure.code,
+          message: result.failure.message,
+          attempt: job.attempts + 1,
+          secrets: {},
         })
       } else if (result.nextPayload)
         await tx.query(

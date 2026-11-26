@@ -287,6 +287,24 @@ export interface IntegrationJob {
   finishedAt: string | null
 }
 
+/** One failed attempt of a job, with the provider exchange behind it (secrets masked). */
+export interface IntegrationErrorEntry {
+  id: string
+  jobId: string | null
+  connectionId: string | null
+  connectionName?: string
+  provider: ProviderId | null
+  kind: IntegrationJob['kind']
+  code: string
+  message: string
+  attempt: number
+  request?: string
+  status?: number
+  response?: string
+  cause?: string
+  createdAt: string
+}
+
 export interface RemoteProduct {
   externalId: string
   sku: string

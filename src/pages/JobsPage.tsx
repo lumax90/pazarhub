@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Chip } from '@heroui/react'
-import { RefreshCw, Workflow } from 'lucide-react'
-import { Link } from 'react-router'
+import { Bug, ListChecks, RefreshCw, Workflow } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router'
 import { useApp } from '../app/AppProvider'
 import type { IntegrationJob } from '../domain/integrations'
 import { apiRequest } from '../lib/api'
@@ -14,6 +14,7 @@ import { Dialog, EmptyState, FilterTabs, PageHeader, Panel } from '../components
 import { operationLabels } from '../domain/integration-labels'
 import { freshRequestJobs, jobPermission } from '../domain/permissions'
 import { FulfillmentReconciliation } from '../components/integrations/FulfillmentReconciliation'
+import { ErrorLog } from '../components/integrations/ErrorLog'
 
 const labels: Record<IntegrationJob['status'], string> = {
   queued: 'Sırada',
@@ -46,6 +47,9 @@ export function JobsPage() {
     [selection, setSelected] = useState<IntegrationJob | null>(null),
     [busy, setBusy] = useState('')
   const [reconciling, setReconciling] = useState<IntegrationJob | null>(null)
+  const [params, setParams] = useSearchParams()
+  // The error log shows raw provider answers, which can hold customer data: managers only.
+  const errorLog = params.get('view') === 'errors' && can('workspace.manage') && mode !== 'demo'
   const resource = useResource<{ jobs: IntegrationJob[] }>(
     `/api/jobs?limit=200${status === 'all' ? '' : `&status=${status}`}`,
     3000,
@@ -145,13 +149,28 @@ export function JobsPage() {
         title="İşlem Merkezi"
         description="Senkronizasyon, gönderim ve belge işlemlerinin adım adım sonucu."
         actions={
-          <Button variant="secondary" onPress={() => void resource.reload()}>
-            <RefreshCw size={16} />
-            Yenile
-          </Button>
+          <>
+            {can('workspace.manage') && mode !== 'demo' && (
+              <Button
+                variant="secondary"
+                onPress={() => setParams(errorLog ? {} : { view: 'errors' })}
+              >
+                {errorLog ? <ListChecks size={16} /> : <Bug size={16} />}
+                {errorLog ? 'İşlemler' : 'Hata günlüğü'}
+              </Button>
+            )}
+            {!errorLog && (
+              <Button variant="secondary" onPress={() => void resource.reload()}>
+                <RefreshCw size={16} />
+                Yenile
+              </Button>
+            )}
+          </>
         }
       />
-      {mode === 'demo' ? (
+      {errorLog ? (
+        <ErrorLog />
+      ) : mode === 'demo' ? (
         <Panel>
           <EmptyState
             title="Gerçek işlemler burada görünecek"

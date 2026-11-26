@@ -1020,6 +1020,56 @@
   color: var(--muted);
   overflow-wrap: anywhere;
 }
+/* Error log: one console-like line per failed attempt; opening a line shows the exchange. */
+.error-log {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--app-panel-inset) var(--app-panel-inset);
+}
+.error-log > li + li {
+  border-top: 1px solid var(--separator);
+}
+.error-log-entry summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) 0;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: var(--app-leading-normal);
+}
+.error-log-entry time {
+  color: var(--muted);
+}
+.error-log-message {
+  flex: 1 1 20rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.error-log-entry section {
+  padding-bottom: var(--app-space-4);
+}
+.error-log-entry h4 {
+  margin: var(--app-space-3) 0 var(--app-space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--app-weight-medium);
+  color: var(--muted);
+}
+.error-log-entry pre {
+  margin: 0;
+  padding: var(--app-space-3);
+  max-height: 320px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: var(--app-leading-relaxed);
+  background: var(--surface-secondary);
+  border-radius: var(--radius-md);
+}
 .detail-list {
   display: flex;
   flex-direction: column;

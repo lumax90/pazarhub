@@ -31,6 +31,7 @@ import { registerOrderFulfillment } from './order-fulfillment/service'
 import { registerOrderReconciliation } from './order-reconciliation'
 import { registerListingContent } from './listing-content/service'
 import { registerClaimDocuments } from './marketplace/claim-documents'
+import { registerErrorLogRoutes } from './error-log'
 
 /**
  * Unknown paths get the app shell only when they look like an app page. A dot segment
@@ -187,6 +188,7 @@ export async function createApp(
   registerWorkspaceRoutes(app, database)
   const integrations = new IntegrationService(database, config, options.factory, options.fetcher)
   registerIntegrationRoutes(app, integrations)
+  registerErrorLogRoutes(app, database)
   registerPublishingRoutes(app, integrations)
   registerValueMappingRoutes(app, integrations)
   registerExchangeRateRoutes(app, database, config.environment === 'test')
