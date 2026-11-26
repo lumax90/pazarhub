@@ -303,10 +303,14 @@ describe('official Pazarama and ToptanTR contracts', () => {
     })
     expect(JSON.parse(String(fetcher.mock.calls[1][1]?.body))).toHaveProperty('productSearch')
   })
-  it('honours a server that clamps page zero to page one without skipping its last page', async () => {
+  it('pages ToptanTR searches from 1, as page 0 is refused, without skipping the last page', async () => {
+    const sent: number[] = []
     const fetcher = vi.fn<typeof fetch>(async (input, init) => {
       if (String(input).endsWith('/token')) return json({ access_token: 'token', expires_in: 3600 })
-      const page = Math.max(1, JSON.parse(String(init?.body)).productSearch.page)
+      const page = JSON.parse(String(init?.body)).productSearch.page
+      sent.push(page)
+      if (page < 1)
+        return json({ success: false, msg: 'Geçersiz Sayfa Boyutu. Lütfen Tekrar Deneyin' })
       return json({
         content: [
           {
@@ -324,10 +328,11 @@ describe('official Pazarama and ToptanTR contracts', () => {
     const adapter = new ToptanTrAdapter(new ProviderHttp(fetcher)),
       ctx = context('toptantr')
     const first = await adapter.execute('catalog.pull', ctx, {})
-    expect(first.nextPayload).toMatchObject({ page: 2, pageBase: 1 })
+    expect(first.nextPayload).toMatchObject({ page: 2 })
     const last = await adapter.execute('catalog.pull', ctx, first.nextPayload!)
     expect(last.products?.[0].externalId).toBe('102')
     expect(last.nextPayload).toBeUndefined()
+    expect(sent).toEqual([1, 2])
   })
   it('uses combination SKU separately from GTIN and keeps order quantities in variation units', () => {
     const product = normalizeToptanTrProducts(ttrProduct)[0]

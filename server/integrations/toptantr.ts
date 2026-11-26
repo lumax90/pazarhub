@@ -20,17 +20,15 @@ import { accessToken, clearAccessTokens } from './oauth'
 import { ProviderError } from '../errors'
 import { isToptanSharedStock, synchronizeToptanSharedStock } from './toptantr-stock'
 
+/** Searches are 1-based (documented minimum 1); page 0 is refused as "Geçersiz Sayfa Boyutu". */
+const pageOf = (payload: Record<string, unknown>) => Math.max(1, integer(payload.page, 1))
 function nextPage(response: Record<string, unknown>, payload: Record<string, unknown>) {
-  const sent = integer(payload.page),
-    actual = remoteInteger(response.page, sent),
-    base = integer(payload.pageBase, sent === 0 && actual === 1 ? 1 : 0),
+  const sent = pageOf(payload),
     total = remoteInteger(response.totalPages)
-  if (sent === 0 && !array(response.content).length && total > 0)
-    return { ...payload, page: 1, pageBase: 1 }
   if (!array(response.content).length) return undefined
-  if (actual < sent || total < 0)
+  if (total < 0)
     throw new ProviderError('INVALID_PAGING', 'ToptanTR sayfalama yanıtı doğrulanamadı.')
-  return actual - base + 1 < total ? { ...payload, page: actual + 1, pageBase: base } : undefined
+  return sent < total ? { ...payload, page: sent + 1 } : undefined
 }
 function numericReference(value: string) {
   if (
@@ -87,7 +85,7 @@ export class ToptanTrApi {
       )
     return response
   }
-  async products(context: AdapterContext, barcode: string, page = 0) {
+  async products(context: AdapterContext, barcode: string, page = 1) {
     const response = await this.request(context, '/products/search', {
       method: 'POST',
       json: { productSearch: { barcode, page, size: 100, approved: true, rejected: true } },
@@ -98,9 +96,9 @@ export class ToptanTrApi {
     return response
   }
   async parent(context: AdapterContext, sku: string) {
-    let cursor: Record<string, unknown> = { page: 0 }
+    let cursor: Record<string, unknown> = { page: 1 }
     for (let page = 0; page < 100; page++) {
-      const response = await this.products(context, sku, integer(cursor.page))
+      const response = await this.products(context, sku, pageOf(cursor))
       const found = array(response.content)
         .map(record)
         .find((product) => text(product.stock_code) === sku)
@@ -112,9 +110,9 @@ export class ToptanTrApi {
     throw new ProviderError('PAGING_LIMIT', 'ToptanTR üst ürün araması tamamlanamadı.')
   }
   async combination(context: AdapterContext, sku: string, id: string) {
-    let cursor: Record<string, unknown> = { page: 0 }
+    let cursor: Record<string, unknown> = { page: 1 }
     for (let page = 0; page < 20; page++) {
-      const response = await this.products(context, sku, integer(cursor.page))
+      const response = await this.products(context, sku, pageOf(cursor))
       for (const product of array(response.content).map(record)) {
         const combination = array(product.productAttributeCombinations)
           .map(record)
@@ -317,8 +315,7 @@ export class ToptanTrAdapter implements ProviderAdapter {
       return { message: 'ToptanTR token ve satıcı katalog erişimi doğrulandı.' }
     }
     if (operation === 'catalog.pull') {
-      const page = integer(payload.page),
-        response = await this.api.products(context, '', page)
+      const response = await this.api.products(context, '', pageOf(payload))
       const next = nextPage(response, payload)
       return {
         message: `${array(response.content).length} ToptanTR ürün kartı alındı.`,
@@ -329,7 +326,7 @@ export class ToptanTrAdapter implements ProviderAdapter {
     if (operation === 'orders.pull') {
       const from = Number(payload.from ?? Date.now() - 7 * 86400000),
         to = Number(payload.to ?? Date.now()),
-        page = integer(payload.page)
+        page = pageOf(payload)
       if (!Number.isFinite(from) || !Number.isFinite(to) || from > to || to - from > 31 * 86400000)
         throw new ProviderError('INVALID_WINDOW', 'ToptanTR sipariş tarih aralığı geçersiz.')
       const response = await this.api.request(context, '/orders/search', {
@@ -503,7 +500,7 @@ export class ToptanTrAdapter implements ProviderAdapter {
       const current = await this.api.request(context, '/orders/search', {
         method: 'POST',
         json: {
-          orderSearch: { orderNumber: numericReference(order.externalId), page: 0, size: 100 },
+          orderSearch: { orderNumber: numericReference(order.externalId), page: 1, size: 100 },
         },
         idempotent: true,
       })

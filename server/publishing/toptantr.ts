@@ -21,9 +21,10 @@ export class ToptanTrPublisher implements PublicationAdapter {
       const key = query.resource,
         options: NonNullable<MetadataResult['options']> = [],
         seen = new Set<string>()
+      // Documented: pages start at 1, at most 250 rows; categories call the size "Limit".
       if (key === 'brands') {
-        const page = query.page ?? 0,
-          response = await this.api.request(context, `/brands?page=${page}&size=500`)
+        const page = Math.max(1, query.page ?? 1),
+          response = await this.api.request(context, `/brands?page=${page}&size=250`)
         if (!Array.isArray(response.brands))
           throw new ProviderError('INVALID_METADATA', 'ToptanTR marka listesi okunamadı.')
         return {
@@ -36,8 +37,8 @@ export class ToptanTrPublisher implements PublicationAdapter {
         }
       }
       let previous = ''
-      for (let page = 0; page < 500; page++) {
-        const response = await this.api.request(context, `/${key}?page=${page}&size=500`)
+      for (let page = 1; page <= 500; page++) {
+        const response = await this.api.request(context, `/${key}?page=${page}&limit=250`)
         if (!Array.isArray(response[key]))
           throw new ProviderError('INVALID_METADATA', 'ToptanTR tanım listesi okunamadı.')
         const rows = array(response[key]).map(record)

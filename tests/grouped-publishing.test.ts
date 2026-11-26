@@ -49,7 +49,7 @@ beforeAll(async () => {
       if (path.endsWith('/categories'))
         return json({
           categories:
-            Number(new URL(String(url)).searchParams.get('page')) > 0
+            Number(new URL(String(url)).searchParams.get('page')) > 1
               ? []
               : [{ guid: category, name: 'Banyo', breadcrumb: 'Ev / Banyo' }],
         })

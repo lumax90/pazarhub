@@ -22,7 +22,7 @@ export class ToptanTrFulfillment implements MarketplaceFulfillmentAdapter {
       throw new ProviderError('ORDER_IDENTITY_MISMATCH', 'ToptanTR sipariş kimliği sayısal olmalı.')
     const response = await this.api.request(context, '/orders/search', {
       method: 'POST',
-      json: { orderSearch: { orderNumber: Number(order.externalId), page: 0, size: 100 } },
+      json: { orderSearch: { orderNumber: Number(order.externalId), page: 1, size: 100 } },
       idempotent: true,
     })
     const raw = array(response.content)
@@ -30,7 +30,8 @@ export class ToptanTrFulfillment implements MarketplaceFulfillmentAdapter {
       .find((item) => text(item.id) === order.externalId)
     if (!raw) throw new ProviderError('ORDER_IDENTITY_MISMATCH', 'ToptanTR siparişi doğrulanamadı.')
     const shipments: Record<string, unknown>[] = []
-    for (let page = 0; page < 100; page++) {
+    // Searches are 1-based (documented minimum 1).
+    for (let page = 1; page <= 100; page++) {
       const response = await this.api.request(context, '/shipments/search', {
         method: 'POST',
         json: { shipmentSearch: { orderId: Number(order.externalId), page, size: 100 } },
@@ -41,8 +42,8 @@ export class ToptanTrFulfillment implements MarketplaceFulfillmentAdapter {
       shipments.push(
         ...response.content.map(record).filter((item) => text(item.orderId) === order.externalId),
       )
-      if (page + 1 >= remoteInteger(response.totalPages, 1)) break
-      if (page === 99)
+      if (page >= remoteInteger(response.totalPages, 1)) break
+      if (page === 100)
         throw new ProviderError('PAGING_LIMIT', 'ToptanTR gönderi sayfalaması tamamlanamadı.')
     }
     const cargoes = await this.api.request(context, '/cargoes')
