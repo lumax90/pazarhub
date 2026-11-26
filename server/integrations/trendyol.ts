@@ -145,13 +145,18 @@ export class TrendyolAdapter implements ProviderAdapter {
             { headers },
           ),
         )
-        if (response.status !== 'COMPLETED')
+        // Stock and price batches carry no batch status (documented): each item reports its own.
+        const items = array(response.items).map(record)
+        const finished =
+          response.status === 'COMPLETED' ||
+          (items.length > 0 &&
+            items.every((item) => item.status === 'SUCCESS' || item.status === 'FAILED'))
+        if (!finished)
           return {
             message: 'Trendyol toplu işlemi işliyor.',
             nextPayload: { ...payload, polls: integer(payload.polls) + 1 },
             delaySeconds: 8,
           }
-        const items = array(response.items).map(record)
         if (
           integer(response.failedItemCount) > 0 ||
           items.some((item) => item.status === 'FAILED' || array(item.failureReasons).length)

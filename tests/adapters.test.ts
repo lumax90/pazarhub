@@ -55,10 +55,28 @@ describe('provider boundary contracts', () => {
       http.request('https://provider.example/invoices', { method: 'POST', json: {} }),
     ).rejects.toMatchObject({ uncertain: true })
   })
+  it('reads Trendyol stock and price batches from item statuses, as they carry no batch status', async () => {
+    // Shape of the documented "Stock & Price Güncelleme" answer: no top-level status.
+    const batch = (status: string) => ({
+      batchRequestId: 'batch1',
+      items: [{ requestItem: { barcode: '1', quantity: 3 }, status, failureReasons: [] }],
+      itemCount: 1,
+      failedItemCount: 0,
+      batchRequestType: 'ProductInventoryUpdate',
+    })
+    const answers = [batch('IN_PROGRESS'), batch('SUCCESS')]
+    const adapter = new TrendyolAdapter(
+      new ProviderHttp(vi.fn<typeof fetch>(async () => json(answers.shift()))),
+    )
+    const waiting = await adapter.execute('inventory.push', context, { batchId: 'batch1' })
+    expect(waiting.nextPayload).toMatchObject({ polls: 1 })
+    const done = await adapter.execute('inventory.push', context, { batchId: 'batch1' })
+    expect(done).toMatchObject({ reference: 'batch1', listingStatus: 'active' })
+    expect(done.nextPayload).toBeUndefined()
+  })
   it('rejects a failed Trendyol batch instead of reporting the listing active', async () => {
     const fetcher = vi.fn<typeof fetch>(async () =>
       json({
-        status: 'COMPLETED',
         failedItemCount: 1,
         items: [{ status: 'FAILED', failureReasons: ['invalid category'] }],
       }),
